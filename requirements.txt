@@ -1,0 +1,43 @@
+# ─── Documentos y HTML ───
+beautifulsoup4==4.12.2
+lxml==5.3.0
+openpyxl==3.1.5
+
+# ─── Canvas y HTTP ───
+requests==2.32.3
+canvasapi==3.6.0
+
+# ─── API web ───
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+jinja2==3.1.5
+
+# ─── Base de datos ───
+sqlalchemy==2.0.36
+alembic==1.14.0
+psycopg[binary]==3.2.3
+
+# ─── Autenticación ───
+passlib[argon2]==1.7.4
+pyjwt==2.10.1
+pydantic-settings==2.7.0
+email-validator==2.2.0
+
+# ─── Esquema y validación ───
+jsonschema==4.23.0
+
+# ─── IA ───
+anthropic==0.111.0
+
+# ─── Cola de trabajos ───
+redis==5.2.1
+rq==2.1.0
+
+# ─── Utilidades ───
+python-dotenv==1.0.1
+
+# ─── Desarrollo ───
+pytest==8.3.4
+httpx==0.28.1
+ruff==0.8.4
