@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: ediloja-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ediloja
+      POSTGRES_PASSWORD: ediloja_local
+      POSTGRES_DB: ediloja
+    ports:
+      - "5432:5432"
+    volumes:
+      - datos_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ediloja"]
+      interval: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: ediloja-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  datos_pg:
