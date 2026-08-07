@@ -1,3 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "app-ediloja"
+version = "0.1.0"
+requires-python = ">=3.13"
+
+[tool.setuptools.packages.find]
+include = ["libs*", "apps*"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py313"
@@ -5,8 +17,17 @@ exclude = [".venv", "_archivo", "migraciones/versions"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-ignore = ["E501"]
+ignore = [
+    "E501",  # línea larga
+    "B008",  # Depends() en defaults: es el patrón de FastAPI
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[tool.ruff.lint.per-file-ignores]
+"migraciones/env.py" = ["E402", "I001"]
+"libs/py/db/__init__.py" = ["I001"]
+"libs/py/db/modelos_dominio.py" = ["UP037", "F821"]
+"libs/py/db/modelos_contenido.py" = ["UP037"]
