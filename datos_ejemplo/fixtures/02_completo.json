@@ -1,0 +1,1572 @@
+{
+  "version_esquema": "1.0.0",
+  "info_general": {
+    "codigo_banner": "ADMI_5012",
+    "codigo_componente": "DIST-TNAGP205",
+    "asignatura": "Fundamentos de Administración Pública",
+    "carrera": "Administración Pública",
+    "facultad": "Ciencias Económicas y Empresariales",
+    "nivel": "Grado",
+    "modalidad": "Distancia",
+    "periodo": "oct2026",
+    "creditos": 6.0,
+    "horas": {
+      "total": 288,
+      "acd": 48,
+      "ape": 72,
+      "aa": 168
+    },
+    "total_semanas": 8,
+    "autor": "Docente de ejemplo"
+  },
+  "secciones": {
+    "datos_informacion": [
+      {
+        "id": "b690382dd",
+        "tipo": "parrafo",
+        "texto": "Esta guía orienta el estudio autónomo de la asignatura durante ocho semanas.",
+        "origen": "agente"
+      }
+    ],
+    "metodologia": [
+      {
+        "id": "bab86a1e1",
+        "tipo": "parrafo",
+        "texto": "Se emplea aprendizaje basado en problemas con acompañamiento tutorial.",
+        "origen": "agente"
+      }
+    ]
+  },
+  "estructura": {
+    "resultados_aprendizaje": [
+      {
+        "id": "ra1",
+        "numero": 1,
+        "texto": "Analiza los fundamentos conceptuales de la administración pública."
+      },
+      {
+        "id": "ra2",
+        "numero": 2,
+        "texto": "Aplica herramientas de gestión en contextos institucionales reales."
+      }
+    ],
+    "unidades": [
+      {
+        "id": "u1",
+        "numero": 1,
+        "titulo": "Fundamentos conceptuales",
+        "resultado_aprendizaje_id": "ra1",
+        "semana_inicio": 1,
+        "semana_fin": 4
+      },
+      {
+        "id": "u2",
+        "numero": 2,
+        "titulo": "Herramientas de gestión",
+        "resultado_aprendizaje_id": "ra2",
+        "semana_inicio": 5,
+        "semana_fin": 8
+      }
+    ],
+    "paginas": [
+      {
+        "id": "p1",
+        "semana": 1,
+        "titulo": "Semana 1",
+        "unidad_id": "u1",
+        "cierra_unidad": false,
+        "bloques": [
+          {
+            "id": "b346b81a3",
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Semana 1. Fundamentos aplicados",
+            "origen": "agente"
+          },
+          {
+            "id": "b0415341f",
+            "tipo": "parrafo",
+            "texto": "En esta semana se aborda el <strong>núcleo conceptual</strong> de la unidad, con énfasis en su aplicación práctica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b9ea24d3a",
+            "tipo": "focalizador",
+            "focalizador": "importante",
+            "titulo": "Tenga en cuenta",
+            "bloques": [
+              {
+                "id": "b6c9eded0",
+                "tipo": "parrafo",
+                "texto": "La lectura previa es indispensable para seguir la sesión.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b3cf42603",
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Revisar el capítulo asignado",
+                "items": [
+                  {
+                    "texto": "Prestar atención a los ejemplos resueltos"
+                  }
+                ]
+              },
+              {
+                "texto": "Participar en el foro de la semana"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "bd2b2292e",
+            "tipo": "cita",
+            "referencia_id": "ref1",
+            "pagina_citada": "45",
+            "texto": "El aprendizaje autónomo requiere estructuras de apoyo explícitas.",
+            "origen": "agente"
+          },
+          {
+            "id": "b066afb7a",
+            "tipo": "imagen",
+            "recurso_ref": "figura_01",
+            "numero_figura": 1,
+            "titulo": "Figura 1. Esquema del proceso",
+            "nota": "Nota. Elaboración propia.",
+            "alt": "Diagrama del proceso de la semana 1",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "b144b83d6",
+            "tipo": "tabla",
+            "titulo": "Tabla 1. Comparación de enfoques",
+            "encabezados": [
+              "Enfoque",
+              "Ventaja",
+              "Limitación"
+            ],
+            "filas": [
+              [
+                "Deductivo",
+                "Rápido",
+                "Poco flexible"
+              ],
+              [
+                "Inductivo",
+                "Flexible",
+                "Más lento"
+              ]
+            ],
+            "nota": "Nota. Adaptado de la bibliografía básica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b182a2e52",
+            "tipo": "actividades",
+            "texto": "Se recomienda elaborar un mapa conceptual del tema estudiado.",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p2",
+        "semana": 2,
+        "titulo": "Semana 2",
+        "unidad_id": "u1",
+        "cierra_unidad": false,
+        "bloques": [
+          {
+            "id": "b490b2834",
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Semana 2. Fundamentos aplicados",
+            "origen": "agente"
+          },
+          {
+            "id": "b9a0ec616",
+            "tipo": "parrafo",
+            "texto": "En esta semana se aborda el <strong>núcleo conceptual</strong> de la unidad, con énfasis en su aplicación práctica.",
+            "origen": "agente"
+          },
+          {
+            "id": "bfd57bb0d",
+            "tipo": "focalizador",
+            "focalizador": "importante",
+            "titulo": "Tenga en cuenta",
+            "bloques": [
+              {
+                "id": "b70f17356",
+                "tipo": "parrafo",
+                "texto": "La lectura previa es indispensable para seguir la sesión.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "bc90ae9a7",
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Revisar el capítulo asignado",
+                "items": [
+                  {
+                    "texto": "Prestar atención a los ejemplos resueltos"
+                  }
+                ]
+              },
+              {
+                "texto": "Participar en el foro de la semana"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "bf1c70e17",
+            "tipo": "cita",
+            "referencia_id": "ref1",
+            "pagina_citada": "45",
+            "texto": "El aprendizaje autónomo requiere estructuras de apoyo explícitas.",
+            "origen": "agente"
+          },
+          {
+            "id": "bcf22ea3f",
+            "tipo": "imagen",
+            "recurso_ref": "figura_02",
+            "numero_figura": 2,
+            "titulo": "Figura 2. Esquema del proceso",
+            "nota": "Nota. Elaboración propia.",
+            "alt": "Diagrama del proceso de la semana 2",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "b3657aa81",
+            "tipo": "tabla",
+            "titulo": "Tabla 2. Comparación de enfoques",
+            "encabezados": [
+              "Enfoque",
+              "Ventaja",
+              "Limitación"
+            ],
+            "filas": [
+              [
+                "Deductivo",
+                "Rápido",
+                "Poco flexible"
+              ],
+              [
+                "Inductivo",
+                "Flexible",
+                "Más lento"
+              ]
+            ],
+            "nota": "Nota. Adaptado de la bibliografía básica.",
+            "origen": "agente"
+          },
+          {
+            "id": "bf4c70971",
+            "tipo": "actividades",
+            "texto": "Se recomienda elaborar un mapa conceptual del tema estudiado.",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p3",
+        "semana": 3,
+        "titulo": "Semana 3",
+        "unidad_id": "u1",
+        "cierra_unidad": false,
+        "bloques": [
+          {
+            "id": "b6f207f8b",
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Semana 3. Fundamentos aplicados",
+            "origen": "agente"
+          },
+          {
+            "id": "b976c9ae4",
+            "tipo": "parrafo",
+            "texto": "En esta semana se aborda el <strong>núcleo conceptual</strong> de la unidad, con énfasis en su aplicación práctica.",
+            "origen": "agente"
+          },
+          {
+            "id": "bfd620cfd",
+            "tipo": "focalizador",
+            "focalizador": "importante",
+            "titulo": "Tenga en cuenta",
+            "bloques": [
+              {
+                "id": "b3760d1f4",
+                "tipo": "parrafo",
+                "texto": "La lectura previa es indispensable para seguir la sesión.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b83e834b7",
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Revisar el capítulo asignado",
+                "items": [
+                  {
+                    "texto": "Prestar atención a los ejemplos resueltos"
+                  }
+                ]
+              },
+              {
+                "texto": "Participar en el foro de la semana"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "bbc7e7d36",
+            "tipo": "cita",
+            "referencia_id": "ref1",
+            "pagina_citada": "45",
+            "texto": "El aprendizaje autónomo requiere estructuras de apoyo explícitas.",
+            "origen": "agente"
+          },
+          {
+            "id": "b0b45230d",
+            "tipo": "imagen",
+            "recurso_ref": "figura_03",
+            "numero_figura": 3,
+            "titulo": "Figura 3. Esquema del proceso",
+            "nota": "Nota. Elaboración propia.",
+            "alt": "Diagrama del proceso de la semana 3",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "bd4d6b238",
+            "tipo": "tabla",
+            "titulo": "Tabla 3. Comparación de enfoques",
+            "encabezados": [
+              "Enfoque",
+              "Ventaja",
+              "Limitación"
+            ],
+            "filas": [
+              [
+                "Deductivo",
+                "Rápido",
+                "Poco flexible"
+              ],
+              [
+                "Inductivo",
+                "Flexible",
+                "Más lento"
+              ]
+            ],
+            "nota": "Nota. Adaptado de la bibliografía básica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b2699fce7",
+            "tipo": "actividades",
+            "texto": "Se recomienda elaborar un mapa conceptual del tema estudiado.",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p4",
+        "semana": 4,
+        "titulo": "Semana 4",
+        "unidad_id": "u1",
+        "cierra_unidad": true,
+        "bloques": [
+          {
+            "id": "bce1b1e8c",
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Semana 4. Fundamentos aplicados",
+            "origen": "agente"
+          },
+          {
+            "id": "b66f03bee",
+            "tipo": "parrafo",
+            "texto": "En esta semana se aborda el <strong>núcleo conceptual</strong> de la unidad, con énfasis en su aplicación práctica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b6f25a2f0",
+            "tipo": "focalizador",
+            "focalizador": "importante",
+            "titulo": "Tenga en cuenta",
+            "bloques": [
+              {
+                "id": "be9193637",
+                "tipo": "parrafo",
+                "texto": "La lectura previa es indispensable para seguir la sesión.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b114021c5",
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Revisar el capítulo asignado",
+                "items": [
+                  {
+                    "texto": "Prestar atención a los ejemplos resueltos"
+                  }
+                ]
+              },
+              {
+                "texto": "Participar en el foro de la semana"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "bdffe811e",
+            "tipo": "cita",
+            "referencia_id": "ref1",
+            "pagina_citada": "45",
+            "texto": "El aprendizaje autónomo requiere estructuras de apoyo explícitas.",
+            "origen": "agente"
+          },
+          {
+            "id": "b3eb08401",
+            "tipo": "imagen",
+            "recurso_ref": "figura_04",
+            "numero_figura": 4,
+            "titulo": "Figura 4. Esquema del proceso",
+            "nota": "Nota. Elaboración propia.",
+            "alt": "Diagrama del proceso de la semana 4",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "b6043cd59",
+            "tipo": "tabla",
+            "titulo": "Tabla 4. Comparación de enfoques",
+            "encabezados": [
+              "Enfoque",
+              "Ventaja",
+              "Limitación"
+            ],
+            "filas": [
+              [
+                "Deductivo",
+                "Rápido",
+                "Poco flexible"
+              ],
+              [
+                "Inductivo",
+                "Flexible",
+                "Más lento"
+              ]
+            ],
+            "nota": "Nota. Adaptado de la bibliografía básica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b17380c1b",
+            "tipo": "actividades",
+            "texto": "Se recomienda elaborar un mapa conceptual del tema estudiado.",
+            "origen": "agente"
+          },
+          {
+            "id": "b4233c671",
+            "tipo": "autoevaluacion",
+            "titulo": "Autoevaluación de la unidad 1",
+            "preguntas": [
+              {
+                "id": "q4_1",
+                "numero": 1,
+                "enunciado": "Pregunta 1 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "b",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q4_2",
+                "numero": 2,
+                "enunciado": "Pregunta 2 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "c",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q4_3",
+                "numero": 3,
+                "enunciado": "Pregunta 3 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "d",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q4_4",
+                "numero": 4,
+                "enunciado": "Pregunta 4 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "a",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q4_5",
+                "numero": 5,
+                "enunciado": "Pregunta 5 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "b",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q4_6",
+                "numero": 6,
+                "enunciado": "Pregunta 6 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "c",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q4_7",
+                "numero": 7,
+                "enunciado": "Pregunta 7 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "d",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q4_8",
+                "numero": 8,
+                "enunciado": "Pregunta 8 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "a",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q4_9",
+                "numero": 9,
+                "enunciado": "Pregunta 9 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "b",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q4_10",
+                "numero": 10,
+                "enunciado": "Pregunta 10 sobre los contenidos de la unidad 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "c",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              }
+            ],
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p5",
+        "semana": 5,
+        "titulo": "Semana 5",
+        "unidad_id": "u2",
+        "cierra_unidad": false,
+        "bloques": [
+          {
+            "id": "b77230e94",
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Semana 5. Fundamentos aplicados",
+            "origen": "agente"
+          },
+          {
+            "id": "b48dcdae3",
+            "tipo": "parrafo",
+            "texto": "En esta semana se aborda el <strong>núcleo conceptual</strong> de la unidad, con énfasis en su aplicación práctica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b97f05a0d",
+            "tipo": "focalizador",
+            "focalizador": "importante",
+            "titulo": "Tenga en cuenta",
+            "bloques": [
+              {
+                "id": "b27c2befb",
+                "tipo": "parrafo",
+                "texto": "La lectura previa es indispensable para seguir la sesión.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b16de4ae5",
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Revisar el capítulo asignado",
+                "items": [
+                  {
+                    "texto": "Prestar atención a los ejemplos resueltos"
+                  }
+                ]
+              },
+              {
+                "texto": "Participar en el foro de la semana"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "bc399c0b1",
+            "tipo": "cita",
+            "referencia_id": "ref1",
+            "pagina_citada": "45",
+            "texto": "El aprendizaje autónomo requiere estructuras de apoyo explícitas.",
+            "origen": "agente"
+          },
+          {
+            "id": "bf4341c4b",
+            "tipo": "imagen",
+            "recurso_ref": "figura_05",
+            "numero_figura": 5,
+            "titulo": "Figura 5. Esquema del proceso",
+            "nota": "Nota. Elaboración propia.",
+            "alt": "Diagrama del proceso de la semana 5",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "be54c9d07",
+            "tipo": "tabla",
+            "titulo": "Tabla 5. Comparación de enfoques",
+            "encabezados": [
+              "Enfoque",
+              "Ventaja",
+              "Limitación"
+            ],
+            "filas": [
+              [
+                "Deductivo",
+                "Rápido",
+                "Poco flexible"
+              ],
+              [
+                "Inductivo",
+                "Flexible",
+                "Más lento"
+              ]
+            ],
+            "nota": "Nota. Adaptado de la bibliografía básica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b3134ee84",
+            "tipo": "actividades",
+            "texto": "Se recomienda elaborar un mapa conceptual del tema estudiado.",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p6",
+        "semana": 6,
+        "titulo": "Semana 6",
+        "unidad_id": "u2",
+        "cierra_unidad": false,
+        "bloques": [
+          {
+            "id": "bd8544ba1",
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Semana 6. Fundamentos aplicados",
+            "origen": "agente"
+          },
+          {
+            "id": "bb7e35353",
+            "tipo": "parrafo",
+            "texto": "En esta semana se aborda el <strong>núcleo conceptual</strong> de la unidad, con énfasis en su aplicación práctica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b8545cca2",
+            "tipo": "focalizador",
+            "focalizador": "importante",
+            "titulo": "Tenga en cuenta",
+            "bloques": [
+              {
+                "id": "b53f51ee3",
+                "tipo": "parrafo",
+                "texto": "La lectura previa es indispensable para seguir la sesión.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b8fc58ae5",
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Revisar el capítulo asignado",
+                "items": [
+                  {
+                    "texto": "Prestar atención a los ejemplos resueltos"
+                  }
+                ]
+              },
+              {
+                "texto": "Participar en el foro de la semana"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b4fcdab45",
+            "tipo": "cita",
+            "referencia_id": "ref1",
+            "pagina_citada": "45",
+            "texto": "El aprendizaje autónomo requiere estructuras de apoyo explícitas.",
+            "origen": "agente"
+          },
+          {
+            "id": "b0c221229",
+            "tipo": "imagen",
+            "recurso_ref": "figura_06",
+            "numero_figura": 6,
+            "titulo": "Figura 6. Esquema del proceso",
+            "nota": "Nota. Elaboración propia.",
+            "alt": "Diagrama del proceso de la semana 6",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "b5632e637",
+            "tipo": "tabla",
+            "titulo": "Tabla 6. Comparación de enfoques",
+            "encabezados": [
+              "Enfoque",
+              "Ventaja",
+              "Limitación"
+            ],
+            "filas": [
+              [
+                "Deductivo",
+                "Rápido",
+                "Poco flexible"
+              ],
+              [
+                "Inductivo",
+                "Flexible",
+                "Más lento"
+              ]
+            ],
+            "nota": "Nota. Adaptado de la bibliografía básica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b839a4b11",
+            "tipo": "actividades",
+            "texto": "Se recomienda elaborar un mapa conceptual del tema estudiado.",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p7",
+        "semana": 7,
+        "titulo": "Semana 7",
+        "unidad_id": "u2",
+        "cierra_unidad": false,
+        "bloques": [
+          {
+            "id": "bf43b6183",
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Semana 7. Fundamentos aplicados",
+            "origen": "agente"
+          },
+          {
+            "id": "b60afd3ad",
+            "tipo": "parrafo",
+            "texto": "En esta semana se aborda el <strong>núcleo conceptual</strong> de la unidad, con énfasis en su aplicación práctica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b7f526b47",
+            "tipo": "focalizador",
+            "focalizador": "importante",
+            "titulo": "Tenga en cuenta",
+            "bloques": [
+              {
+                "id": "babbff67c",
+                "tipo": "parrafo",
+                "texto": "La lectura previa es indispensable para seguir la sesión.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "bab650959",
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Revisar el capítulo asignado",
+                "items": [
+                  {
+                    "texto": "Prestar atención a los ejemplos resueltos"
+                  }
+                ]
+              },
+              {
+                "texto": "Participar en el foro de la semana"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b2815ff2c",
+            "tipo": "cita",
+            "referencia_id": "ref1",
+            "pagina_citada": "45",
+            "texto": "El aprendizaje autónomo requiere estructuras de apoyo explícitas.",
+            "origen": "agente"
+          },
+          {
+            "id": "b49a40ecb",
+            "tipo": "imagen",
+            "recurso_ref": "figura_07",
+            "numero_figura": 7,
+            "titulo": "Figura 7. Esquema del proceso",
+            "nota": "Nota. Elaboración propia.",
+            "alt": "Diagrama del proceso de la semana 7",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "b2e88406c",
+            "tipo": "tabla",
+            "titulo": "Tabla 7. Comparación de enfoques",
+            "encabezados": [
+              "Enfoque",
+              "Ventaja",
+              "Limitación"
+            ],
+            "filas": [
+              [
+                "Deductivo",
+                "Rápido",
+                "Poco flexible"
+              ],
+              [
+                "Inductivo",
+                "Flexible",
+                "Más lento"
+              ]
+            ],
+            "nota": "Nota. Adaptado de la bibliografía básica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b158e46eb",
+            "tipo": "actividades",
+            "texto": "Se recomienda elaborar un mapa conceptual del tema estudiado.",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p8",
+        "semana": 8,
+        "titulo": "Semana 8",
+        "unidad_id": "u2",
+        "cierra_unidad": true,
+        "bloques": [
+          {
+            "id": "bb9a858d0",
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Semana 8. Fundamentos aplicados",
+            "origen": "agente"
+          },
+          {
+            "id": "b4958f0d9",
+            "tipo": "parrafo",
+            "texto": "En esta semana se aborda el <strong>núcleo conceptual</strong> de la unidad, con énfasis en su aplicación práctica.",
+            "origen": "agente"
+          },
+          {
+            "id": "b4426c744",
+            "tipo": "focalizador",
+            "focalizador": "importante",
+            "titulo": "Tenga en cuenta",
+            "bloques": [
+              {
+                "id": "b6f445ddf",
+                "tipo": "parrafo",
+                "texto": "La lectura previa es indispensable para seguir la sesión.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b72864a2a",
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Revisar el capítulo asignado",
+                "items": [
+                  {
+                    "texto": "Prestar atención a los ejemplos resueltos"
+                  }
+                ]
+              },
+              {
+                "texto": "Participar en el foro de la semana"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "be102ada3",
+            "tipo": "cita",
+            "referencia_id": "ref1",
+            "pagina_citada": "45",
+            "texto": "El aprendizaje autónomo requiere estructuras de apoyo explícitas.",
+            "origen": "agente"
+          },
+          {
+            "id": "b2c496bc5",
+            "tipo": "imagen",
+            "recurso_ref": "figura_08",
+            "numero_figura": 8,
+            "titulo": "Figura 8. Esquema del proceso",
+            "nota": "Nota. Elaboración propia.",
+            "alt": "Diagrama del proceso de la semana 8",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "bf6615b3a",
+            "tipo": "tabla",
+            "titulo": "Tabla 8. Comparación de enfoques",
+            "encabezados": [
+              "Enfoque",
+              "Ventaja",
+              "Limitación"
+            ],
+            "filas": [
+              [
+                "Deductivo",
+                "Rápido",
+                "Poco flexible"
+              ],
+              [
+                "Inductivo",
+                "Flexible",
+                "Más lento"
+              ]
+            ],
+            "nota": "Nota. Adaptado de la bibliografía básica.",
+            "origen": "agente"
+          },
+          {
+            "id": "bfba8a8dd",
+            "tipo": "actividades",
+            "texto": "Se recomienda elaborar un mapa conceptual del tema estudiado.",
+            "origen": "agente"
+          },
+          {
+            "id": "b5084fc23",
+            "tipo": "autoevaluacion",
+            "titulo": "Autoevaluación de la unidad 2",
+            "preguntas": [
+              {
+                "id": "q8_1",
+                "numero": 1,
+                "enunciado": "Pregunta 1 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "b",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q8_2",
+                "numero": 2,
+                "enunciado": "Pregunta 2 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "c",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q8_3",
+                "numero": 3,
+                "enunciado": "Pregunta 3 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "d",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q8_4",
+                "numero": 4,
+                "enunciado": "Pregunta 4 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "a",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q8_5",
+                "numero": 5,
+                "enunciado": "Pregunta 5 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "b",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q8_6",
+                "numero": 6,
+                "enunciado": "Pregunta 6 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "c",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q8_7",
+                "numero": 7,
+                "enunciado": "Pregunta 7 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "d",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q8_8",
+                "numero": 8,
+                "enunciado": "Pregunta 8 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "a",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q8_9",
+                "numero": 9,
+                "enunciado": "Pregunta 9 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "b",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              },
+              {
+                "id": "q8_10",
+                "numero": 10,
+                "enunciado": "Pregunta 10 sobre los contenidos de la unidad 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Primera alternativa"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Segunda alternativa"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Tercera alternativa"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Cuarta alternativa"
+                  }
+                ],
+                "correcta": "c",
+                "retroalimentacion": "Revise el apartado correspondiente de la unidad."
+              }
+            ],
+            "origen": "agente"
+          }
+        ]
+      }
+    ]
+  },
+  "finales": {
+    "referencias": [
+      {
+        "id": "ref1",
+        "apa": "Ramírez, L. y Ortega, M. (2024). Gestión pública contemporánea. Editorial Andina.",
+        "autores": [
+          "Ramírez, L.",
+          "Ortega, M."
+        ],
+        "anio": 2024,
+        "titulo": "Gestión pública contemporánea",
+        "fuente": "Editorial Andina"
+      },
+      {
+        "id": "ref2",
+        "apa": "Salazar, P. (2023). Instituciones y desarrollo. Revista de Política Pública, 12(2), 33-58.",
+        "autores": [
+          "Salazar, P."
+        ],
+        "anio": 2023,
+        "titulo": "Instituciones y desarrollo",
+        "doi": "10.0000/rpp.2023.12.2"
+      }
+    ],
+    "glosario": [
+      {
+        "termino": "Gobernanza",
+        "definicion": "Conjunto de procesos de toma de decisiones colectivas."
+      }
+    ],
+    "anexos": []
+  },
+  "recursos": [
+    {
+      "ref": "figura_01",
+      "tipo": "imagen",
+      "archivo": "figura_01.png",
+      "mime": "image/png",
+      "ancho": 1200,
+      "alto": 700,
+      "sha256": "0b19748f6d2165c495905cfe2150ef0038f4116d3d0330f2eba07a140520b599",
+      "generado_por": "gemini",
+      "url_canvas": null,
+      "file_id_canvas": null
+    },
+    {
+      "ref": "figura_02",
+      "tipo": "imagen",
+      "archivo": "figura_02.png",
+      "mime": "image/png",
+      "ancho": 1200,
+      "alto": 700,
+      "sha256": "394152d8e35f21ebef6a4b217d5ca76d95b4384d93c0bc432a7c551cb6907aa9",
+      "generado_por": "gemini",
+      "url_canvas": null,
+      "file_id_canvas": null
+    },
+    {
+      "ref": "figura_03",
+      "tipo": "imagen",
+      "archivo": "figura_03.png",
+      "mime": "image/png",
+      "ancho": 1200,
+      "alto": 700,
+      "sha256": "40fcc745dac729030759cdbdefc0fc0930e2e01dd3a5655d17ea059bec20f6b8",
+      "generado_por": "gemini",
+      "url_canvas": null,
+      "file_id_canvas": null
+    },
+    {
+      "ref": "figura_04",
+      "tipo": "imagen",
+      "archivo": "figura_04.png",
+      "mime": "image/png",
+      "ancho": 1200,
+      "alto": 700,
+      "sha256": "9e91fefcf6e108857a85570adbd17487ada412caf0266d974d77a209b987f4cf",
+      "generado_por": "gemini",
+      "url_canvas": null,
+      "file_id_canvas": null
+    },
+    {
+      "ref": "figura_05",
+      "tipo": "imagen",
+      "archivo": "figura_05.png",
+      "mime": "image/png",
+      "ancho": 1200,
+      "alto": 700,
+      "sha256": "58bd141345014419fe2ce04e362d8de601b2e32f35caf219f9193a7ee8a58e05",
+      "generado_por": "gemini",
+      "url_canvas": null,
+      "file_id_canvas": null
+    },
+    {
+      "ref": "figura_06",
+      "tipo": "imagen",
+      "archivo": "figura_06.png",
+      "mime": "image/png",
+      "ancho": 1200,
+      "alto": 700,
+      "sha256": "06bdba586549f2d1dce274b0471516c37dd2b8fa85d835b1270592e1343d5724",
+      "generado_por": "gemini",
+      "url_canvas": null,
+      "file_id_canvas": null
+    },
+    {
+      "ref": "figura_07",
+      "tipo": "imagen",
+      "archivo": "figura_07.png",
+      "mime": "image/png",
+      "ancho": 1200,
+      "alto": 700,
+      "sha256": "09c6971878aebd0405897a69fa7a21496f185c4f7b2f5f3aa58b08323c20e962",
+      "generado_por": "gemini",
+      "url_canvas": null,
+      "file_id_canvas": null
+    },
+    {
+      "ref": "figura_08",
+      "tipo": "imagen",
+      "archivo": "figura_08.png",
+      "mime": "image/png",
+      "ancho": 1200,
+      "alto": 700,
+      "sha256": "eca2b5d246e5e167c6c8b67e5a6dc03f7476842cd32ad1bde0cc27927057fd1b",
+      "generado_por": "gemini",
+      "url_canvas": null,
+      "file_id_canvas": null
+    }
+  ],
+  "validaciones": {
+    "semaforo": "verde",
+    "validado_en": "2026-08-06T22:00:00Z",
+    "alertas": []
+  },
+  "estadisticas": {
+    "total_paginas": 8,
+    "total_unidades": 2,
+    "total_autoevaluaciones": 2,
+    "total_citas": 8,
+    "total_recursos": 8
+  }
+}

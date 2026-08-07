@@ -1,0 +1,1140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ediloja.utpl.edu.ec/esquemas/curso-1.0.0.json",
+  "title": "Guía didáctica canónica",
+  "description": "Contrato único entre el agente generador, el editor del docente, la validación y los renderizadores.",
+  "type": "object",
+  "required": [
+    "version_esquema",
+    "info_general",
+    "estructura"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version_esquema": {
+      "type": "string",
+      "pattern": "^1\\.[0-9]+\\.[0-9]+$",
+      "description": "SemVer del esquema. Mayor = incompatible."
+    },
+    "info_general": {
+      "type": "object",
+      "required": [
+        "codigo_banner",
+        "asignatura",
+        "periodo",
+        "total_semanas"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "codigo_banner": {
+          "type": "string",
+          "minLength": 3
+        },
+        "codigo_componente": {
+          "type": "string"
+        },
+        "asignatura": {
+          "type": "string",
+          "minLength": 3
+        },
+        "carrera": {
+          "type": "string"
+        },
+        "facultad": {
+          "type": "string"
+        },
+        "nivel": {
+          "type": "string"
+        },
+        "modalidad": {
+          "type": "string"
+        },
+        "periodo": {
+          "type": "string"
+        },
+        "creditos": {
+          "type": "number",
+          "minimum": 0
+        },
+        "horas": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "total": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "acd": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ape": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "aa": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "total_semanas": {
+          "type": "integer",
+          "enum": [
+            8,
+            16
+          ]
+        },
+        "autor": {
+          "type": "string"
+        }
+      }
+    },
+    "secciones": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "datos_informacion": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bloque"
+          }
+        },
+        "metodologia": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bloque"
+          }
+        }
+      }
+    },
+    "estructura": {
+      "type": "object",
+      "required": [
+        "unidades",
+        "paginas"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "resultados_aprendizaje": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "texto"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^ra[0-9]+$"
+              },
+              "numero": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "texto": {
+                "type": "string",
+                "minLength": 10
+              }
+            }
+          }
+        },
+        "unidades": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "numero",
+              "titulo"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^u[0-9]+$"
+              },
+              "numero": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "titulo": {
+                "type": "string",
+                "minLength": 3
+              },
+              "resultado_aprendizaje_id": {
+                "type": "string"
+              },
+              "semana_inicio": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "semana_fin": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "paginas": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/pagina"
+          }
+        }
+      }
+    },
+    "finales": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "referencias": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/referencia"
+          }
+        },
+        "glosario": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "termino",
+              "definicion"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "termino": {
+                "type": "string"
+              },
+              "definicion": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "anexos": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bloque"
+          }
+        }
+      }
+    },
+    "recursos": {
+      "type": "array",
+      "description": "Catálogo de archivos que acompañan a la guía. Los bloques los referencian por 'ref'.",
+      "items": {
+        "$ref": "#/$defs/recurso"
+      }
+    },
+    "validaciones": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "semaforo": {
+          "type": "string",
+          "enum": [
+            "verde",
+            "amarillo",
+            "rojo"
+          ]
+        },
+        "validado_en": {
+          "type": "string"
+        },
+        "alertas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/alerta"
+          }
+        }
+      }
+    },
+    "estadisticas": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "total_paginas": {
+          "type": "integer"
+        },
+        "total_unidades": {
+          "type": "integer"
+        },
+        "total_autoevaluaciones": {
+          "type": "integer"
+        },
+        "total_citas": {
+          "type": "integer"
+        },
+        "total_recursos": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "pagina": {
+      "type": "object",
+      "required": [
+        "id",
+        "semana",
+        "bloques"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^p[0-9]+$"
+        },
+        "semana": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        },
+        "titulo": {
+          "type": "string"
+        },
+        "unidad_id": {
+          "type": "string"
+        },
+        "cierra_unidad": {
+          "type": "boolean",
+          "default": false
+        },
+        "bloques": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bloque"
+          }
+        }
+      }
+    },
+    "bloque": {
+      "type": "object",
+      "required": [
+        "id",
+        "tipo"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^b[0-9a-z]{6,}$"
+        },
+        "tipo": {
+          "type": "string",
+          "enum": [
+            "parrafo",
+            "encabezado",
+            "lista",
+            "tabla",
+            "caja",
+            "focalizador",
+            "cita",
+            "imagen",
+            "diagrama",
+            "recurso_ediloja",
+            "autoevaluacion",
+            "actividades"
+          ]
+        },
+        "texto": {
+          "type": "string",
+          "description": "Texto con marcado en línea permitido: strong, em, u, sub, sup, a, br."
+        },
+        "nivel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "ordenada": {
+          "type": "boolean"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/item_lista"
+          }
+        },
+        "encabezados": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "filas": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "titulo": {
+          "type": "string"
+        },
+        "nota": {
+          "type": "string"
+        },
+        "bloques": {
+          "type": "array",
+          "description": "Solo en 'caja' y 'focalizador'. Un nivel de anidamiento.",
+          "items": {
+            "$ref": "#/$defs/bloque_hoja"
+          }
+        },
+        "focalizador": {
+          "type": "string",
+          "enum": [
+            "informacion_importante",
+            "orientacion_actividades",
+            "muy_bien",
+            "apuntar",
+            "avancemos",
+            "buscar",
+            "caso",
+            "ejemplo",
+            "ejercicio",
+            "enlace",
+            "foro",
+            "importante",
+            "lectura",
+            "nota",
+            "observe",
+            "recuerde",
+            "reflexione",
+            "video"
+          ]
+        },
+        "referencia_id": {
+          "type": "string"
+        },
+        "pagina_citada": {
+          "type": "string"
+        },
+        "recurso_ref": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        },
+        "decorativa": {
+          "type": "boolean",
+          "default": false
+        },
+        "numero_figura": {
+          "type": "integer"
+        },
+        "url": {
+          "type": "string"
+        },
+        "preguntas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pregunta"
+          }
+        },
+        "origen": {
+          "type": "string",
+          "enum": [
+            "agente",
+            "docente",
+            "mixto"
+          ],
+          "default": "agente"
+        },
+        "editado_en": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "parrafo"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "texto"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "encabezado"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "texto",
+              "nivel"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "lista"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "items"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "tabla"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "encabezados",
+              "filas"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "caja"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": [
+                  "bloques"
+                ]
+              },
+              {
+                "required": [
+                  "texto"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "focalizador"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "focalizador",
+              "bloques"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "cita"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "texto",
+              "referencia_id"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "imagen"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "recurso_ref"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "diagrama"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "recurso_ref"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "recurso_ediloja"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "titulo",
+              "url"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "autoevaluacion"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "preguntas"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "actividades"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "texto"
+            ],
+            "not": {
+              "required": [
+                "bloques"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "bloque_hoja": {
+      "description": "Bloque sin capacidad de anidar. Evita recursión infinita.",
+      "type": "object",
+      "required": [
+        "id",
+        "tipo"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^b[0-9a-z]{6,}$"
+        },
+        "tipo": {
+          "type": "string",
+          "enum": [
+            "parrafo",
+            "lista",
+            "cita",
+            "imagen",
+            "tabla",
+            "encabezado"
+          ]
+        },
+        "texto": {
+          "type": "string"
+        },
+        "nivel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "ordenada": {
+          "type": "boolean"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/item_lista"
+          }
+        },
+        "encabezados": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "filas": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "titulo": {
+          "type": "string"
+        },
+        "nota": {
+          "type": "string"
+        },
+        "referencia_id": {
+          "type": "string"
+        },
+        "pagina_citada": {
+          "type": "string"
+        },
+        "recurso_ref": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        },
+        "decorativa": {
+          "type": "boolean"
+        },
+        "numero_figura": {
+          "type": "integer"
+        },
+        "origen": {
+          "type": "string",
+          "enum": [
+            "agente",
+            "docente",
+            "mixto"
+          ]
+        },
+        "editado_en": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "parrafo"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "texto"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "encabezado"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "texto",
+              "nivel"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "lista"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "items"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "tabla"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "encabezados",
+              "filas"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "cita"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "texto",
+              "referencia_id"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "tipo": {
+                "const": "imagen"
+              }
+            },
+            "required": [
+              "tipo"
+            ]
+          },
+          "then": {
+            "required": [
+              "recurso_ref"
+            ]
+          }
+        }
+      ]
+    },
+    "item_lista": {
+      "type": "object",
+      "required": [
+        "texto"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "texto": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "description": "Sublista. Máximo dos niveles.",
+          "items": {
+            "type": "object",
+            "required": [
+              "texto"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "texto": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "recurso": {
+      "type": "object",
+      "required": [
+        "ref",
+        "tipo",
+        "archivo",
+        "mime"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "type": "string",
+          "description": "Identificador que usan los bloques."
+        },
+        "tipo": {
+          "type": "string",
+          "enum": [
+            "imagen",
+            "diagrama",
+            "documento"
+          ]
+        },
+        "archivo": {
+          "type": "string",
+          "description": "Nombre dentro de recursos/ del paquete."
+        },
+        "mime": {
+          "type": "string"
+        },
+        "ancho": {
+          "type": "integer"
+        },
+        "alto": {
+          "type": "integer"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "generado_por": {
+          "type": "string"
+        },
+        "url_canvas": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Se rellena tras subir a Canvas."
+        },
+        "file_id_canvas": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      }
+    },
+    "pregunta": {
+      "type": "object",
+      "required": [
+        "id",
+        "enunciado",
+        "opciones",
+        "correcta"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "numero": {
+          "type": "integer"
+        },
+        "enunciado": {
+          "type": "string",
+          "minLength": 5
+        },
+        "opciones": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": [
+              "letra",
+              "texto"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "letra": {
+                "type": "string",
+                "pattern": "^[a-e]$"
+              },
+              "texto": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "correcta": {
+          "type": "string",
+          "pattern": "^[a-e]$"
+        },
+        "retroalimentacion": {
+          "type": "string"
+        }
+      }
+    },
+    "referencia": {
+      "type": "object",
+      "required": [
+        "id",
+        "apa"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^ref[0-9]+$"
+        },
+        "apa": {
+          "type": "string",
+          "minLength": 10
+        },
+        "autores": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "anio": {
+          "type": "integer"
+        },
+        "titulo": {
+          "type": "string"
+        },
+        "fuente": {
+          "type": "string"
+        },
+        "doi": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "alerta": {
+      "type": "object",
+      "required": [
+        "nivel",
+        "codigo",
+        "mensaje"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "nivel": {
+          "type": "string",
+          "enum": [
+            "error",
+            "aviso"
+          ]
+        },
+        "codigo": {
+          "type": "string"
+        },
+        "mensaje": {
+          "type": "string"
+        },
+        "pagina_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bloque_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ruta": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

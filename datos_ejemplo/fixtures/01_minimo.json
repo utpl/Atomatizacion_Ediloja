@@ -1,0 +1,37 @@
+{
+  "version_esquema": "1.0.0",
+  "info_general": {
+    "codigo_banner": "MINI_1001",
+    "asignatura": "Curso mínimo de prueba",
+    "periodo": "oct2026",
+    "total_semanas": 8
+  },
+  "estructura": {
+    "unidades": [
+      {
+        "id": "u1",
+        "numero": 1,
+        "titulo": "Unidad única",
+        "semana_inicio": 1,
+        "semana_fin": 8
+      }
+    ],
+    "paginas": [
+      {
+        "id": "p1",
+        "semana": 1,
+        "titulo": "Semana 1",
+        "unidad_id": "u1",
+        "cierra_unidad": false,
+        "bloques": [
+          {
+            "id": "bf7633dd1",
+            "tipo": "parrafo",
+            "texto": "Contenido mínimo de la semana uno.",
+            "origen": "agente"
+          }
+        ]
+      }
+    ]
+  }
+}

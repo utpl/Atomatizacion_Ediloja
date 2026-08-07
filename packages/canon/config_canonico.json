@@ -1,0 +1,44 @@
+{
+  "version": "1.0",
+  "tolerancia_difusa": 2,
+  "estilos_marca_prefijo": "GD-",
+  "anclas": {
+    "datos": ["datos de informacion", "datos informativos", "informacion general"],
+    "metodologia": ["metodologia de aprendizaje", "metodologia", "orientaciones metodologicas"],
+    "orientaciones": ["orientaciones didacticas por resultados de aprendizaje",
+                      "orientaciones didacticas por resultados de aprenizaje",
+                      "orientaciones didacticas"],
+    "referencias": ["referencias bibliograficas", "referencias", "bibliografia", "lista de referencias"],
+    "solucionario": ["solucionario", "solucionarios", "solucionario de las autoevaluaciones"],
+    "glosario": ["glosario", "glosario de terminos"],
+    "anexos": ["anexos", "anexo"]
+  },
+  "subsecciones_datos": {
+    "presentacion": ["presentacion de la asignatura", "presentacion"],
+    "competencias_genericas": ["competencias genericas de la utpl", "competencia generica de la utpl"],
+    "competencias_perfil": ["competencias del perfil profesional", "competencias especificas de la carrera"],
+    "problematica": ["problematica que aborda la asignatura", "problematica"]
+  },
+  "marcadores": {
+    "semana": "^semana\\s*(\\d{1,2})\\s*[:.\\-]?\\s*$",
+    "resultado": "^resultados?\\s+de\\s+apr\\w*\\s*(\\d+)?\\s*[:.]?\\s*$",
+    "unidad": "^unidad\\s*(\\d{1,2})\\s*[:.\\-]?\\s*(.*)$",
+    "autoevaluacion": "^autoevaluaci\\w+\\s*[:.]?\\s*(.*)$",
+    "bimestre": "^(primer|segundo)\\s+bimestre$|^planificacion\\s+del\\s+modulo$",
+    "actividades_recomendadas": "^actividad(es)?\\b.*recomendad",
+    "actividades_evaluadas": "^actividad(es)?\\b.*(evaluad|calificad)",
+    "contextualizacion": "^contextualizaci",
+    "focalizador_inicio": "^inicio\\s+focalizador\\s+(.+?)\\s*$",
+    "focalizador_fin": "^fin\\s+focalizador"
+  },
+  "focalizadores": [
+    ["informacion importante", "Información importante"],
+    ["orientacion a actividades", "Orientación a actividades"],
+    ["muy bien", "Muy bien"], ["apuntar", "Apuntar"], ["avancemos", "Avancemos"],
+    ["buscar", "Buscar"], ["caso", "Caso"], ["ejemplo", "Ejemplo"],
+    ["ejercicio", "Ejercicio"], ["enlace", "Enlace"], ["foro", "Foro"],
+    ["importante", "Importante"], ["lectura", "Lectura"], ["nota", "Nota"],
+    ["observe", "Observe"], ["recuerde", "Recuerde"], ["reflexione", "Reflexione"],
+    ["video", "Video"]
+  ]
+}

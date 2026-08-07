@@ -1,0 +1,767 @@
+{
+  "version_esquema": "1.0.0",
+  "info_general": {
+    "codigo_banner": "CATAL_9009",
+    "asignatura": "Catálogo visual de bloques",
+    "periodo": "oct2026",
+    "total_semanas": 8,
+    "autor": "Fixture de referencia"
+  },
+  "estructura": {
+    "unidades": [
+      {
+        "id": "u1",
+        "numero": 1,
+        "titulo": "Unidad de catálogo",
+        "semana_inicio": 1,
+        "semana_fin": 8
+      }
+    ],
+    "paginas": [
+      {
+        "id": "p1",
+        "semana": 1,
+        "titulo": "Todos los tipos de bloque",
+        "unidad_id": "u1",
+        "cierra_unidad": true,
+        "bloques": [
+          {
+            "id": "b8f751a7a",
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Catálogo completo de bloques",
+            "origen": "agente"
+          },
+          {
+            "id": "b8844d4a9",
+            "tipo": "focalizador",
+            "focalizador": "informacion_importante",
+            "bloques": [
+              {
+                "id": "b3ba5b3fb",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>informacion_importante</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b2750cb6e",
+            "tipo": "focalizador",
+            "focalizador": "orientacion_actividades",
+            "bloques": [
+              {
+                "id": "b6d77d145",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>orientacion_actividades</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de orientacion_actividades"
+          },
+          {
+            "id": "b6ab1ec48",
+            "tipo": "focalizador",
+            "focalizador": "muy_bien",
+            "bloques": [
+              {
+                "id": "b79d8e360",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>muy_bien</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de muy_bien"
+          },
+          {
+            "id": "b9c91774f",
+            "tipo": "focalizador",
+            "focalizador": "apuntar",
+            "bloques": [
+              {
+                "id": "b40684677",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>apuntar</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "bc32d1e37",
+            "tipo": "focalizador",
+            "focalizador": "avancemos",
+            "bloques": [
+              {
+                "id": "bd76c0e04",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>avancemos</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de avancemos"
+          },
+          {
+            "id": "b62865a69",
+            "tipo": "focalizador",
+            "focalizador": "buscar",
+            "bloques": [
+              {
+                "id": "b6865979e",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>buscar</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de buscar"
+          },
+          {
+            "id": "b7af89d49",
+            "tipo": "focalizador",
+            "focalizador": "caso",
+            "bloques": [
+              {
+                "id": "b5f07a54b",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>caso</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b9a71254b",
+            "tipo": "focalizador",
+            "focalizador": "ejemplo",
+            "bloques": [
+              {
+                "id": "b22e6e30a",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>ejemplo</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de ejemplo"
+          },
+          {
+            "id": "bb3998007",
+            "tipo": "focalizador",
+            "focalizador": "ejercicio",
+            "bloques": [
+              {
+                "id": "b76f98bf3",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>ejercicio</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de ejercicio"
+          },
+          {
+            "id": "b106e89eb",
+            "tipo": "focalizador",
+            "focalizador": "enlace",
+            "bloques": [
+              {
+                "id": "b9a403d10",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>enlace</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b38537394",
+            "tipo": "focalizador",
+            "focalizador": "foro",
+            "bloques": [
+              {
+                "id": "b5999dc00",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>foro</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de foro"
+          },
+          {
+            "id": "b7c144023",
+            "tipo": "focalizador",
+            "focalizador": "importante",
+            "bloques": [
+              {
+                "id": "b3641f453",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>importante</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de importante"
+          },
+          {
+            "id": "b00f89e73",
+            "tipo": "focalizador",
+            "focalizador": "lectura",
+            "bloques": [
+              {
+                "id": "b15404be3",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>lectura</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "b7c333025",
+            "tipo": "focalizador",
+            "focalizador": "nota",
+            "bloques": [
+              {
+                "id": "babe9da91",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>nota</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de nota"
+          },
+          {
+            "id": "bcafc71ff",
+            "tipo": "focalizador",
+            "focalizador": "observe",
+            "bloques": [
+              {
+                "id": "b5f441445",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>observe</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de observe"
+          },
+          {
+            "id": "b9e83247e",
+            "tipo": "focalizador",
+            "focalizador": "recuerde",
+            "bloques": [
+              {
+                "id": "b0da2823f",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>recuerde</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "bd2c7424b",
+            "tipo": "focalizador",
+            "focalizador": "reflexione",
+            "bloques": [
+              {
+                "id": "b4b43394d",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>reflexione</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de reflexione"
+          },
+          {
+            "id": "bc439f208",
+            "tipo": "focalizador",
+            "focalizador": "video",
+            "bloques": [
+              {
+                "id": "b5302e6d2",
+                "tipo": "parrafo",
+                "texto": "Contenido del focalizador <em>video</em>.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente",
+            "titulo": "Rótulo propio de video"
+          },
+          {
+            "id": "b060cfebb",
+            "tipo": "caja",
+            "titulo": "Caja con varios bloques dentro",
+            "bloques": [
+              {
+                "id": "b4bd33216",
+                "tipo": "parrafo",
+                "texto": "Párrafo dentro de la caja.",
+                "origen": "agente"
+              },
+              {
+                "id": "b838d0394",
+                "tipo": "lista",
+                "ordenada": true,
+                "items": [
+                  {
+                    "texto": "Primero"
+                  },
+                  {
+                    "texto": "Segundo",
+                    "items": [
+                      {
+                        "texto": "Sublista nivel 2"
+                      }
+                    ]
+                  }
+                ],
+                "origen": "agente"
+              },
+              {
+                "id": "bc1fc5adc",
+                "tipo": "tabla",
+                "titulo": "Tabla 1. Dentro de una caja",
+                "encabezados": [
+                  "A",
+                  "B"
+                ],
+                "filas": [
+                  [
+                    "1",
+                    "2"
+                  ],
+                  [
+                    "3",
+                    "4"
+                  ]
+                ],
+                "origen": "agente"
+              },
+              {
+                "id": "b34c2fd7d",
+                "tipo": "cita",
+                "referencia_id": "ref1",
+                "pagina_citada": "12",
+                "texto": "Cita dentro de una caja.",
+                "origen": "agente"
+              }
+            ],
+            "origen": "agente"
+          },
+          {
+            "id": "ba0cd7707",
+            "tipo": "caja",
+            "texto": "Caja simple, sin título ni bloques anidados.",
+            "origen": "agente"
+          },
+          {
+            "id": "be1d8f0ad",
+            "tipo": "diagrama",
+            "recurso_ref": "diagrama_01",
+            "numero_figura": 1,
+            "titulo": "Figura 1. Diagrama del proceso",
+            "nota": "Nota. Elaboración propia.",
+            "alt": "Diagrama de flujo con cuatro etapas conectadas",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "b95987772",
+            "tipo": "diagrama",
+            "recurso_ref": "diagrama_02",
+            "decorativa": true,
+            "origen": "agente"
+          },
+          {
+            "id": "b3656677f",
+            "tipo": "imagen",
+            "recurso_ref": "figura_01",
+            "numero_figura": 2,
+            "titulo": "Figura 2. Fotografía de contexto",
+            "nota": "Nota. Adaptado de la fuente.",
+            "alt": "Aula universitaria con estudiantes trabajando en grupo",
+            "decorativa": false,
+            "origen": "agente"
+          },
+          {
+            "id": "bce1fef95",
+            "tipo": "recurso_ediloja",
+            "titulo": "Autoevaluación interactiva de la unidad",
+            "url": "https://recursos.ediloja.ec/ae/u1",
+            "origen": "agente"
+          },
+          {
+            "id": "b863a8fc6",
+            "tipo": "recurso_ediloja",
+            "titulo": "Video explicativo",
+            "url": "https://recursos.ediloja.ec/video/intro",
+            "origen": "docente",
+            "editado_en": "2026-08-07T02:00:00Z"
+          },
+          {
+            "id": "b4d783dc9",
+            "tipo": "actividades",
+            "texto": "Se recomienda elaborar un <strong>mapa conceptual</strong> y participar en el foro.",
+            "origen": "agente"
+          },
+          {
+            "id": "b92c06507",
+            "tipo": "tabla",
+            "titulo": "Tabla 2. Tabla de primer nivel",
+            "encabezados": [
+              "Concepto",
+              "Definición",
+              "Ejemplo"
+            ],
+            "filas": [
+              [
+                "Gobernanza",
+                "Toma de decisiones colectivas",
+                "Consejo ciudadano"
+              ],
+              [
+                "Rendición de cuentas",
+                "Justificación pública",
+                "Informe anual"
+              ]
+            ],
+            "nota": "Nota. Elaboración propia.",
+            "origen": "agente"
+          },
+          {
+            "id": "b8299ab1f",
+            "tipo": "autoevaluacion",
+            "titulo": "Autoevaluación de la unidad 1",
+            "preguntas": [
+              {
+                "id": "q1",
+                "numero": 1,
+                "enunciado": "Enunciado de la pregunta 1.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "b",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              },
+              {
+                "id": "q2",
+                "numero": 2,
+                "enunciado": "Enunciado de la pregunta 2.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "c",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              },
+              {
+                "id": "q3",
+                "numero": 3,
+                "enunciado": "Enunciado de la pregunta 3.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "d",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              },
+              {
+                "id": "q4",
+                "numero": 4,
+                "enunciado": "Enunciado de la pregunta 4.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "a",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              },
+              {
+                "id": "q5",
+                "numero": 5,
+                "enunciado": "Enunciado de la pregunta 5.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "b",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              },
+              {
+                "id": "q6",
+                "numero": 6,
+                "enunciado": "Enunciado de la pregunta 6.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "c",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              },
+              {
+                "id": "q7",
+                "numero": 7,
+                "enunciado": "Enunciado de la pregunta 7.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "d",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              },
+              {
+                "id": "q8",
+                "numero": 8,
+                "enunciado": "Enunciado de la pregunta 8.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "a",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              },
+              {
+                "id": "q9",
+                "numero": 9,
+                "enunciado": "Enunciado de la pregunta 9.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "b",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              },
+              {
+                "id": "q10",
+                "numero": 10,
+                "enunciado": "Enunciado de la pregunta 10.",
+                "opciones": [
+                  {
+                    "letra": "a",
+                    "texto": "Alternativa A"
+                  },
+                  {
+                    "letra": "b",
+                    "texto": "Alternativa B"
+                  },
+                  {
+                    "letra": "c",
+                    "texto": "Alternativa C"
+                  },
+                  {
+                    "letra": "d",
+                    "texto": "Alternativa D"
+                  }
+                ],
+                "correcta": "c",
+                "retroalimentacion": "Revise el apartado correspondiente."
+              }
+            ],
+            "origen": "agente"
+          }
+        ]
+      }
+    ]
+  },
+  "finales": {
+    "referencias": [
+      {
+        "id": "ref1",
+        "apa": "Ramírez, L. y Ortega, M. (2024). Gestión pública contemporánea. Editorial Andina.",
+        "autores": [
+          "Ramírez, L.",
+          "Ortega, M."
+        ],
+        "anio": 2024
+      }
+    ],
+    "glosario": [],
+    "anexos": []
+  },
+  "recursos": [
+    {
+      "ref": "diagrama_01",
+      "tipo": "diagrama",
+      "archivo": "diagrama_01.svg",
+      "mime": "image/svg+xml",
+      "ancho": 800,
+      "alto": 400,
+      "sha256": "8b53639f152c8fc6ef30802fde462ba0be9cf085f7580dc69efd72e002abbb35",
+      "generado_por": "svg_generado",
+      "url_canvas": null,
+      "file_id_canvas": null
+    },
+    {
+      "ref": "diagrama_02",
+      "tipo": "diagrama",
+      "archivo": "diagrama_02.svg",
+      "mime": "image/svg+xml",
+      "ancho": 600,
+      "alto": 200,
+      "sha256": "e788103ee15318fcd2af9b73b4ebbb33a903b020de7b307d71f5fed0f433e548",
+      "generado_por": "svg_generado",
+      "url_canvas": null,
+      "file_id_canvas": null
+    },
+    {
+      "ref": "figura_01",
+      "tipo": "imagen",
+      "archivo": "figura_01.png",
+      "mime": "image/png",
+      "ancho": 1200,
+      "alto": 700,
+      "sha256": "3f524cdc07a11d7c6220bdb049fe8dd41b27483c96cc59b581e022d547290d69",
+      "generado_por": "gemini",
+      "url_canvas": null,
+      "file_id_canvas": null
+    }
+  ],
+  "validaciones": {
+    "semaforo": "verde",
+    "validado_en": "2026-08-07T03:00:00Z",
+    "alertas": []
+  },
+  "estadisticas": {
+    "total_paginas": 1,
+    "total_unidades": 1,
+    "total_autoevaluaciones": 1,
+    "total_citas": 1,
+    "total_recursos": 3
+  }
+}
