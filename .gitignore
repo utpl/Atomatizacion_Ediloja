@@ -1,0 +1,35 @@
+# ─── Credenciales: NUNCA ───
+.env
+.env.*
+!.env.example
+*variables_entorno*
+*token*.txt
+*.pem
+*.key
+
+# ─── Python ───
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# ─── Node ───
+node_modules/
+dist/
+
+# ─── macOS ───
+.DS_Store
+__MACOSX/
+
+# ─── Salidas y temporales ───
+salida/
+resultados/
+*.bak
+*.log
+_archivo/
+
+# ─── Binarios pesados ───
+*.zip
+!packages/plantillas/**/*.zip
