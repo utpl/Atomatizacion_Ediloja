@@ -79,19 +79,36 @@
   </aside>
 
 {%- elif tipo == 'focalizador' %}
-  {#- Clase base `focuser`: es la del tema heredado de Canvas. El modificador
-      va en ESPAÑOL porque DI solo confirmó 4 de las 18 traducciones. El
-      data-focalizador permite mapear a inglés sin tocar el HTML. -#}
+  {#- DOM OFICIAL, verificado contra Canvas en produccion.
+      Origen: apps/migrador-canvas/generar_curso.py, _convertir_focalizadores().
+      NO inventar aqui: este HTML es el que reconoce la hoja institucional.
+
+      La clase va con el nombre del focalizador en ESPAÑOL, y el icono con
+      el patron f_{nombre}.png de la plantilla oficial. Los cuatro que ya
+      existen (importante, lectura, reflexione, video) usan la clase en
+      ingles que espera el CSS actual; el resto usa la española.
+
+      ⚠️ PENDIENTE: en plantilla_recursos/Plantilla/Focalizadores solo hay
+      4 de los 18 PNG. Diseño tiene la carpeta completa; cuando la entreguen
+      se copian ahi y esto funciona sin tocar codigo: el src ya apunta al
+      nombre correcto. Mientras tanto, 14 tipos salen sin icono (alt vacio,
+      no se rompe el layout). -#}
   {%- set f = b.focalizador %}
-  <aside class="focuser focuser--{{ f }}" data-focalizador="{{ f }}">
-    <div class="focuser__marca" aria-hidden="true">
-      <span class="focuser__icono"></span>
-      <span class="focuser__rotulo">{{ f | replace('_', ' ') }}</span>
-    </div>
-    <div class="focuser__cuerpo" data-slot="contenido">
+  {%- set en_ingles = {'importante': 'important', 'lectura': 'reading',
+                       'reflexione': 'reflection', 'video': 'video'} %}
+  {%- set clase = en_ingles.get(f, f) %}
+  {#- Los 18 PNG estan en recursos/Plantilla/Focalizadores con el nombre del
+      enum. Nada de diccionarios: el nombre del archivo ES el valor. -#}
+  {%- set icono = 'f_' ~ f ~ '.png' %}
+  <div class="focuser {{ clase }}" data-focalizador="{{ f }}"
+>
+    <p style="text-align: center;"><img role="presentation"
+       src="{{ ctx.base_plantilla | default('@@PLANTILLA@@') }}/Plantilla/Focalizadores/{{ icono }}"
+       alt="" width="80" height="80" loading="lazy"></p>
+    <div class="content-focuser" data-slot="contenido">
       {%- if profundidad < 2 %}{{ bloques(b.bloques | default([]), ctx, profundidad + 1) }}{% endif %}
     </div>
-  </aside>
+  </div>
 
 {%- elif tipo == 'cita' %}
   {%- set r = (ctx.refs | default({})).get(b.referencia_id) %}
