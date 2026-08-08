@@ -7,11 +7,12 @@ renderizado con Jinja2. Convención de la especificación (§2):
 Las páginas completas cuelgan de la raíz; los fragmentos, de /ui.
 """
 
+import hashlib
 import json
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, Form, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -24,8 +25,12 @@ from libs.py.auth.dependencias import NOMBRE_COOKIE, usuario_web_opcional
 from libs.py.auth.seguridad import crear_token, verificar_contrasena
 from libs.py.canon import oferta
 from libs.py.db.modelos_auth import Usuario
+from libs.py.db.modelos_contenido import EdicionBloque
 from libs.py.db.modelos_dominio import Guia, SolicitudGeneracion
 from libs.py.db.session import obtener_sesion
+from libs.py.edicion.esquemas import ActualizarBloque
+from libs.py.edicion.operaciones import ErrorDeEdicion, aplicar
+from libs.py.esquema.validador import validar
 from libs.py.trabajos import tareas
 from libs.py.trabajos.cola import cola
 
@@ -467,4 +472,174 @@ def ui_trabajo(
 
     return plantillas.TemplateResponse("_trabajo.html", {
         "request": request, "trabajo": solicitud, "guia": guia,
+    })
+
+
+def _version_de(guia_id: int, usuario, sesion: Session):
+    """Versión actual de una guía, si el usuario puede verla.
+
+    Devuelve (guia, version) o (None, None). Las vistas deciden qué hacer;
+    aquí no se lanza 404 porque una vista puede querer redirigir.
+    """
+    guia = sesion.get(Guia, guia_id)
+    if guia is None or (guia.autor_id != usuario.id and not usuario.tiene_rol("admin")):
+        return None, None
+    version = next((v for v in guia.versiones if v.es_actual), None)
+    return guia, version
+
+
+@router.get("/guias-vista/{guia_id}/editor")
+@router.get("/guias-vista/{guia_id}/editor/{pagina_id}")
+def editor(
+    guia_id: int,
+    request: Request,
+    pagina_id: str | None = None,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+
+    guia, version = _version_de(guia_id, usuario, sesion)
+    if guia is None:
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, status_code=404)
+    if version is None:
+        return RedirectResponse(url=f"/guias-vista/{guia_id}/generar", status_code=303)
+
+    curso = version.contenido
+    paginas = curso["estructura"]["paginas"]
+    actual = next((p for p in paginas if p["id"] == pagina_id), paginas[0])
+
+    return plantillas.TemplateResponse("editor.html", {
+        "request": request,
+        "guia": guia,
+        "version": version,
+        "curso": curso,
+        "paginas": paginas,
+        "pagina": actual,
+        "ctx": {
+            "recursos": {r["ref"]: r for r in curso.get("recursos", [])},
+            "refs": {r["id"]: r for r in curso.get("finales", {}).get("referencias", [])},
+        },
+        # Congelada = en revisión: todo en modo lectura.
+        "editable": not version.congelada,
+    })
+
+
+def _buscar(pagina: dict, bloque_id: str):
+    """Busca un bloque en la página, incluidos los hijos de los contenedores."""
+    for b in pagina.get("bloques", []):
+        if b.get("id") == bloque_id:
+            return b
+        for h in b.get("bloques", []) or []:
+            if h.get("id") == bloque_id:
+                return h
+    return None
+
+
+@router.get("/ui/bloque/{guia_id}/{pagina_id}/{bloque_id}/editar")
+def ui_editar_bloque(
+    guia_id: int, pagina_id: str, bloque_id: str,
+    request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    """Cambia el bloque por su formulario. Devuelve un fragmento, no una página."""
+    if usuario is None:
+        return HTMLResponse("", status_code=401)
+
+    guia, version = _version_de(guia_id, usuario, sesion)
+    if version is None or version.congelada:
+        return HTMLResponse("", status_code=404)
+
+    pagina = next((p for p in version.contenido["estructura"]["paginas"]
+                   if p["id"] == pagina_id), None)
+    bloque = _buscar(pagina, bloque_id) if pagina else None
+    if bloque is None:
+        return HTMLResponse("", status_code=404)
+
+    return plantillas.TemplateResponse("_editar_bloque.html", {
+        "request": request, "guia": guia, "pagina": pagina, "b": bloque,
+    })
+
+
+@router.post("/ui/bloque/{guia_id}/{pagina_id}/{bloque_id}")
+def ui_guardar_bloque(
+    guia_id: int, pagina_id: str, bloque_id: str,
+    request: Request,
+    texto: str = Form(...),
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return HTMLResponse("", status_code=401)
+
+    guia, version = _version_de(guia_id, usuario, sesion)
+    if version is None:
+        return HTMLResponse("", status_code=404)
+    if version.congelada:
+        return HTMLResponse(
+            '<p class="ed-aviso">La versión está en revisión y no se puede editar.</p>',
+            status_code=409)
+
+    # Se llama a aplicar() directamente, no a POST /api/versiones/{id}/editar:
+    # el servidor llamándose a sí mismo por HTTP añade latencia y una capa más
+    # de autenticación que depurar. La lógica vive en un solo sitio igualmente.
+    op = ActualizarBloque(bloque_id=bloque_id, campos={"texto": texto})
+    try:
+        curso_nuevo, registros = aplicar(version.contenido, [op])
+    except ErrorDeEdicion as exc:
+        return HTMLResponse(f'<p class="ed-aviso">{exc}</p>', status_code=422)
+
+    resultado = validar(curso_nuevo)
+    curso_nuevo["validaciones"] = resultado.como_dict()
+
+    # Reasignar, no mutar: SQLAlchemy solo detecta el cambio en la columna
+    # JSONB si el objeto es distinto. Mutando en su sitio no se guarda nada
+    # y NO salta ningún error.
+    version.contenido = curso_nuevo
+    version.sha256 = _sha256_curso(curso_nuevo)
+    version.semaforo = resultado.semaforo
+    version.alertas = resultado.como_dict()["alertas"]
+
+    for r in registros:
+        sesion.add(EdicionBloque(
+            version_id=version.id, operacion=r["operacion"],
+            bloque_id=r.get("bloque_id"), pagina_id=r.get("pagina_id"),
+            antes=r.get("antes"), despues=r.get("despues"),
+            realizada_por=usuario.id,
+        ))
+    sesion.commit()
+
+    pagina = next(p for p in curso_nuevo["estructura"]["paginas"] if p["id"] == pagina_id)
+    return plantillas.TemplateResponse("_bloque.html", {
+        "request": request, "guia": guia, "pagina": pagina,
+        "b": _buscar(pagina, bloque_id), "ctx": {}, "editable": True,
+    })
+
+
+def _sha256_curso(documento: dict) -> str:
+    return hashlib.sha256(
+        json.dumps(documento, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+
+
+@router.get("/ui/bloque/{guia_id}/{pagina_id}/{bloque_id}/ver")
+def ui_ver_bloque(
+    guia_id: int, pagina_id: str, bloque_id: str,
+    request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return HTMLResponse("", status_code=401)
+    guia, version = _version_de(guia_id, usuario, sesion)
+    if version is None:
+        return HTMLResponse("", status_code=404)
+    pagina = next((p for p in version.contenido["estructura"]["paginas"]
+                   if p["id"] == pagina_id), None)
+    return plantillas.TemplateResponse("_bloque.html", {
+        "request": request, "guia": guia, "pagina": pagina,
+        "b": _buscar(pagina, bloque_id), "ctx": {},
+        "editable": not version.congelada,
     })

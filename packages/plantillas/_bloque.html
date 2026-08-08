@@ -1,0 +1,11 @@
+{# Un bloque con su botón de editar. Es el fragmento que htmx intercambia,
+   y también lo que usa la página completa: mismo HTML, un solo sitio. #}
+{% from "macros/bloques.html" import bloque as pintar %}
+<div class="ed-editable" id="edit-{{ b.id }}">
+  {{ pintar(b, ctx) }}
+  {% if editable and b.tipo == 'parrafo' %}
+    <button class="ed-lapiz" title="Editar"
+            hx-get="/ui/bloque/{{ guia.id }}/{{ pagina.id }}/{{ b.id }}/editar"
+            hx-target="#edit-{{ b.id }}" hx-swap="outerHTML">Editar</button>
+  {% endif %}
+</div>

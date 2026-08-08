@@ -1,0 +1,167 @@
+{#
+  Renderizador canónico de curso.json v1.0.0.
+
+  ÚNICA fuente del HTML de un bloque. El editor, la galería y el render
+  para Canvas importan estos macros: si el HTML se escribe dos veces, se
+  desincroniza en una semana.
+
+  Uso:
+    {% from "macros/bloques.html" import bloques %}
+    {{ bloques(pagina.bloques, ctx) }}
+
+  ctx: {"recursos": {ref: recurso}, "refs": {id: referencia}}
+#}
+
+{% macro _items(elementos, nivel=1) -%}
+{#- ⚠️ TRAMPA: `it.items` devuelve el método dict.items, e `it['items']`
+    cae en getattr si falta la clave. Hay que usar `it.get('items')`. -#}
+{#- Un item puede llegar como cadena si el dato no pasó por normalizar.
+    El renderizador no revienta por eso: pinta lo que pueda. -#}
+{%- for it in elementos %}
+  {%- if it is string %}
+  <li class="ed-lista__item">{{ it | safe }}</li>
+  {%- else %}
+  <li class="ed-lista__item">{{ it.texto | default('', true) | safe }}
+    {%- if it.get('items') and nivel < 2 %}
+    <ul class="ed-lista ed-lista--sub">{{ _items(it.get('items'), nivel + 1) }}</ul>
+    {%- endif %}
+  </li>
+  {%- endif %}
+{%- endfor %}
+{%- endmacro %}
+
+
+{% macro bloques(lista, ctx={}, profundidad=1) -%}
+{%- for b in lista %}{{ bloque(b, ctx, profundidad) }}{% endfor -%}
+{%- endmacro %}
+
+
+{% macro bloque(b, ctx={}, profundidad=1) -%}
+{%- set tipo = b.tipo -%}
+<div class="ed-bloque ed-bloque--{{ tipo }}"
+     id="bloque-{{ b.id }}" data-tipo="{{ tipo }}" data-origen="{{ b.origen | default('agente') }}">
+
+{%- if tipo == 'parrafo' %}
+  <p class="ed-parrafo">{{ b.texto | safe }}</p>
+
+{%- elif tipo == 'encabezado' %}
+  {%- set n = b.nivel | default(2) %}
+  <h{{ n }} class="ed-encabezado ed-encabezado--n{{ n }}">{{ b.texto | safe }}</h{{ n }}>
+
+{%- elif tipo == 'lista' %}
+  {%- if b.ordenada %}
+  <ol class="ed-lista ed-lista--ordenada">{{ _items(b.get('items') or []) }}</ol>
+  {%- else %}
+  <ul class="ed-lista">{{ _items(b.get('items') or []) }}</ul>
+  {%- endif %}
+
+{%- elif tipo == 'tabla' %}
+  <div class="ed-tabla-marco">
+    <table class="ed-tabla">
+      {%- if b.titulo %}<caption class="ed-tabla__titulo">{{ b.titulo | safe }}</caption>{% endif %}
+      <thead><tr>{% for h in b.encabezados | default([]) %}<th scope="col">{{ h | safe }}</th>{% endfor %}</tr></thead>
+      <tbody>
+        {%- for fila in b.filas | default([]) %}
+        <tr>{% for celda in fila %}<td>{{ celda | safe }}</td>{% endfor %}</tr>
+        {%- endfor %}
+      </tbody>
+    </table>
+  </div>
+  {%- if b.nota %}<p class="ed-tabla__nota">{{ b.nota | safe }}</p>{% endif %}
+
+{%- elif tipo == 'caja' %}
+  <aside class="ed-caja">
+    {%- if b.titulo %}<p class="ed-caja__titulo">{{ b.titulo | safe }}</p>{% endif %}
+    <div class="ed-caja__cuerpo" data-slot="contenido">
+      {%- if b.texto %}<p class="ed-parrafo">{{ b.texto | safe }}</p>{% endif %}
+      {%- if profundidad < 2 %}{{ bloques(b.bloques | default([]), ctx, profundidad + 1) }}{% endif %}
+    </div>
+  </aside>
+
+{%- elif tipo == 'focalizador' %}
+  {#- Clase base `focuser`: es la del tema heredado de Canvas. El modificador
+      va en ESPAÑOL porque DI solo confirmó 4 de las 18 traducciones. El
+      data-focalizador permite mapear a inglés sin tocar el HTML. -#}
+  {%- set f = b.focalizador %}
+  <aside class="focuser focuser--{{ f }}" data-focalizador="{{ f }}">
+    <div class="focuser__marca" aria-hidden="true">
+      <span class="focuser__icono"></span>
+      <span class="focuser__rotulo">{{ f | replace('_', ' ') }}</span>
+    </div>
+    <div class="focuser__cuerpo" data-slot="contenido">
+      {%- if profundidad < 2 %}{{ bloques(b.bloques | default([]), ctx, profundidad + 1) }}{% endif %}
+    </div>
+  </aside>
+
+{%- elif tipo == 'cita' %}
+  {%- set r = (ctx.refs | default({})).get(b.referencia_id) %}
+  <figure class="ed-cita{% if not r %} ed-cita--huerfana{% endif %}">
+    <blockquote class="ed-cita__texto">{{ b.texto | safe }}</blockquote>
+    <figcaption class="ed-cita__fuente">
+      {%- if r %}{{ r.apa }}{% if b.pagina_citada %} ({{ b.pagina_citada }}){% endif %}
+      {%- else %}<span class="ed-aviso">Referencia «{{ b.referencia_id }}» no existe</span>{% endif %}
+    </figcaption>
+  </figure>
+
+{%- elif tipo in ('imagen', 'diagrama') %}
+  {#- El archivo aún no existe: el modelo describe la figura en `alt` y el
+      archivo lo produce después el generador de imágenes o diseño. Se
+      muestra el encargo, no un hueco roto. -#}
+  <figure class="ed-figura">
+    <div class="ed-figura__pendiente">
+      <span class="ed-figura__etiqueta">{{ tipo }}</span>
+      <p>{{ b.alt | default('(sin descripción)', true) }}</p>
+      {%- if b.recurso_ref %}<code>{{ b.recurso_ref }}</code>{% endif %}
+    </div>
+    {%- if b.numero_figura %}<figcaption class="ed-figura__pie">Figura {{ b.numero_figura }}. {{ b.alt }}</figcaption>{% endif %}
+  </figure>
+
+{%- elif tipo == 'recurso_ediloja' %}
+  <div class="ed-recurso">
+    <p class="ed-recurso__etiqueta">Recurso EdiLoja</p>
+    <a class="ed-recurso__titulo" href="{{ b.url }}" target="_blank" rel="noopener">{{ b.titulo | safe }}</a>
+    {%- if b.texto %}<p>{{ b.texto | safe }}</p>{% endif %}
+    {%- if b.nota %}<p class="ed-recurso__nota">{{ b.nota | safe }}</p>{% endif %}
+  </div>
+
+{%- elif tipo == 'autoevaluacion' %}
+  <section class="ed-autoev">
+    <h3 class="ed-autoev__titulo">{{ b.titulo | default('Autoevaluación') }}</h3>
+    {%- set total = (b.preguntas | default([])) | length %}
+    {%- if total != 10 %}<p class="ed-aviso">{{ total }} preguntas; la norma son 10.</p>{% endif %}
+    <ol class="ed-autoev__lista">
+      {%- for p in b.preguntas | default([]) %}
+      <li class="ed-autoev__pregunta">
+        <p class="ed-autoev__enunciado">{{ p.enunciado | safe }}</p>
+        <ul class="ed-autoev__opciones">
+          {%- for o in p.opciones %}
+          <li class="ed-autoev__opcion"><span class="ed-autoev__letra">{{ o.letra }}</span>{{ o.texto | safe }}</li>
+          {%- endfor %}
+        </ul>
+        {#- ⚠️ <details> sin verificar contra el saneo de Canvas. Si no
+            sobrevive, se cambia solo aquí. -#}
+        <details class="ed-autoev__respuesta">
+          <summary>Ver respuesta</summary>
+          <p><strong>Correcta: {{ p.correcta }}</strong></p>
+          {%- if p.retroalimentacion %}<p>{{ p.retroalimentacion | safe }}</p>{% endif %}
+        </details>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+
+{%- elif tipo == 'actividades' %}
+  <section class="ed-actividades">
+    <h3 class="ed-actividades__titulo">{{ b.titulo | default('Actividades recomendadas') }}</h3>
+    <p class="ed-parrafo">{{ b.texto | safe }}</p>
+  </section>
+
+{%- else %}
+  {#- Extensibilidad: nunca una página en blanco. -#}
+  <div class="ed-bloque-desconocido" data-tipo="{{ tipo }}">
+    Tipo de bloque no soportado: <code>{{ tipo }}</code>
+  </div>
+{%- endif %}
+
+</div>
+{%- endmacro %}

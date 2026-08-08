@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}{{ guia.nombre_asignatura }} — Editor{% endblock %}
+
+{% block contenido %}
+  <h1>{{ guia.nombre_asignatura }}</h1>
+  <p class="ed-meta">
+    {{ guia.codigo_banner }} · versión {{ version.numero }} ·
+    <span class="ed-semaforo ed-semaforo--{{ version.semaforo }}">{{ version.semaforo }}</span>
+    {% if not editable %}· <strong>en revisión (solo lectura)</strong>{% endif %}
+  </p>
+
+  <nav class="ed-semanas">
+    {% for p in paginas %}
+      <a class="ed-semana" href="/guias-vista/{{ guia.id }}/editor/{{ p.id }}"
+         {% if p.id == pagina.id %}aria-current="page"{% endif %}>Semana {{ p.semana }}</a>
+    {% endfor %}
+  </nav>
+
+  <article class="ed-hoja">
+    <h2>{{ pagina.titulo }}</h2>
+    {% for b in pagina.bloques %}
+      {% include "_bloque.html" %}
+    {% endfor %}
+  </article>
+{% endblock %}

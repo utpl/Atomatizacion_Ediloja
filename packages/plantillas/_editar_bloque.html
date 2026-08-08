@@ -1,0 +1,17 @@
+{# ⚠️ <textarea> con el HTML crudo, no contenteditable: el navegador mete
+   <div> y <br> por su cuenta y el backend rechaza con 422 cualquier
+   etiqueta fuera de las siete permitidas. #}
+<div class="ed-editable ed-editando" id="edit-{{ b.id }}">
+  <form hx-post="/ui/bloque/{{ guia.id }}/{{ pagina.id }}/{{ b.id }}"
+        hx-target="#edit-{{ b.id }}" hx-swap="outerHTML">
+    <textarea name="texto" class="ed-editor-texto" rows="5" autofocus>{{ b.texto }}</textarea>
+    <p class="ed-ayuda">
+      Etiquetas permitidas: &lt;strong&gt; &lt;em&gt; &lt;u&gt; &lt;sub&gt;
+      &lt;sup&gt; &lt;a&gt; &lt;br&gt;. Cualquier otra se rechaza.
+    </p>
+    <button type="submit" class="ed-boton">Guardar</button>
+    <button type="button" class="ed-cancelar"
+            hx-get="/ui/bloque/{{ guia.id }}/{{ pagina.id }}/{{ b.id }}/ver"
+            hx-target="#edit-{{ b.id }}" hx-swap="outerHTML">Cancelar</button>
+  </form>
+</div>

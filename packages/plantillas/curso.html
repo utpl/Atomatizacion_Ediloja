@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/bloques.html" import bloques %}
 
 {% block titulo %}{{ curso.info_general.asignatura }} — App-EdiLoja{% endblock %}
 
@@ -21,21 +22,8 @@
   <article class="ed-hoja">
     <h2>{{ pagina.titulo }}</h2>
 
-    {# Por ahora solo dos tipos. Los otros diez caen en el aviso final:
-       la regla es que un tipo desconocido NUNCA deja la página en blanco. #}
-    {% for b in pagina.bloques %}
-      {% if b.tipo == 'parrafo' %}
-        <p class="ed-parrafo">{{ b.texto | safe }}</p>
-
-      {% elif b.tipo == 'encabezado' %}
-        <h{{ b.nivel }} class="ed-encabezado">{{ b.texto | safe }}</h{{ b.nivel }}>
-
-      {% else %}
-        <div class="ed-bloque-desconocido" data-tipo="{{ b.tipo }}">
-          Tipo de bloque no soportado: <code>{{ b.tipo }}</code>
-        </div>
-      {% endif %}
-    {% endfor %}
+    
+    {{ bloques(pagina.bloques, ctx) }}
   </article>
 
 {% endblock %}
