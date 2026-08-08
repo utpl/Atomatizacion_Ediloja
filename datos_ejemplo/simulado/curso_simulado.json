@@ -1,0 +1,570 @@
+{
+  "version_esquema": "1.0.0",
+  "info_general": {
+    "codigo_banner": "CONT1140",
+    "asignatura": "Contabilidad General",
+    "periodo": "2026-1",
+    "total_semanas": 8
+  },
+  "estructura": {
+    "unidades": [
+      {
+        "id": "u1",
+        "numero": 1,
+        "titulo": "Fundamentos contables"
+      },
+      {
+        "id": "u2",
+        "numero": 2,
+        "titulo": "Estados financieros"
+      }
+    ],
+    "paginas": [
+      {
+        "id": "p1",
+        "titulo": "Semana 1: fundamentos",
+        "semana": 1,
+        "bloques": [
+          {
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Introducción",
+            "id": "b39419064aff0",
+            "origen": "agente"
+          },
+          {
+            "tipo": "parrafo",
+            "texto": "En esta semana revisará los conceptos <strong>básicos</strong>.",
+            "id": "b0071a31f8bb9",
+            "origen": "agente"
+          },
+          {
+            "tipo": "focalizador",
+            "focalizador": "recuerde",
+            "bloques": [
+              {
+                "tipo": "parrafo",
+                "texto": "Repase el material antes de continuar.",
+                "id": "b1454af8c2afa",
+                "origen": "agente"
+              }
+            ],
+            "id": "b8ea660e1cbf3",
+            "origen": "agente"
+          },
+          {
+            "tipo": "imagen",
+            "alt": "Esquema del proceso contable",
+            "id": "bf1dc11c1f1e8",
+            "origen": "agente",
+            "recurso_ref": "r1",
+            "numero_figura": 1
+          },
+          {
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Identificar"
+              },
+              {
+                "texto": "Registrar"
+              },
+              {
+                "texto": "Clasificar"
+              }
+            ],
+            "id": "b43580f86cc7d",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p2",
+        "titulo": "Semana 2: fundamentos",
+        "semana": 2,
+        "bloques": [
+          {
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Introducción",
+            "id": "bc8fd4815b86d",
+            "origen": "agente"
+          },
+          {
+            "tipo": "parrafo",
+            "texto": "En esta semana revisará los conceptos <strong>básicos</strong>.",
+            "id": "b35e9b68e7b4b",
+            "origen": "agente"
+          },
+          {
+            "tipo": "focalizador",
+            "focalizador": "recuerde",
+            "bloques": [
+              {
+                "tipo": "parrafo",
+                "texto": "Repase el material antes de continuar.",
+                "id": "bc60f6ba1b948",
+                "origen": "agente"
+              }
+            ],
+            "id": "b30f31397daf8",
+            "origen": "agente"
+          },
+          {
+            "tipo": "imagen",
+            "alt": "Esquema del proceso contable",
+            "id": "b60ca765f31a4",
+            "origen": "agente",
+            "recurso_ref": "r2",
+            "numero_figura": 2
+          },
+          {
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Identificar"
+              },
+              {
+                "texto": "Registrar"
+              },
+              {
+                "texto": "Clasificar"
+              }
+            ],
+            "id": "bb5be8c096495",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p3",
+        "titulo": "Semana 3: fundamentos",
+        "semana": 3,
+        "bloques": [
+          {
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Introducción",
+            "id": "bd1abd0355257",
+            "origen": "agente"
+          },
+          {
+            "tipo": "parrafo",
+            "texto": "En esta semana revisará los conceptos <strong>básicos</strong>.",
+            "id": "bf9aa30d731c7",
+            "origen": "agente"
+          },
+          {
+            "tipo": "focalizador",
+            "focalizador": "recuerde",
+            "bloques": [
+              {
+                "tipo": "parrafo",
+                "texto": "Repase el material antes de continuar.",
+                "id": "bf8d29c093425",
+                "origen": "agente"
+              }
+            ],
+            "id": "b835952755982",
+            "origen": "agente"
+          },
+          {
+            "tipo": "imagen",
+            "alt": "Esquema del proceso contable",
+            "id": "b4a061217464f",
+            "origen": "agente",
+            "recurso_ref": "r3",
+            "numero_figura": 3
+          },
+          {
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Identificar"
+              },
+              {
+                "texto": "Registrar"
+              },
+              {
+                "texto": "Clasificar"
+              }
+            ],
+            "id": "ba1623d86cd21",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p4",
+        "titulo": "Semana 4: fundamentos",
+        "semana": 4,
+        "bloques": [
+          {
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Introducción",
+            "id": "bbe072680436b",
+            "origen": "agente"
+          },
+          {
+            "tipo": "parrafo",
+            "texto": "En esta semana revisará los conceptos <strong>básicos</strong>.",
+            "id": "bde2cd9878162",
+            "origen": "agente"
+          },
+          {
+            "tipo": "focalizador",
+            "focalizador": "recuerde",
+            "bloques": [
+              {
+                "tipo": "parrafo",
+                "texto": "Repase el material antes de continuar.",
+                "id": "b780ebb247ae0",
+                "origen": "agente"
+              }
+            ],
+            "id": "bb7cc34a549d2",
+            "origen": "agente"
+          },
+          {
+            "tipo": "imagen",
+            "alt": "Esquema del proceso contable",
+            "id": "b63725a768cc8",
+            "origen": "agente",
+            "recurso_ref": "r4",
+            "numero_figura": 4
+          },
+          {
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Identificar"
+              },
+              {
+                "texto": "Registrar"
+              },
+              {
+                "texto": "Clasificar"
+              }
+            ],
+            "id": "b15d535835ef2",
+            "origen": "agente"
+          }
+        ],
+        "cierra_unidad": true
+      },
+      {
+        "id": "p5",
+        "titulo": "Semana 5: fundamentos",
+        "semana": 5,
+        "bloques": [
+          {
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Introducción",
+            "id": "b53c3883c03b5",
+            "origen": "agente"
+          },
+          {
+            "tipo": "parrafo",
+            "texto": "En esta semana revisará los conceptos <strong>básicos</strong>.",
+            "id": "bcced9e15a517",
+            "origen": "agente"
+          },
+          {
+            "tipo": "focalizador",
+            "focalizador": "recuerde",
+            "bloques": [
+              {
+                "tipo": "parrafo",
+                "texto": "Repase el material antes de continuar.",
+                "id": "b5e236f065d3d",
+                "origen": "agente"
+              }
+            ],
+            "id": "bc8d723e143aa",
+            "origen": "agente"
+          },
+          {
+            "tipo": "imagen",
+            "alt": "Esquema del proceso contable",
+            "id": "b46da497f5383",
+            "origen": "agente",
+            "recurso_ref": "r5",
+            "numero_figura": 5
+          },
+          {
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Identificar"
+              },
+              {
+                "texto": "Registrar"
+              },
+              {
+                "texto": "Clasificar"
+              }
+            ],
+            "id": "b011c2baf565b",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p6",
+        "titulo": "Semana 6: fundamentos",
+        "semana": 6,
+        "bloques": [
+          {
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Introducción",
+            "id": "b3eca0677fb10",
+            "origen": "agente"
+          },
+          {
+            "tipo": "parrafo",
+            "texto": "En esta semana revisará los conceptos <strong>básicos</strong>.",
+            "id": "b5ecc963a201c",
+            "origen": "agente"
+          },
+          {
+            "tipo": "focalizador",
+            "focalizador": "recuerde",
+            "bloques": [
+              {
+                "tipo": "parrafo",
+                "texto": "Repase el material antes de continuar.",
+                "id": "b305196bac536",
+                "origen": "agente"
+              }
+            ],
+            "id": "b4ebda984da42",
+            "origen": "agente"
+          },
+          {
+            "tipo": "imagen",
+            "alt": "Esquema del proceso contable",
+            "id": "b79174a001357",
+            "origen": "agente",
+            "recurso_ref": "r6",
+            "numero_figura": 6
+          },
+          {
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Identificar"
+              },
+              {
+                "texto": "Registrar"
+              },
+              {
+                "texto": "Clasificar"
+              }
+            ],
+            "id": "b46e464884c2e",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p7",
+        "titulo": "Semana 7: fundamentos",
+        "semana": 7,
+        "bloques": [
+          {
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Introducción",
+            "id": "bda5e89506c2f",
+            "origen": "agente"
+          },
+          {
+            "tipo": "parrafo",
+            "texto": "En esta semana revisará los conceptos <strong>básicos</strong>.",
+            "id": "b974c56b5fa57",
+            "origen": "agente"
+          },
+          {
+            "tipo": "focalizador",
+            "focalizador": "recuerde",
+            "bloques": [
+              {
+                "tipo": "parrafo",
+                "texto": "Repase el material antes de continuar.",
+                "id": "bca4b1c20c7a9",
+                "origen": "agente"
+              }
+            ],
+            "id": "b9d0af195f52f",
+            "origen": "agente"
+          },
+          {
+            "tipo": "imagen",
+            "alt": "Esquema del proceso contable",
+            "id": "ba042fe4e171a",
+            "origen": "agente",
+            "recurso_ref": "r7",
+            "numero_figura": 7
+          },
+          {
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Identificar"
+              },
+              {
+                "texto": "Registrar"
+              },
+              {
+                "texto": "Clasificar"
+              }
+            ],
+            "id": "b5cb1cdd29342",
+            "origen": "agente"
+          }
+        ]
+      },
+      {
+        "id": "p8",
+        "titulo": "Semana 8: fundamentos",
+        "semana": 8,
+        "bloques": [
+          {
+            "tipo": "encabezado",
+            "nivel": 2,
+            "texto": "Introducción",
+            "id": "bf3ae111cf8ef",
+            "origen": "agente"
+          },
+          {
+            "tipo": "parrafo",
+            "texto": "En esta semana revisará los conceptos <strong>básicos</strong>.",
+            "id": "bd1a36c829454",
+            "origen": "agente"
+          },
+          {
+            "tipo": "focalizador",
+            "focalizador": "recuerde",
+            "bloques": [
+              {
+                "tipo": "parrafo",
+                "texto": "Repase el material antes de continuar.",
+                "id": "bc7d1fcdeffa9",
+                "origen": "agente"
+              }
+            ],
+            "id": "b66b4c27b1b29",
+            "origen": "agente"
+          },
+          {
+            "tipo": "imagen",
+            "alt": "Esquema del proceso contable",
+            "id": "bb12c09bf776d",
+            "origen": "agente",
+            "recurso_ref": "r8",
+            "numero_figura": 8
+          },
+          {
+            "tipo": "lista",
+            "ordenada": false,
+            "items": [
+              {
+                "texto": "Identificar"
+              },
+              {
+                "texto": "Registrar"
+              },
+              {
+                "texto": "Clasificar"
+              }
+            ],
+            "id": "b9531c8c6b188",
+            "origen": "agente"
+          }
+        ],
+        "cierra_unidad": true
+      }
+    ]
+  },
+  "recursos": [
+    {
+      "ref": "r1",
+      "tipo": "imagen",
+      "archivo": "r1.png",
+      "mime": "image/png"
+    },
+    {
+      "ref": "r2",
+      "tipo": "imagen",
+      "archivo": "r2.png",
+      "mime": "image/png"
+    },
+    {
+      "ref": "r3",
+      "tipo": "imagen",
+      "archivo": "r3.png",
+      "mime": "image/png"
+    },
+    {
+      "ref": "r4",
+      "tipo": "imagen",
+      "archivo": "r4.png",
+      "mime": "image/png"
+    },
+    {
+      "ref": "r5",
+      "tipo": "imagen",
+      "archivo": "r5.png",
+      "mime": "image/png"
+    },
+    {
+      "ref": "r6",
+      "tipo": "imagen",
+      "archivo": "r6.png",
+      "mime": "image/png"
+    },
+    {
+      "ref": "r7",
+      "tipo": "imagen",
+      "archivo": "r7.png",
+      "mime": "image/png"
+    },
+    {
+      "ref": "r8",
+      "tipo": "imagen",
+      "archivo": "r8.png",
+      "mime": "image/png"
+    }
+  ],
+  "estadisticas": {
+    "total_paginas": 8,
+    "total_unidades": 2,
+    "total_autoevaluaciones": 0,
+    "total_citas": 0,
+    "total_recursos": 8,
+    "por_tipo": {
+      "encabezado": 8,
+      "focalizador": 8,
+      "imagen": 8,
+      "lista": 8,
+      "parrafo": 16
+    },
+    "por_origen": {
+      "agente": 48
+    }
+  },
+  "validaciones": {
+    "semaforo": "verde",
+    "alertas": []
+  }
+}
