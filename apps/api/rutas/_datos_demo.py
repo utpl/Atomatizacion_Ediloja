@@ -11,7 +11,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[3]
 
 # ⚠️ Ajusta el nombre al fixture que tengas de verdad.
-FIXTURE = RAIZ / "datos_ejemplo" / "fixtures" / "02_completo.json"
+FIXTURE = RAIZ / "datos_ejemplo" / "fixtures" / "06_real.json"
 
 
 def cargar_curso() -> dict:

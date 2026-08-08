@@ -20,6 +20,7 @@ from typing import Any
 from libs.py.agente import ensamblado
 from libs.py.agente.cliente import RespuestaModelo, llamar_modelo
 from libs.py.agente.contexto import entrada_de_semana
+from libs.py.agente.normalizar import normalizar_pagina
 from libs.py.agente.prompt import (
     ETIQUETAS_INLINE,
     FOCALIZADORES,
@@ -254,6 +255,12 @@ def generar_pagina(
             error_previo = str(exc)
             ultimos_errores = [error_previo]
             continue
+
+        # Traducir las variantes del modelo ANTES de comprobar. `contenido` en
+        # vez de `bloques`, listas de cadenas, `pregunta` en vez de
+        # `enunciado`: son sinonimos inequivocos y rechazar la pagina por eso
+        # cuesta un reintento de minutos para volver a jugar a los dados.
+        pagina = normalizar_pagina(pagina)
 
         errores = _comprobar_pagina(pagina)
         if not errores:

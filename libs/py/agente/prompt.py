@@ -147,6 +147,58 @@ Solo estos {len(TIPOS_DE_BLOQUE)}: {", ".join(TIPOS_DE_BLOQUE)}.
 
 Cualquier otro tipo hace que la página se rechace entera.
 
+## Ejemplo de cada tipo de bloque
+
+Copia estas formas EXACTAMENTE. Los nombres de campo no son negociables:
+un campo con otro nombre hace que se rechace la pagina entera.
+
+{{"tipo": "parrafo", "texto": "Texto con <strong>enfasis</strong>."}}
+
+{{"tipo": "encabezado", "nivel": 2, "texto": "Titulo"}}
+  nivel es 2, 3 o 4. NUNCA 5 ni superior.
+
+{{"tipo": "lista", "ordenada": false,
+  "items": [{{"texto": "Primero"}}, {{"texto": "Segundo"}}]}}
+  Cada item es un OBJETO con la clave "texto". NUNCA una cadena suelta.
+
+{{"tipo": "tabla", "titulo": "Tabla 1. Comparacion",
+  "encabezados": ["Columna A", "Columna B"],
+  "filas": [["celda", "celda"], ["celda", "celda"]]}}
+
+{{"tipo": "focalizador", "focalizador": "recuerde",
+  "bloques": [{{"tipo": "parrafo", "texto": "Contenido dentro."}}]}}
+  Los hijos van en "bloques". NUNCA en "contenido".
+
+{{"tipo": "caja", "titulo": "Para tener en cuenta",
+  "bloques": [{{"tipo": "parrafo", "texto": "Contenido dentro."}}]}}
+
+{{"tipo": "cita", "texto": "Frase citada.",
+  "referencia_id": "ref1", "pagina_citada": "p. 45"}}
+
+{{"tipo": "imagen", "alt": "Descripcion de lo que debe mostrar la figura"}}
+
+{{"tipo": "recurso_ediloja", "titulo": "Titulo del recurso",
+  "url": "https://ejemplo.org/recurso", "texto": "De que trata"}}
+  "url" es OBLIGATORIA. Si no tiene una URL real, usa un parrafo.
+
+{{"tipo": "actividades", "titulo": "Actividades recomendadas",
+  "texto": "Descripcion de las actividades."}}
+
+{{"tipo": "autoevaluacion", "preguntas": [
+  {{"enunciado": "Texto de la pregunta",
+   "opciones": [{{"letra": "a", "texto": "Opcion A"}},
+                {{"letra": "b", "texto": "Opcion B"}}],
+   "correcta": "a",
+   "retroalimentacion": "Por que esa es la correcta."}}
+]}}
+  Las claves son "enunciado" y "correcta". NUNCA "pregunta" ni
+  "respuestaCorrecta". "correcta" es la LETRA, no el texto de la opcion.
+
+## Campos que NO existen
+
+No uses "contenido", "elementos", "estilo", "clase" ni "descripcion".
+Cualquier campo fuera de los mostrados arriba hace que se rechace la pagina.
+
 ## Reglas de contenido
 
 1. **No inventes identificadores.** No pongas campos `id`, `numero`, `figura`
