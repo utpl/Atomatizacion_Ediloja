@@ -20,7 +20,7 @@ from libs.py.auth.alcance import puede_ver_guia
 from libs.py.auth.dependencias import usuario_actual
 from libs.py.db.modelos_auth import Usuario
 from libs.py.db.modelos_contenido import EdicionBloque, VersionGuia
-from libs.py.db.session import get_db
+from libs.py.db.session import obtener_sesion
 from libs.py.edicion.esquemas import PeticionEdicion, RespuestaEdicion
 from libs.py.edicion.operaciones import ErrorDeEdicion, aplicar
 from libs.py.esquema.validador import validar
@@ -47,10 +47,10 @@ def _sha256(documento: dict) -> str:
 def editar_version(
     version_id: int,
     peticion: PeticionEdicion,
-    db: Session = Depends(get_db),
+    sesion: Session = Depends(obtener_sesion),
     usuario: Usuario = Depends(usuario_actual),
 ) -> RespuestaEdicion:
-    version = db.get(VersionGuia, version_id)
+    version = sesion.get(VersionGuia, version_id)
 
     # 404 y no 403: si no puedes verla, no confirmamos que existe. Mismo
     # criterio que ya se aplica en /guias.
@@ -93,7 +93,7 @@ def editar_version(
     version.alertas = resultado.como_dict()["alertas"]
 
     for registro in registros:
-        db.add(
+        sesion.add(
             EdicionBloque(
                 version_id=version.id,
                 operacion=registro["operacion"],
@@ -105,7 +105,7 @@ def editar_version(
             )
         )
 
-    db.commit()
+    sesion.commit()
 
     return RespuestaEdicion(
         sha256=version.sha256,
