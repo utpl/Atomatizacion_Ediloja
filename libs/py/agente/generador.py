@@ -75,6 +75,18 @@ def _extraer_json(texto: str) -> dict[str, Any]:
     try:
         datos = json.loads(candidato)
     except json.JSONDecodeError as exc:
+        # Distinguir "el modelo escribe mal JSON" de "la respuesta se corto".
+        # Son causas distintas: la primera se arregla afinando el prompt, la
+        # segunda subiendo MAX_TOKENS_AGENTE. Decir siempre "JSON mal formado"
+        # manda a depurar el prompt cuando el problema es de configuracion.
+        recortado = candidato.rstrip()
+        truncado = bool(recortado) and not recortado.endswith(("}", "]"))
+        if truncado:
+            raise ValueError(
+                f"Respuesta truncada a {len(candidato)} caracteres: el modelo "
+                f"agoto max_tokens antes de cerrar el JSON. Sube "
+                f"MAX_TOKENS_AGENTE. ({exc})"
+            ) from exc
         raise ValueError(f"JSON mal formado: {exc}") from exc
 
     if not isinstance(datos, dict):
@@ -278,6 +290,7 @@ def generar_guia(
     bibliografia: list[str] | None = None,
     llamador: TipoLlamador = llamar_modelo,
     validar: Callable[[dict[str, Any]], Any] | None = None,
+    avisar: Callable[[int, int], None] | None = None,
 ) -> dict[str, Any]:
     """Genera la guía completa, semana a semana.
 
@@ -300,8 +313,9 @@ def generar_guia(
     curso = _esqueleto(datos_curso)
     telemetria_total = {"intentos": 0, "tokens_entrada": 0, "tokens_salida": 0}
     previa: dict[str, Any] | None = None
+    total_pasos = len(plan)
 
-    for paso in plan:
+    for indice, paso in enumerate(plan, start=1):
         pagina, telemetria = generar_pagina(
             datos_curso=datos_curso,
             semana=paso["semana"],
@@ -317,6 +331,13 @@ def generar_guia(
         previa = pagina
         for clave in telemetria_total:
             telemetria_total[clave] += telemetria[clave]
+
+        # Aviso de avance. Se pasa una funcion en vez de escribir en la base
+        # aqui: este modulo no importa SQLAlchemy por ninguna parte y no debe
+        # empezar ahora. El worker le pasa una que hace el commit; los tests
+        # no pasan nada y el bucle sigue igual.
+        if avisar is not None:
+            avisar(indice, total_pasos)
 
     ensamblado.asignar_recursos(curso)
     ensamblado.numerar_figuras(curso)

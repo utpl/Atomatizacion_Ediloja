@@ -14,6 +14,14 @@ import json
 import os
 from dataclasses import dataclass
 
+from dotenv import load_dotenv
+
+# Se carga aqui y no solo en main.py: el worker de RQ es otro proceso y no
+# pasa por el arranque de la API. Sin esto lee los valores por defecto del
+# codigo en vez de los del .env, y el sintoma es desconcertante -- la API
+# funciona bien y el worker se comporta distinto con la misma configuracion.
+load_dotenv()
+
 # Ajustar al modelo real que confirme la UTPL.
 MODELO = os.getenv("MODELO_AGENTE", "claude-sonnet-4-5")
 MAX_TOKENS = int(os.getenv("MAX_TOKENS_AGENTE", "8000"))

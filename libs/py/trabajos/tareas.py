@@ -60,9 +60,19 @@ def generar_guia_completa(solicitud_id: int, *, llamador=None) -> dict:
             **solicitud.requerimientos,
         }
 
+        def avisar(hechas: int, total: int) -> None:
+            """Progreso tras cada semana.
+
+            Sin esto la barra salta de 0 a 100 al final: con el modelo real
+            son minutos de pantalla inmovil, y eso parece un fallo.
+            """
+            solicitud.progreso = int(hechas * 100 / max(total, 1))
+            sesion.commit()
+
         try:
             curso, telemetria = generar_guia(
                 datos,
+                avisar=avisar,
                 plan=solicitud.requerimientos.get("plan"),
                 bibliografia=solicitud.requerimientos.get("bibliografia"),
                 llamador=llamador or llamar_modelo,
