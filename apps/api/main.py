@@ -3,7 +3,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from apps.api.rutas import auth, guias
+from apps.api.rutas import auth, edicion, generacion, guias, versiones
 
 app = FastAPI(
     title="API EdiLoja",
@@ -22,6 +22,15 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(guias.router)
+
+# Versiones y edición: lo que necesita el editor del docente.
+app.include_router(edicion.router)
+app.include_router(versiones.router)
+app.include_router(versiones.router_guias)
+
+# Generación con IA: encolar y sondear.
+app.include_router(generacion.router)
+app.include_router(generacion.router_trabajos)
 
 
 @app.get("/salud", tags=["sistema"])
