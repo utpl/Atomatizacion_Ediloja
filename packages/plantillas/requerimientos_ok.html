@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titulo %}Requerimientos guardados — App-EdiLoja{% endblock %}
+
+{% block contenido %}
+  <h1>Requerimientos guardados</h1>
+  <p class="ed-meta">{{ guia.nombre_asignatura }} · {{ guia.codigo_banner }} · {{ guia.total_semanas }} semanas</p>
+
+  <div class="ed-hoja" style="margin-top:24px">
+    <h2 class="ed-seccion">Lo que recibirá el agente</h2>
+    <pre class="ed-json">{{ requerimientos | tojson(indent=2) }}</pre>
+  </div>
+
+  <p style="margin-top:24px">
+    <a class="ed-boton" href="/guias-vista">Volver a mis guías</a>
+  </p>
+{% endblock %}
