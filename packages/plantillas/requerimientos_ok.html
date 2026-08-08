@@ -10,7 +10,12 @@
     <pre class="ed-json">{{ requerimientos_json }}</pre>
   </div>
 
-  <p style="margin-top:24px">
-    <a class="ed-boton" href="/guias-vista">Volver a mis guías</a>
+  <form method="post" action="/guias-vista/{{ guia.id }}/generar" style="margin-top:24px">
+    <button class="ed-boton" type="submit">Generar la guía</button>
+    <a class="ed-cancelar" href="/guias-vista/{{ guia.id }}/generar">Corregir los datos</a>
+  </form>
+  <p class="ed-ayuda" style="max-width:46rem">
+    Son {{ guia.total_semanas }} llamadas al modelo, una por semana. Tarda unos
+    minutos y no hace falta esperar en esta pantalla.
   </p>
 {% endblock %}

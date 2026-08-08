@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titulo %}Generando — App-EdiLoja{% endblock %}
+
+{% block contenido %}
+  <h1>Generando la guía</h1>
+  <p class="ed-meta">{{ guia.nombre_asignatura }} · {{ guia.codigo_banner }} · {{ guia.total_semanas }} semanas</p>
+
+  {# El sondeo se detiene solo: cuando el trabajo termina, el fragmento
+     deja de incluir el atributo hx-trigger. Nada que apagar a mano. #}
+  <div class="ed-hoja" style="margin-top:24px"
+       hx-get="/ui/trabajo/{{ trabajo.id }}"
+       hx-trigger="load, every 2s"
+       hx-swap="innerHTML">
+    <p class="ed-meta">Consultando el estado…</p>
+  </div>
+{% endblock %}

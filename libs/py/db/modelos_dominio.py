@@ -80,7 +80,11 @@ class SolicitudGeneracion(Base):
     alcance: Mapped[str] = mapped_column(String(20), default="guia_completa")
     pagina_id: Mapped[str | None] = mapped_column(String(50), nullable=True)
 
-    # pendiente | ejecutando | completada | fallida | cancelada
+    # borrador | pendiente | ejecutando | completada | fallida | cancelada
+    #
+    # "borrador" = el docente guardó los requerimientos pero aún no ha pulsado
+    # Generar. No está encolada y el worker nunca la ve. Existe para que pueda
+    # revisar los datos, cerrar la pestaña y volver sin perderlos.
     estado: Mapped[str] = mapped_column(String(20), default="pendiente", index=True)
     progreso: Mapped[int] = mapped_column(Integer, default=0)
 

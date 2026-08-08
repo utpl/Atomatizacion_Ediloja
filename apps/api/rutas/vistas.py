@@ -17,13 +17,17 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from apps.api.rutas._datos_demo import cargar_curso, indexar
+from libs.py.agente.cliente import llamar_modelo
+from libs.py.agente.unidades import ErrorDeUnidades, extraer_unidades, plan_desde_unidades
 from libs.py.auth.alcance import guias_visibles
 from libs.py.auth.dependencias import NOMBRE_COOKIE, usuario_web_opcional
 from libs.py.auth.seguridad import crear_token, verificar_contrasena
 from libs.py.canon import oferta
 from libs.py.db.modelos_auth import Usuario
-from libs.py.db.modelos_dominio import Guia
+from libs.py.db.modelos_dominio import Guia, SolicitudGeneracion
 from libs.py.db.session import obtener_sesion
+from libs.py.trabajos import tareas
+from libs.py.trabajos.cola import cola
 
 # apps/api/rutas/vistas.py → parents[3] es la raíz del repo.
 # Se ancla al archivo y no al directorio de trabajo: si no, funciona o
@@ -306,6 +310,17 @@ def guardar_requerimientos(
     guia.nombre_asignatura = requerimientos["subjectName"]
     guia.periodo = requerimientos["academicPeriod"]
     guia.total_semanas = weeks
+
+    # Los requerimientos se guardan ya, sin encolar. Así el docente puede
+    # revisarlos, cerrar la pestaña y volver, y la pantalla de generación
+    # sabe de dónde leerlos. El trabajo se crea al pulsar "Generar".
+    sesion.add(SolicitudGeneracion(
+        guia_id=guia.id,
+        solicitada_por=usuario.id,
+        requerimientos=requerimientos,
+        alcance="guia_completa",
+        estado="borrador",
+    ))
     sesion.commit()
 
     return plantillas.TemplateResponse("requerimientos_ok.html", {
@@ -315,4 +330,141 @@ def guardar_requerimientos(
         # ensure_ascii=False: esta pantalla existe para que el docente
         # revise lo que se manda. "Psicolog\u00eda" no se puede revisar.
         "requerimientos_json": json.dumps(requerimientos, ensure_ascii=False, indent=2),
+    })
+
+
+@router.post("/guias-vista/{guia_id}/generar")
+def lanzar_generacion(
+    guia_id: int,
+    request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    """Extrae las unidades, encola el trabajo y lleva a la pantalla de progreso."""
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+
+    guia = sesion.get(Guia, guia_id)
+    if guia is None or (guia.autor_id != usuario.id and not usuario.tiene_rol("admin")):
+        return plantillas.TemplateResponse(
+            "no_encontrado.html", {"request": request}, status_code=404
+        )
+
+    ultima = (
+        sesion.query(SolicitudGeneracion)
+        .filter_by(guia_id=guia.id)
+        .order_by(SolicitudGeneracion.id.desc())
+        .first()
+    )
+    if ultima is None or not ultima.requerimientos:
+        return RedirectResponse(url=f"/guias-vista/{guia.id}/generar", status_code=303)
+
+    # Una sola generación viva por guía: dos clics seguidos pagarían el doble
+    # de tokens. Misma regla que aplica POST /api/guias/{id}/generar.
+    en_curso = (
+        sesion.query(SolicitudGeneracion)
+        .filter(
+            SolicitudGeneracion.guia_id == guia.id,
+            SolicitudGeneracion.estado.in_(("pendiente", "ejecutando")),
+        )
+        .first()
+    )
+    if en_curso is not None:
+        return RedirectResponse(url=f"/guias-vista/{guia.id}/progreso/{en_curso.id}",
+                                status_code=303)
+
+    reqs = dict(ultima.requerimientos)
+
+    # Las unidades salen del texto libre ANTES de encolar, no dentro del
+    # worker: si el docente escribió los contenidos de forma que no se pueden
+    # repartir, tiene que enterarse ahora y no tras ocho llamadas al modelo.
+    try:
+        unidades = extraer_unidades(
+            reqs.get("contents", ""), guia.total_semanas, llamar_modelo
+        )
+    except ErrorDeUnidades as exc:
+        return plantillas.TemplateResponse(
+            "requerimientos.html",
+            {"request": request, "guia": guia, "niveles": oferta.NIVELES,
+             "error": f"No se pudo repartir el temario por semanas: {exc}"},
+            status_code=422,
+        )
+
+    reqs["unidades"] = unidades
+    reqs["plan"] = plan_desde_unidades(unidades)
+    reqs["bibliografia"] = [
+        linea.strip() for linea in reqs.get("bibliography", "").splitlines() if linea.strip()
+    ]
+
+    solicitud = SolicitudGeneracion(
+        guia_id=guia.id,
+        solicitada_por=usuario.id,
+        requerimientos=reqs,
+        alcance="guia_completa",
+        estado="pendiente",
+    )
+    sesion.add(solicitud)
+    sesion.commit()
+    sesion.refresh(solicitud)
+
+    cola().enqueue(tareas.generar_guia_completa, solicitud.id)
+
+    return RedirectResponse(url=f"/guias-vista/{guia.id}/progreso/{solicitud.id}",
+                            status_code=303)
+
+
+@router.get("/guias-vista/{guia_id}/progreso/{trabajo_id}")
+def progreso(
+    guia_id: int,
+    trabajo_id: int,
+    request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+
+    solicitud = sesion.get(SolicitudGeneracion, trabajo_id)
+    if solicitud is None or solicitud.guia_id != guia_id:
+        return plantillas.TemplateResponse(
+            "no_encontrado.html", {"request": request}, status_code=404
+        )
+
+    guia = solicitud.guia
+    if guia.autor_id != usuario.id and not usuario.tiene_rol("admin"):
+        return plantillas.TemplateResponse(
+            "no_encontrado.html", {"request": request}, status_code=404
+        )
+
+    return plantillas.TemplateResponse("progreso.html", {
+        "request": request, "guia": guia, "trabajo": solicitud,
+    })
+
+
+@router.get("/ui/trabajo/{trabajo_id}")
+def ui_trabajo(
+    trabajo_id: int,
+    request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    """Fragmento que htmx recarga cada dos segundos."""
+    solicitud = sesion.get(SolicitudGeneracion, trabajo_id)
+    if usuario is None or solicitud is None:
+        return plantillas.TemplateResponse(
+            "_trabajo.html", {"request": request, "trabajo": None}, status_code=404
+        )
+
+    guia = solicitud.guia
+    if guia.autor_id != usuario.id and not usuario.tiene_rol("admin"):
+        return plantillas.TemplateResponse(
+            "_trabajo.html", {"request": request, "trabajo": None}, status_code=404
+        )
+
+    # La sesión puede tener la fila cacheada de la petición anterior; sin esto
+    # el progreso se quedaría congelado aunque el worker fuera avanzando.
+    sesion.refresh(solicitud)
+
+    return plantillas.TemplateResponse("_trabajo.html", {
+        "request": request, "trabajo": solicitud, "guia": guia,
     })

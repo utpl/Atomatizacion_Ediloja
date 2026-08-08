@@ -252,3 +252,23 @@ body {
   border-radius: 4px;
   overflow-x: auto;
 }
+
+/* --- paso 9: progreso -------------------------------------- */
+.ed-estado-trabajo {
+  display: inline-block; margin: 0 0 12px;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 4px 10px; border-radius: 999px;
+  background: #e9eef4; color: #4a5866;
+}
+.ed-estado-trabajo--ejecutando { background: #e4eef7; color: #1668b0; }
+.ed-estado-trabajo--completada { background: #e6f3ec; color: #1f7a4d; }
+.ed-estado-trabajo--fallida    { background: #fbeae9; color: #b3261e; }
+.ed-barra {
+  height: 8px; background: var(--ed-papel-3);
+  border-radius: 999px; overflow: hidden;
+}
+.ed-barra span {
+  display: block; height: 100%;
+  background: var(--ed-azul-600);
+  transition: width 400ms ease;
+}

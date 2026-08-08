@@ -10,6 +10,7 @@ la librería del proveedor por ninguna parte.
 
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import dataclass
 
@@ -80,3 +81,85 @@ def llamar_modelo(instrucciones: str, contenido: str) -> RespuestaModelo:
         tokens_entrada=getattr(uso, "input_tokens", 0) or 0,
         tokens_salida=getattr(uso, "output_tokens", 0) or 0,
     )
+
+# ---------------------------------------------------------------------------
+# Modo simulado
+# ---------------------------------------------------------------------------
+# Con AGENTE_SIMULADO=1 no se llama a ninguna API. Sirve para probar el flujo
+# completo -- encolar, worker, progreso, ensamblado, validacion -- sin gastar
+# tokens y sin depender de que la clave este configurada.
+#
+# Devuelve JSON con la forma canonica del curso.json, no texto: si devolviera
+# prosa, el generador la rechazaria y no probariamos nada.
+
+
+
+def _simulado(instrucciones: str, contenido: str) -> RespuestaModelo:
+    if "estructura la planificacion" in instrucciones or "reparto por semanas" in instrucciones:
+        total = 8
+        for linea in contenido.splitlines():
+            if "semanas:" in linea.lower():
+                try:
+                    total = int("".join(c for c in linea if c.isdigit()))
+                except ValueError:
+                    pass
+                break
+        mitad = max(1, total // 2)
+        datos = {"unidades": [
+            {"numero": 1, "titulo": "Unidad 1 (simulada)",
+             "semana_inicio": 1, "semana_fin": mitad},
+            {"numero": 2, "titulo": "Unidad 2 (simulada)",
+             "semana_inicio": mitad + 1, "semana_fin": total},
+        ]}
+        return RespuestaModelo(texto=json.dumps(datos, ensure_ascii=False),
+                               tokens_entrada=300, tokens_salida=120)
+
+    semana = 1
+    for linea in contenido.splitlines():
+        if linea.lower().startswith("genera la semana"):
+            try:
+                semana = int(linea.split()[3])
+            except (IndexError, ValueError):
+                pass
+            break
+
+    pagina = {
+        "titulo": f"Semana {semana}: contenidos",
+        "bloques": [
+            {"tipo": "encabezado", "nivel": 2, "texto": "Contextualizacion"},
+            {"tipo": "parrafo",
+             "texto": "Texto <strong>simulado</strong> de la semana "
+                      f"{semana}. No se llamo a ningun modelo."},
+            {"tipo": "focalizador", "focalizador": "recuerde",
+             "bloques": [{"tipo": "parrafo", "texto": "Repase antes de continuar."}]},
+            {"tipo": "lista", "ordenada": False,
+             "items": [{"texto": "Primer punto"}, {"texto": "Segundo punto"}]},
+        ],
+    }
+
+    # Si la semana cierra unidad, el modelo real incluye autoevaluacion de diez
+    # preguntas (regla institucional 10). Sin esto el simulado siempre da
+    # semaforo rojo y no sirve para probar el camino completo.
+    if "cierra unidad" in contenido.lower() or "autoevaluacion" in contenido.lower():
+        pagina["bloques"].append({
+            "tipo": "autoevaluacion",
+            "preguntas": [
+                {"id": f"q{i}", "numero": i,
+                 "enunciado": f"Pregunta {i} simulada sobre el contenido de la unidad",
+                 "opciones": [{"letra": "a", "texto": "Opcion A"},
+                              {"letra": "b", "texto": "Opcion B"},
+                              {"letra": "c", "texto": "Opcion C"}],
+                 "correcta": "a",
+                 "retroalimentacion": "Retroalimentacion simulada."}
+                for i in range(1, 11)
+            ],
+        })
+    return RespuestaModelo(texto=json.dumps(pagina, ensure_ascii=False),
+                           tokens_entrada=1200, tokens_salida=900)
+
+
+if os.getenv("AGENTE_SIMULADO") == "1":
+    _real = llamar_modelo
+
+    def llamar_modelo(instrucciones: str, contenido: str) -> RespuestaModelo:  # noqa: F811
+        return _simulado(instrucciones, contenido)

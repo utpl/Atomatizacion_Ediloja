@@ -1,0 +1,31 @@
+{% if trabajo is none %}
+  <p class="ed-error">No se pudo consultar el estado del trabajo.</p>
+{% else %}
+  {% set vivo = trabajo.estado in ('pendiente', 'ejecutando') %}
+
+  <div {% if vivo %}hx-get="/ui/trabajo/{{ trabajo.id }}"
+       hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>
+
+    <p class="ed-estado-trabajo ed-estado-trabajo--{{ trabajo.estado }}">{{ trabajo.estado }}</p>
+
+    <div class="ed-barra" role="progressbar"
+         aria-valuenow="{{ trabajo.progreso }}" aria-valuemin="0" aria-valuemax="100">
+      <span style="width: {{ trabajo.progreso }}%"></span>
+    </div>
+    <p class="ed-ayuda">{{ trabajo.progreso }} % · intento {{ trabajo.intentos }}</p>
+
+    {% if trabajo.estado == 'completada' %}
+      <p style="margin-top:20px"><a class="ed-boton" href="/curso">Abrir la guía</a></p>
+    {% elif trabajo.estado == 'fallida' %}
+      <p class="ed-error">{{ trabajo.mensaje_error }}</p>
+      <p class="ed-ayuda">Un fallo técnico no consume cuota de regeneración.</p>
+    {% endif %}
+
+    {% if trabajo.tokens_entrada %}
+      <p class="ed-ayuda">
+        {{ trabajo.modelo_usado }} · {{ trabajo.tokens_entrada }} tokens de entrada,
+        {{ trabajo.tokens_salida }} de salida
+      </p>
+    {% endif %}
+  </div>
+{% endif %}
