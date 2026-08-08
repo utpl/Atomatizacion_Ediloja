@@ -1,0 +1,22 @@
+# Worker de trabajos largos (generación con IA, subida a Canvas)
+FROM python:3.13-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY requirements.txt pyproject.toml ./
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+RUN pip install --no-cache-dir -e .
+
+RUN useradd --create-home ediloja && chown -R ediloja:ediloja /app
+USER ediloja
+
+# El worker no expone puerto: solo consume de la cola. Mismo código e misma
+# imagen base que la API a propósito — si divergen, acabas depurando por qué
+# algo funciona en la API y falla en el worker.
+CMD ["rq", "worker", "--url", "redis://redis:6379", "generacion"]

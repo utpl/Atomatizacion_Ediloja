@@ -1,0 +1,29 @@
+# API de EdiLoja
+FROM python:3.13-slim
+
+# No escribir .pyc y no bufferizar la salida: en contenedor los logs tienen que
+# salir al instante, si no, cuando algo falle no verás nada en CloudWatch.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Las dependencias en una capa aparte del código: así un cambio en el código no
+# obliga a reinstalar todo en cada build.
+COPY requirements.txt pyproject.toml ./
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+RUN pip install --no-cache-dir -e .
+
+# Usuario sin privilegios. Si alguien logra ejecutar algo dentro del
+# contenedor, que no sea root.
+RUN useradd --create-home ediloja && chown -R ediloja:ediloja /app
+USER ediloja
+
+EXPOSE 8000
+
+# Sin --reload: eso es para desarrollo. Los workers se ajustan al tamaño de la
+# instancia; 4 es un punto de partida razonable para ECS Fargate.
+CMD ["uvicorn", "apps.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
