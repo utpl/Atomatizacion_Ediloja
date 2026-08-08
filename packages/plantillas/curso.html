@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ curso.info_general.asignatura }} — App-EdiLoja{% endblock %}
+
+{% block contenido %}
+
+  <h1>{{ curso.info_general.asignatura }}</h1>
+  <p class="ed-meta">
+    {{ curso.info_general.codigo_banner }} ·
+    {{ curso.info_general.periodo }} ·
+    {{ curso.info_general.total_semanas }} semanas
+  </p>
+
+  <nav class="ed-semanas">
+    {% for p in paginas %}
+      <a class="ed-semana" href="/curso/{{ p.id }}"
+         {% if p.id == pagina.id %}aria-current="page"{% endif %}>Semana {{ p.semana }}</a>
+    {% endfor %}
+  </nav>
+
+  <article class="ed-hoja">
+    <h2>{{ pagina.titulo }}</h2>
+
+    {# Por ahora solo dos tipos. Los otros diez caen en el aviso final:
+       la regla es que un tipo desconocido NUNCA deja la página en blanco. #}
+    {% for b in pagina.bloques %}
+      {% if b.tipo == 'parrafo' %}
+        <p class="ed-parrafo">{{ b.texto | safe }}</p>
+
+      {% elif b.tipo == 'encabezado' %}
+        <h{{ b.nivel }} class="ed-encabezado">{{ b.texto | safe }}</h{{ b.nivel }}>
+
+      {% else %}
+        <div class="ed-bloque-desconocido" data-tipo="{{ b.tipo }}">
+          Tipo de bloque no soportado: <code>{{ b.tipo }}</code>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </article>
+
+{% endblock %}
