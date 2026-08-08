@@ -7,6 +7,7 @@ renderizado con Jinja2. Convención de la especificación (§2):
 Las páginas completas cuelgan de la raíz; los fragmentos, de /ui.
 """
 
+import json
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, Form, Request
@@ -311,4 +312,7 @@ def guardar_requerimientos(
         "request": request,
         "guia": guia,
         "requerimientos": requerimientos,
+        # ensure_ascii=False: esta pantalla existe para que el docente
+        # revise lo que se manda. "Psicolog\u00eda" no se puede revisar.
+        "requerimientos_json": json.dumps(requerimientos, ensure_ascii=False, indent=2),
     })
