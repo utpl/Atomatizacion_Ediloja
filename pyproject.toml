@@ -13,7 +13,8 @@ include = ["libs*", "apps*"]
 [tool.ruff]
 line-length = 100
 target-version = "py313"
-exclude = [".venv", "_archivo", "migraciones/versions"]
+exclude = [".venv", "_archivo", "migraciones/versions", "apps/migrador-canvas", "_archivo"]
+
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validador de Guías Didácticas — Word → JSON · EdiLoja</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root{
+    --nav:#003f72; --nav-hover:#00304f; --primary:#003f72; --primary-dark:#00304f;
+    --link:#0E68B3; --sec:#eaab00; --sec-dark:#c99200;
+    --border:#C7CDD1; --border-light:#E8EAEC; --bg:#F5F7FA; --ink:#273540; --muted:#5B6770;
+    --ok:#0B874B; --ok-bg:#E6F4EC; --warn:#8F6A00; --warn-bg:#FDF6E3; --err:#C22132; --err-bg:#FCEEF0;
+    --tema:#556572; --act:#BF5E0E; --quiz:#0B874B; --tabla:#7A5CA3; --caja:#B08A00;
+  }
+  a{color:var(--link)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{font-size:15px}
+  body{font-family:Lato,'Lucida Grande','Helvetica Neue',Arial,sans-serif;color:var(--ink);background:#fff;display:flex;min-height:100vh}
+  button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+  :focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+  table{border-collapse:collapse}
+
+  .rail{width:54px;background:var(--nav);flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:10px;gap:4px}
+  .rail .logo{width:38px;height:38px;border-radius:50%;background:var(--sec);color:#fff;font-weight:900;font-size:.72rem;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+  .rail span{color:#fff;opacity:.85;font-size:.54rem;text-align:center;padding:8px 2px;line-height:1.3}
+
+  .lista{width:262px;flex-shrink:0;border-right:1px solid var(--border);background:#fff;overflow-y:auto;display:flex;flex-direction:column}
+  .lista h1{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:16px 16px 8px}
+  .g-btn{display:block;width:100%;text-align:left;padding:10px 14px 10px 12px;border-left:4px solid transparent;border-bottom:1px solid var(--border-light)}
+  .g-btn:hover{background:#F2F6F8}
+  .g-btn[aria-pressed="true"]{border-left-color:var(--primary);background:#EBF4FA}
+  .g-btn .code{font-size:.7rem;font-weight:700;color:var(--link)}
+  .g-btn .name{font-size:.85rem;font-weight:700;line-height:1.25;margin:2px 0}
+  .g-btn .meta{font-size:.7rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .dot.ok{background:var(--ok)} .dot.warn{background:#D9A600} .dot.err{background:var(--err)}
+  .subir-mini{margin:auto 12px 14px;border:1px dashed var(--border);border-radius:6px;padding:10px;text-align:center;font-size:.78rem;color:var(--muted)}
+  .subir-mini:hover{background:#F2F6F8;border-color:var(--primary);color:var(--primary)}
+
+  main{flex:1;min-width:0}
+  .vacio{max-width:640px;margin:8vh auto;padding:0 24px}
+  .vacio h2{font-weight:400;font-size:1.7rem;margin-bottom:6px}
+  .vacio p{color:var(--muted);margin-bottom:22px}
+  .drop{border:2px dashed var(--border);border-radius:8px;padding:56px 24px;text-align:center;background:#FAFBFC;cursor:pointer}
+  .drop.arrastrando{border-color:var(--primary);background:#EBF4FA}
+  .drop svg{width:44px;height:44px;color:var(--primary);margin-bottom:10px}
+  .drop .t1{font-size:1.05rem;font-weight:700}
+  .drop .t2{font-size:.82rem;color:var(--muted);margin-top:4px}
+  .pasos{display:flex;gap:14px;margin-top:26px}
+  .paso{flex:1;border:1px solid var(--border);border-radius:6px;padding:14px}
+  .paso .k{font-size:.66rem;font-weight:700;letter-spacing:.1em;color:var(--primary);text-transform:uppercase}
+  .paso .d{font-size:.82rem;margin-top:4px;line-height:1.4}
+
+  .cargando{display:flex;align-items:center;gap:12px;margin:60px auto;justify-content:center;color:var(--muted)}
+  .spin{width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:g 0.9s linear infinite}
+  @keyframes g{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.spin{animation-duration:2.5s}}
+
+  .cab{padding:18px 26px 8px}
+  .cab h2{font-weight:400;font-size:1.6rem}
+  .cab .sub{margin-top:4px;font-size:.85rem;color:var(--muted)}
+  .cab .sub b{color:var(--ink)}
+
+  .semaforo{margin:12px 26px;border-radius:6px;padding:13px 16px;display:flex;gap:12px;align-items:flex-start;max-width:1020px}
+  .semaforo svg{width:22px;height:22px;flex-shrink:0;margin-top:1px}
+  .semaforo .tt{font-weight:700;font-size:.95rem}
+  .semaforo .dd{font-size:.82rem;margin-top:2px}
+  .semaforo.ok{background:var(--ok-bg);border:1px solid #9BD3B4;color:#0A5B34}
+  .semaforo.err{background:var(--err-bg);border:1px solid #F1A3AC;color:#87121F}
+  .semaforo .acciones{margin-left:auto;flex-shrink:0;display:flex;gap:8px}
+  .btn{border:1px solid var(--border);border-radius:4px;padding:8px 14px;font-size:.85rem;background:#fff;font-weight:700}
+  .btn:hover{background:#F2F6F8}
+  .btn.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn.pri:hover{background:var(--primary-dark)}
+  .btn.sec{background:var(--sec);border-color:var(--sec);color:#fff}
+  .btn.sec:hover{background:var(--sec-dark)}
+
+  .correcciones{margin:0 26px 8px;max-width:1020px}
+  .corr{border:1px solid #F1A3AC;background:var(--err-bg);border-radius:4px;padding:9px 12px;font-size:.82rem;margin-bottom:6px}
+  .corr b{color:#87121F}
+  .corr .fix{display:block;margin-top:2px;color:#5c3b40}
+  .nota-info{border:1px solid #EBDFAE;background:var(--warn-bg);border-radius:4px;padding:9px 12px;font-size:.82rem;margin-bottom:6px;color:#6b5300}
+
+  .panel{margin:14px 26px;max-width:1020px;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .panel > h3{background:var(--bg);padding:9px 14px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+  .cotejo{width:100%;font-size:.83rem}
+  .cotejo th,.cotejo td{text-align:left;padding:7px 14px;border-bottom:1px solid var(--border-light)}
+  .cotejo th{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+  .cotejo tr:last-child td{border-bottom:none}
+  .est{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px}
+  .est.pen{background:#EBF4FA;color:var(--primary-dark)}
+  .est.falta{background:var(--err-bg);color:var(--err)}
+  .fuente{color:var(--muted);font-size:.72rem}
+
+  .stats{display:flex;flex-wrap:wrap;gap:10px;padding:2px 26px 4px;max-width:1020px}
+  .stat{border:1px solid var(--border);border-radius:4px;padding:7px 13px;min-width:92px}
+  .stat .n{font-size:1.2rem;font-weight:700}
+  .stat .l{font-size:.64rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .stat.warn .n{color:var(--err)}
+
+  .estructura{padding:4px 26px 60px;max-width:1020px}
+  .bim{margin:20px 0 8px;font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:12px}
+  .bim::after{content:"";flex:1;height:1px;background:var(--border)}
+  .ra{border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:4px;background:#F7FAFC;padding:9px 13px;margin:10px 0;font-size:.83rem}
+  .ra b{color:var(--primary-dark)}
+  .ra-ctx{margin-top:5px;font-size:.78rem;color:var(--muted);border-top:1px dashed var(--border-light);padding-top:5px}
+  .ra-ctx b{color:var(--ink);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}
+  .ra-ctx.pendiente{color:#7A5CA3;font-style:italic;border-top-style:dotted}
+
+  .mod{border:1px solid var(--border);border-radius:4px;margin:9px 0;background:#fff;overflow:hidden}
+  .mod-h{width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);text-align:left}
+  .mod-h:hover{background:#EDEFF1}
+  .mod-h .tri{transition:transform .15s;color:var(--muted);flex-shrink:0}
+  .mod[data-open="true"] .mod-h .tri{transform:rotate(90deg)}
+  .mod-h .wk{font-weight:700;font-size:.93rem;white-space:nowrap}
+  .mod-h .un{font-size:.77rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mod-h .nb{margin-left:auto;flex-shrink:0;font-size:.7rem;color:var(--muted)}
+  .mod-b{display:none;border-top:1px solid var(--border);max-height:520px;overflow-y:auto}
+  .mod[data-open="true"] .mod-b{display:block}
+  .bq{display:flex;gap:10px;padding:8px 16px 8px 34px;border-bottom:1px solid var(--border-light);font-size:.84rem;align-items:flex-start}
+  .bq:last-child{border-bottom:none}
+  .bq .ic{flex-shrink:0;width:15px;height:15px;margin-top:2px}
+  .bq.encabezado{font-weight:700}
+  .bq.encabezado .ic{color:var(--tema)}
+  .bq.parrafo .ic,.bq.lista .ic{color:#9AA6AF}
+  .bq.lista{padding-left:48px}
+  .bq.tabla .ic{color:var(--tabla)}
+  .bq.caja{background:#FDF8E7}
+  .bq.caja .ic{color:var(--caja)}
+  .bq.cuadro_texto{background:var(--warn-bg)}
+  .bq.cuadro_texto .ic{color:var(--warn)}
+  .bq.imagen .ic{color:#3A87AD}
+  .bq.autoevaluacion_ref{background:var(--ok-bg);font-weight:700}
+  .bq.focalizador{background:#FFFDF7;border-left:4px solid #E26D0E;padding-top:10px;padding-bottom:10px}
+  .bq.focalizador .ic{color:#E26D0E}
+  .foc-badge{display:inline-block;background:#E26D0E;color:#fff;font-size:.62rem;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:10px;margin-bottom:4px}
+  .foc-icono{font-size:.68rem;color:var(--muted);margin-left:6px}
+  .bq.actividades{display:block;background:#FBF7F1;border:1px solid #E5C9A3;border-left:4px solid #BF5E0E;
+    border-radius:4px;margin:8px 14px;padding:0}
+  .bq.actividades.evaluadas{background:#F1F7F3;border-color:#A3CDB4;border-left-color:#0B874B}
+  .act-head{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border-light)}
+  .act-head b{font-size:.9rem}
+  .act-badge{margin-left:auto;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:2px 9px;border-radius:10px;background:#BF5E0E;color:#fff}
+  .bq.actividades.evaluadas .act-badge{background:#0B874B}
+  .bq.cita{background:#F7F8F9;border-left:4px solid #9AA6AF;font-style:italic}
+  .bq.cita .ic{color:#9AA6AF}
+  .bq.cita .autor{display:block;text-align:right;font-style:normal;font-size:.78rem;color:var(--muted);margin-top:4px}
+  .bq.recurso_ediloja{background:#FDF0F5;border-left:4px solid #C2185B}
+  .bq.recurso_ediloja .ic{color:#C2185B}
+  .bq.recurso_ediloja .rec-badge{display:inline-block;background:#C2185B;color:#fff;font-size:.62rem;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:10px;margin-bottom:4px}
+  .bq.smartart{background:#F3EDFB;border-left:3px solid #7A5CA3}
+  .bq.smartart .ic{color:#7A5CA3}
+  .bq.smartart .etiqueta-ia{display:inline-block;background:#7A5CA3;color:#fff;font-size:.62rem;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-bottom:4px}
+  .bq.smartart ol{margin:4px 0 0 18px}
+  .bq img{max-width:min(420px,100%);height:auto;border:1px solid var(--border);border-radius:4px;display:block;margin:2px 0}
+  .bq .pie-figura{font-size:.74rem;color:var(--muted);font-style:italic}
+  .bq .nombre-figura{font-size:.7rem;color:var(--primary);font-weight:700}
+  .t-titulo{font-weight:700;font-size:.8rem;margin-bottom:3px}
+  .t-nota{font-size:.75rem;color:var(--muted);font-style:italic;margin-top:3px}
+  .bq .num{color:var(--primary-dark);font-weight:700;margin-right:4px}
+  .bq ul,.bq ol{margin:0 0 0 20px;padding:0}
+  .bq li{margin:3px 0}
+  .bq.autoevaluacion_ref .ic{color:var(--quiz)}
+  .bq .tx{min-width:0;word-break:break-word;white-space:pre-wrap}
+  .bq .tx a{color:var(--primary)}
+  .mini-tabla{border:1px solid var(--border);font-size:.76rem;margin-top:2px}
+  .mini-tabla td,.mini-tabla th{border:1px solid var(--border-light);padding:3px 7px;vertical-align:top}
+  .mini-tabla th{background:var(--bg)}
+  .ecu{display:inline-block;background:#EEF;border:1px solid #CCD;border-radius:3px;padding:0 5px;font-family:monospace;font-size:.76rem;margin:1px 2px}
+
+  .autos .fila{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border-light);font-size:.85rem;flex-wrap:wrap}
+  .autos .fila:last-child{border-bottom:none}
+  .badge{font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:10px}
+  .badge.ok{background:var(--ok-bg);color:#0A5B34}
+  .badge.err{background:var(--err-bg);color:var(--err)}
+  .badge.warn{background:var(--warn-bg);color:var(--warn)}
+  .chip.conf{color:#7A5CA3;border-color:#CBBBE3;background:#F8F5FC}
+  .autos .det{color:var(--muted);font-size:.74rem}
+  .autos .ver{margin-left:auto;color:var(--primary);font-size:.78rem;font-weight:700}
+  .autos .cuerpo{display:none;width:100%;border:1px solid var(--border-light);border-radius:4px;margin-top:6px;max-height:340px;overflow-y:auto}
+  .autos .fila[data-open="true"] .cuerpo{display:block}
+
+  .pills{padding:10px 14px}
+  .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:14px;padding:4px 12px;font-size:.78rem;margin:0 6px 6px 0}
+  .pill.on::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok)}
+  .pill.off{color:var(--muted);border-style:dashed}
+  .pill.off::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--err)}
+
+  .sem-nav{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:14px 0 10px;position:sticky;top:0;background:#fff;padding:8px 0;z-index:5;border-bottom:1px solid var(--border-light)}
+  .sem-nav .lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-right:4px}
+  .sem-nav button{border:1px solid var(--border);border-radius:16px;padding:5px 12px;font-size:.8rem;font-weight:700;background:#fff;color:var(--ink)}
+  .sem-nav button:hover{border-color:var(--link);color:var(--link)}
+  .sem-nav button[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+  .sem-nav .flecha{border-radius:4px;padding:5px 10px}
+  .vista-switch{display:flex;gap:6px;margin:0 26px 10px;max-width:1020px}
+  .vista-switch button{border:1px solid var(--border);border-radius:4px;padding:7px 16px;font-size:.84rem;background:#F5F5F5;font-weight:700}
+  .vista-switch button[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+  #canvas-zona{margin:0 26px 40px;max-width:1320px}
+  #canvas-zona .barra{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+  #canvas-zona select{font:inherit;padding:7px 10px;border:1px solid var(--border);border-radius:4px;min-width:180px}
+  #canvas-frame{width:100%;height:74vh;border:1px solid var(--border);border-radius:4px;background:#fff}
+  .error-carga{max-width:640px;margin:20px auto;border:1px solid #F1A3AC;background:var(--err-bg);border-radius:6px;padding:14px 18px;color:#87121F;font-size:.9rem}
+
+  @media (max-width:900px){
+    body{flex-direction:column}
+    .rail{display:none}
+    .lista{width:100%;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
+    .lista h1{display:none}
+    .g-btn{min-width:185px;border-left:none;border-top:4px solid transparent;border-bottom:none;border-right:1px solid var(--border-light)}
+    .g-btn[aria-pressed="true"]{border-top-color:var(--primary)}
+    .subir-mini{margin:8px;min-width:130px}
+    .semaforo{flex-wrap:wrap}
+    .semaforo .acciones{margin-left:0;width:100%}
+    .pasos{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+  <nav class="rail" aria-label="Navegación global">
+    <div class="logo">EDI</div>
+    <span>Validador<br>Word→JSON</span>
+  </nav>
+
+  <nav class="lista" aria-label="Guías procesadas">
+    <h1>Guías procesadas</h1>
+    <div id="g-lista"></div>
+    <button class="subir-mini" id="subir-otra">＋ Subir otra guía (.docx)</button>
+  </nav>
+
+  <main id="main"></main>
+  <input type="file" id="file-input" accept=".docx" multiple hidden>
+
+<script>__NUCLEO__</script>
+<script>__CANVASGEN__</script>
+<script>
+"use strict";
+const guias = {};          // codigo → curso
+const imagenesPorGuia = {}; // codigo → {urls:{Figura1.png:objectURL}, datos:[{nombre,mime,datos}]}
+const buffersPorGuia = {};  // codigo → ArrayBuffer original (para generar el Word etiquetado)
+let urlsActivas = {};
+let activa = null;
+const $ = s => document.querySelector(s);
+const main = $("#main");
+const fileInput = $("#file-input");
+const esc = s => String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+/* ------------------------------------------------ clasificación de alertas */
+const GUIA_FIX = [
+  [/Tablas sin el formato completo/, "Cada tabla lleva tres partes: «Tabla N.» y su título arriba, la tabla, y «Nota.» (o «Fuente:») abajo. Complete lo que falte en el Word."],
+  [/Figuras de contenido sin .Nota/, "Añada debajo de la figura la línea «Nota. Tomado de …» con la fuente; si la imagen es solo decorativa, quítele el título y el número."],
+  [/viñeta\(s\) sueltas/, "Seleccione esas líneas en Word y aplíqueles una lista con viñetas o numeración estándar (botón de lista de la cinta), no símbolos insertados a mano."],
+  [/MITAD de la semana/, "Corte las actividades recomendadas y péguelas al FINAL de la semana, después de todo el contenido temático, bajo el encabezado «Actividades de aprendizaje recomendadas»."],
+  [/Accesibilidad Canvas/, "En Word, clic derecho sobre cada figura numerada → «Ver texto alternativo» y escriba una descripción. Canvas lo exige para accesibilidad; las figuras decorativas no lo necesitan."],
+  [/Contenidos, recursos y actividades de aprendizaje recomendadas/, "Cada resultado de aprendizaje debe cerrar con el encabezado exacto «Contenidos, recursos y actividades de aprendizaje recomendadas» antes de las semanas."],
+  [/más de una autoevaluación/, "Cada unidad debe cerrar con UNA sola autoevaluación. Fusione las preguntas en una única autoevaluación por unidad o elimine las sobrantes."],
+  [/sin unidad declarada/, "Escriba el encabezado «Unidad N. Título» antes de cada autoevaluación, para que quede asignada a su unidad."],
+  [/^Semanas no detectadas/, "En el Word, marque cada semana faltante como «Semana N:» usando un estilo de encabezado (o negrita). Verifique que no quedó dentro de una tabla o con otro nombre."],
+  [/sin entrada en el solucionario/, "Agregue en la sección SOLUCIONARIO una entrada con el mismo número («Autoevaluación N» o «Solucionario N») y sus respuestas."],
+  [/Numeración de autoevaluaciones duplicada/, "Renumere las autoevaluaciones en el Word para que cada una tenga un número único y coincida con su entrada del solucionario."],
+  [/Campo de portada no encontrado: (\w+)/, null],   // se arma dinámico
+];
+const CAMPO_TXT = {facultad:"la Facultad", asignatura:"el nombre de la asignatura (línea inmediatamente anterior a «Guía didáctica»)",
+  carrera:"la Carrera (tabla 2×2 de la portada)", nivel:"el nivel/PA (tabla 2×2 de la portada)", autor:"el nombre del autor (línea después de «Autor:»)"};
+function clasificarAlertas(alertas){
+  const estructurales=[], informativas=[];
+  for(const a of alertas){
+    if(/ecuaciones OMML|cuadros de texto rescatados|diagramas SmartArt|sin contextualización|Unidades sin autoevaluación|RECURSO\(S\) EDILOJA|Numeración automática de encabezados|Contextualización detectada sin encabezado|Figuras de contenido sin título/.test(a)){ informativas.push(a); continue; }
+    let fix=null;
+    for(const [rx,f] of GUIA_FIX){ if(rx.test(a)){ fix=f; break; } }
+    const m=/Campo de portada no encontrado en el documento: (\w+)/.exec(a);
+    if(m) fix="Complete en la portada del Word "+(CAMPO_TXT[m[1]]||m[1])+" y vuelva a subir el archivo.";
+    estructurales.push({texto:a, fix: fix||"Revise el documento Word y vuelva a subirlo."});
+  }
+  return {estructurales, informativas};
+}
+const estadoDe = c => clasificarAlertas(c.validaciones.alertas).estructurales.length ? "err"
+                    : (c.validaciones.alertas.length ? "warn" : "ok");
+
+/* ------------------------------------------------------------ vista vacía */
+function vistaVacia(){
+  main.innerHTML = `
+  <div class="vacio">
+    <h2>Validador de guías didácticas</h2>
+    <p>Suba la guía en Word, revise cómo quedó estructurada y descargue el JSON para continuar el proceso. Si algo está mal, corrija el Word y vuelva a subirlo.</p>
+    <div class="drop" id="drop" role="button" tabindex="0" aria-label="Subir guía .docx">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+      <div class="t1">Arrastre aquí la guía .docx</div>
+      <div class="t2">o haga clic para elegir el archivo — todo se procesa en su navegador, nada se sube a ningún servidor</div>
+    </div>
+    <div class="pasos">
+      <div class="paso"><div class="k">1 · Subir</div><div class="d">Seleccione la guía tal como la envió el docente. El nombre del archivo debe iniciar con el código Banner (ej. DERE_2070_...).</div></div>
+      <div class="paso"><div class="k">2 · Revisar</div><div class="d">Vea la información general, las semanas como páginas del curso, las autoevaluaciones por unidad y su cotejo con el solucionario.</div></div>
+      <div class="paso"><div class="k">3 · Decidir</div><div class="d">Si el semáforo está en verde, descargue el JSON y continúe el proceso. Si hay alertas, corrija el Word según las indicaciones y vuelva a subirlo.</div></div>
+    </div>
+    <div id="err-zona"></div>
+  </div>`;
+  const drop=$("#drop");
+  drop.addEventListener("click",()=>fileInput.click());
+  drop.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fileInput.click();}});
+  ["dragover","dragenter"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("arrastrando");}));
+  ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("arrastrando");}));
+  drop.addEventListener("drop",e=>procesarArchivos(e.dataTransfer.files));
+}
+
+/* ---------------------------------------------------------- procesamiento */
+async function procesarArchivos(files){
+  for(const f of files){
+    if(!f.name.toLowerCase().endsWith(".docx")){
+      mostrarError(`«${esc(f.name)}» no es un .docx. Guarde la guía como documento de Word (.docx) e intente de nuevo.`);
+      continue;
+    }
+    main.innerHTML = `<div class="cargando"><div class="spin"></div>Procesando ${esc(f.name)} — leyendo XML, segmentando semanas y cotejando autoevaluaciones…</div>`;
+    try{
+      const buf = await f.arrayBuffer();
+      const {curso, imagenes} = await PipelineGuia.procesarDocx(buf, f.name, JSZip, DOMParser);
+      const code = curso.info_general.codigo_banner;
+      guias[code] = curso;
+      buffersPorGuia[code] = buf;
+      const urls = {};
+      for(const img of imagenes){
+        try{ urls[img.nombre] = URL.createObjectURL(new Blob([img.datos],{type:img.mime})); }catch(e){}
+      }
+      imagenesPorGuia[code] = {urls, datos: imagenes};
+      activa = code;
+    }catch(err){
+      vistaVacia();
+      mostrarError(`No se pudo procesar «${esc(f.name)}»: ${esc(err.message)}. Verifique que el archivo no esté dañado ni protegido con contraseña.`);
+      return;
+    }
+  }
+  pintarLista();
+  if(activa) vistaCurso(activa);
+}
+function mostrarError(msg){
+  const zona=$("#err-zona");
+  if(zona) zona.innerHTML=`<div class="error-carga">${msg}</div>`;
+}
+
+/* ------------------------------------------------------- lista de guías */
+function pintarLista(){
+  const cont=$("#g-lista"); cont.innerHTML="";
+  for(const code of Object.keys(guias)){
+    const c=guias[code], est=estadoDe(c);
+    const b=document.createElement("button");
+    b.className="g-btn"; b.setAttribute("aria-pressed", code===activa?"true":"false");
+    b.innerHTML=`<span class="code">${esc(code.replace("_"," "))}</span>
+      <div class="name">${esc(c.info_general.asignatura||code)}</div>
+      <div class="meta"><span class="dot ${est}"></span>${c.estadisticas.paginas_semana} semanas · ${c.estadisticas.autoevaluaciones} autoeval.</div>`;
+    b.addEventListener("click",()=>{activa=code;pintarLista();vistaCurso(code);});
+    cont.appendChild(b);
+  }
+}
+
+/* ------------------------------------------------------- render de bloques */
+const IC={
+  encabezado:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h7"/></svg>',
+  parrafo:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg>',
+  lista:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="4" cy="6" r="1.4"/><circle cx="4" cy="12" r="1.4"/><circle cx="4" cy="18" r="1.4"/><path d="M9 6h11M9 12h11M9 18h11"/></svg>',
+  tabla:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 10h18M9 4v16M15 4v16"/></svg>',
+  caja:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>',
+  cuadro_texto:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2" stroke-dasharray="3 2"/><path d="M8 10h8M8 14h5"/></svg>',
+  imagen:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>',
+  autoevaluacion_ref:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-5"/><circle cx="12" cy="12" r="9"/></svg>'
+};
+function listaHTML(items, ordenada){
+  // construye <ol>/<ul> anidados a partir de items planos con nivel
+  let h="", nivel=-1, pila=[];
+  const abrir=t=>{h+=t==="ol"?"<ol>":"<ul>";pila.push(t);};
+  const cerrar=()=>{h+=pila.pop()==="ol"?"</ol>":"</ul>";};
+  for(const it of items){
+    const n=it.nivel||0;
+    while(nivel<n){abrir(it.tipo||( ordenada?"ol":"ul"));nivel++;}
+    while(nivel>n){cerrar();nivel--;}
+    let tx=esc(it.texto||"");
+    if(it.hipervinculos) for(const l of it.hipervinculos)
+      if(l.url&&l.texto) tx=tx.replace(esc(l.texto),`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.texto)}</a>`);
+    if(it.ecuaciones) tx+=it.ecuaciones.map(e=>` <span class="ecu">${esc(e||"ecuación")}</span>`).join("");
+    h+=`<li>${tx}</li>`;
+  }
+  while(pila.length)cerrar();
+  return h;
+}
+function imgHTML(im){
+  const nombre=(im.archivo||"").split("/").pop();
+  const url=urlsActivas[nombre];
+  return (url?`<img src="${url}" alt="${esc(nombre)}" loading="lazy">`
+             :`<div class="pie-figura">[imagen ${esc(nombre)} — formato no visualizable en navegador, incluida en el ZIP]</div>`)
+       + `<span class="nombre-figura">${esc(im.archivo||nombre)}</span>`;
+}
+function renderBloque(b){
+  if(b.tipo==="lista"&&b.items){
+    return `<div class="bq lista">${IC.lista}<div class="tx">${listaHTML(b.items,b.ordenada)}</div></div>`;
+  }
+  if(b.tipo==="tabla"){
+    const filas=b.celdas.slice(0,8);
+    const resto=b.n_filas-filas.length;
+    return `<div class="bq tabla">${IC.tabla}<div class="tx">
+      ${b.titulo?`<div class="t-titulo">${esc(b.titulo)}</div>`:""}
+      <table class="mini-tabla">${filas.map((f,i)=>`<tr>${f.map(c=>`<t${i?'d':'h'}>${esc(c)}</t${i?'d':'h'}>`).join("")}</tr>`).join("")}</table>
+      ${resto>0?`<span style="color:var(--muted);font-size:.72rem">+${resto} filas más (completas en el JSON)</span>`:""}
+      ${b.nota?`<div class="t-nota">${esc(b.nota)}</div>`:""}</div></div>`;
+  }
+  if(b.tipo==="cita"){
+    return `<div class="bq cita">${IC.parrafo}<div class="tx">${esc(b.texto)}
+      ${b.autor?`<span class="autor">— ${esc(b.autor)}</span>`:""}</div></div>`;
+  }
+  if(b.tipo==="recurso_ediloja"){
+    return `<div class="bq recurso_ediloja">${IC.caja}<div class="tx">
+      <span class="rec-badge">Recurso EdiLoja · lo genera otro agente de IA</span>
+      <div>${esc(b.texto)}</div></div></div>`;
+  }
+  if(b.tipo==="focalizador"){
+    return `<div class="bq focalizador">${IC.caja}<div class="tx">
+      <span class="foc-badge">${esc(b.subtipo||"Focalizador")}</span><span class="foc-icono">${esc(b.icono||"")}${b.delimitado?" · marcado por el revisor DI":""}</span>
+      ${b.texto?`<div>${esc(b.texto)}</div>`:""}
+      ${(b.imagenes||[]).map(imgHTML).join("")}
+      ${b.bloques?b.bloques.map(renderBloque).join(""):""}</div></div>`;
+  }
+  if(b.tipo==="actividades"){
+    const intro=(b.bloques||[]).map(renderBloque).join("");
+    const items=(b.items||[]).map(it=>`
+      <div style="margin:6px 0;padding:6px 10px;border-left:3px solid ${b.clase==="evaluadas"?"#0B874B":"#BF5E0E"};background:#fff">
+        <div style="font-weight:700;font-size:.82rem">${esc(it.titulo)}</div>
+        ${(it.bloques||[]).map(renderBloque).join("")}</div>`).join("");
+    return `<div class="bq actividades ${b.clase}">
+      <div class="act-head"><b>${esc(b.titulo)}</b>
+        <span class="act-badge">Sección Canvas · ${b.clase}${b._implicita?" (encabezado implícito)":""}</span></div>
+      ${intro}${items}</div>`;
+  }
+  if(b.tipo==="smartart"){
+    return `<div class="bq smartart">${IC.caja}<div class="tx">
+      <span class="etiqueta-ia">SmartArt · diagrama pendiente de generación por IA</span>
+      <div style="font-size:.78rem;color:#5a4580">Texto capturado en orden (${b.textos.length} elementos) para que un agente lo convierta en recurso visual:</div>
+      <ol>${b.textos.map(t=>`<li>${esc(t)}</li>`).join("")}</ol></div></div>`;
+  }
+  if(b.tipo==="imagen"){
+    const badge = b.decorativa
+      ? `<span style="font-size:.62rem;font-weight:700;color:#6B7780;background:#EEF;padding:1px 7px;border-radius:9px">figura decorativa</span>`
+      : (!b.alt_text
+          ? `<span style="font-size:.62rem;font-weight:700;color:#C00000;background:#FCEEF0;padding:1px 7px;border-radius:9px">⚠ sin texto alternativo</span>`
+          : `<span style="font-size:.62rem;font-weight:700;color:#0B874B;background:#E6F4EC;padding:1px 7px;border-radius:9px">alt ✓</span>`);
+    return `<div class="bq imagen">${IC.imagen}<div class="tx">
+      ${b.titulo?`<div class="t-titulo">${esc(b.titulo)}</div>`:""}
+      ${(b.imagenes||[]).map(imgHTML).join("")}
+      ${b.nota?`<div class="t-nota">${esc(b.nota)}</div>`:""}
+      <div style="margin-top:3px">${badge}${b.alt_text?` <span style="font-size:.72rem;color:var(--muted)">alt: ${esc(b.alt_text.slice(0,80))}</span>`:""}</div></div></div>`;
+  }
+  if(b.tipo==="autoevaluacion_ref")
+    return `<div class="bq autoevaluacion_ref">${IC.autoevaluacion_ref}<div class="tx">${esc(b.titulo)} — extraída como quiz de la Unidad ${b.unidad??"?"} (ver panel de autoevaluaciones)</div></div>`;
+  let extra="";
+  if(b.ecuaciones) extra+=b.ecuaciones.slice(0,4).map(e=>`<span class="ecu">${esc(e||"ecuación")}</span>`).join("")+(b.ecuaciones.length>4?` <span style="color:var(--muted);font-size:.72rem">+${b.ecuaciones.length-4} ecuaciones</span>`:"");
+  if(b.imagenes) extra+="<div>"+b.imagenes.map(imgHTML).join("")+"</div>";
+  let txt=esc(b.texto||"");
+  if(b.hipervinculos) for(const h of b.hipervinculos)
+    if(h.url&&h.texto) txt=txt.replace(esc(h.texto),`<a href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.texto)}</a>`);
+  const num=b.numeracion?`<span class="num">${esc(b.numeracion)}</span>`:"";
+  return `<div class="bq ${b.tipo}">${IC[b.tipo]||IC.parrafo}<div class="tx">${num}${txt}${extra}</div></div>`;
+}
+/* ------------------------------------------------------- vista del curso */
+function vistaCurso(code){
+  const c=guias[code], ig=c.info_general, e=c.estadisticas, v=c.validaciones;
+  urlsActivas=(imagenesPorGuia[code]||{}).urls||{};
+  const {estructurales, informativas}=clasificarAlertas(v.alertas);
+  const est=estadoDe(c);
+
+  const okSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-5"/><circle cx="12" cy="12" r="9"/></svg>';
+  const errSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>';
+
+  const stats=[["Semanas → páginas",e.paginas_semana],["Unidades",e.unidades],
+    ["Result. aprendizaje",e.resultados_aprendizaje],
+    ["Autoeval. cotejadas",`${e.autoevaluaciones_con_solucionario}/${e.autoevaluaciones}`,e.autoevaluaciones_con_solucionario<e.autoevaluaciones],
+    ["Tablas",e.tablas],["Listas",e.listas||0],["Citas",e.citas||0],
+    ["Recursos EdiLoja p/IA",e.recursos_ediloja||0,(e.recursos_ediloja||0)>0],
+    ["Focalizadores",e.focalizadores||0],
+    ["Act. recomendadas",e.actividades_recomendadas||0],["Act. evaluadas",e.actividades_evaluadas||0],
+    ["Cajas sin tipificar",e.cajas_destacadas],
+    ["Figuras (Imagenes/)",e.imagenes],["Figuras decorativas",e.figuras_decorativas||0],
+    ["Figuras sin alt",e.figuras_sin_alt||0,(e.figuras_sin_alt||0)>0],["SmartArt p/IA",e.smartart||0,(e.smartart||0)>0],
+    ["Hipervínculos",e.hipervinculos],["Ecuaciones OMML",e.ecuaciones_omml,e.ecuaciones_omml>0],
+    ["Cuadros de texto",e.cuadros_texto,e.cuadros_texto>0]];
+
+  main.innerHTML=`
+  <div class="cab">
+    <h2>${esc(ig.asignatura||code)}</h2>
+    <div class="sub"><b>${esc(ig.carrera||"Carrera no detectada")}</b> · Nivel ${esc(ig.nivel||"—")} · ${esc(ig.facultad||"")} · Autor: <b>${esc(ig.autor||"—")}</b></div>
+  </div>
+
+  <div class="semaforo ${est==="ok"||est==="warn"?"ok":"err"}">
+    ${est==="err"?errSvg:okSvg}
+    <div>
+      <div class="tt">${est==="err"
+        ? "Hay problemas estructurales — corrija el Word y vuelva a subirlo"
+        : "Estructura correcta — el JSON está listo para continuar el proceso"}</div>
+      <div class="dd">${est==="err"
+        ? estructurales.length+" corrección(es) pendiente(s) en el documento de origen."
+        : (informativas.length? "Solo hay notas informativas para etapas posteriores del pipeline (no requieren tocar el Word)." : "Sin alertas.")}</div>
+    </div>
+    <div class="acciones">
+      <button class="btn" id="descargar-json">⬇ JSON</button>
+      <button class="btn" id="descargar-word">⬇ Word etiquetado (GD-)</button>
+      <button class="btn sec" id="descargar-zip">⬇ ZIP (JSON + Imagenes/)</button>
+    </div>
+  </div>
+
+  <div class="correcciones">
+    ${estructurales.map(a=>`<div class="corr"><b>⚠ ${esc(a.texto)}</b><span class="fix">Cómo corregirlo: ${esc(a.fix)}</span></div>`).join("")}
+    ${informativas.map(a=>`<div class="nota-info">ℹ ${esc(a)} — lo resuelve el pipeline en etapas posteriores.</div>`).join("")}
+  </div>
+
+  <div class="vista-switch" role="tablist">
+    <button id="v-estructura" aria-pressed="true">🧱 Estructura extraída</button>
+    <button id="v-canvas" aria-pressed="false">🎨 Vista Canvas (Rediseño 3)</button>
+  </div>
+  <div id="canvas-zona" hidden>
+    <div class="barra">
+      <label for="canvas-pagina" style="font-size:.84rem;font-weight:700">Página:</label>
+      <select id="canvas-pagina"></select>
+      <button class="btn" id="descargar-pagina">⬇ HTML de esta página (para pegar en Canvas)</button>
+      <button class="btn sec" id="descargar-paginas-zip">⬇ ZIP páginas Canvas + Imagenes/</button>
+      <span class="note" style="font-size:.74rem;color:var(--muted)">Vista con el tema global Rediseño 3 · los «EDILOJA insertar» y contextualizaciones pendientes se completan con los agentes de IA</span>
+    </div>
+    <iframe id="canvas-frame" title="Vista previa Canvas"></iframe>
+  </div>
+  <div class="panel solo-estructura">
+    <h3>Información general · cotejo con base de datos</h3>
+    <table class="cotejo">
+      <tr><th>Campo</th><th>Valor extraído</th><th>Fuente</th><th>Verificar contra</th><th>Estado</th></tr>
+      ${ig.cotejo_bd.map(x=>`<tr>
+        <td><b>${esc(x.campo)}</b></td>
+        <td>${esc(x.valor||"—")}</td>
+        <td class="fuente">${esc(x.fuente)}</td>
+        <td class="fuente">${esc(x.verificar_contra)}</td>
+        <td><span class="est ${x.estado==="pendiente"?"pen":"falta"}">${x.estado==="pendiente"?"pendiente de cotejo":"falta en el Word"}</span></td>
+      </tr>`).join("")}
+    </table>
+  </div>
+
+  <div class="stats solo-estructura">${stats.map(([l,n,w])=>`<div class="stat${w?" warn":""}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("")}</div>
+
+  <div class="estructura solo-estructura" id="estructura"></div>`;
+
+  // ---------- Vista Canvas ----------
+  const selPag=$("#canvas-pagina"), frame=$("#canvas-frame");
+  const urlsImg=(imagenesPorGuia[code]||{}).urls||{};
+  const opciones=[{k:"inicio",t:"Página de inicio"}]
+    .concat(c.estructura.paginas.map(p=>({k:"s"+p.semana,t:p.titulo+(p.unidad?" · Unidad "+p.unidad:"")})));
+  selPag.innerHTML=opciones.map(o=>`<option value="${o.k}">${esc(o.t)}</option>`).join("");
+  const fragmentoDe=k=>{
+    if(k==="inicio") return CanvasGen.fragmentoInicio(c);
+    const p=c.estructura.paginas.find(x=>"s"+x.semana===k);
+    return CanvasGen.fragmentoSemana(c,p,urlsImg);
+  };
+  const nombreDe=k=>k==="inicio"?code+"_inicio.html":code+"_semana-"+k.slice(1)+".html";
+  const pintarCanvas=()=>{
+    try{
+      const k=selPag.value;
+      frame.srcdoc=CanvasGen.paginaCompleta(fragmentoDe(k), code+" · "+selPag.selectedOptions[0].text);
+    }catch(e){
+      frame.srcdoc=`<body style="font-family:sans-serif;padding:2em;color:#C22132">
+        <h3>No se pudo previsualizar esta página</h3><p>${String(e.message||e)}</p>
+        <p style="color:#5B6770">Reporte este mensaje al equipo técnico; el resto del validador sigue funcionando.</p></body>`;
+    }
+  };
+  selPag.addEventListener("change",pintarCanvas);
+  $("#v-estructura").addEventListener("click",()=>{
+    $("#v-estructura").setAttribute("aria-pressed","true");
+    $("#v-canvas").setAttribute("aria-pressed","false");
+    $("#canvas-zona").hidden=true;
+    document.querySelectorAll(".solo-estructura").forEach(x=>x.hidden=false);
+  });
+  $("#v-canvas").addEventListener("click",()=>{
+    $("#v-canvas").setAttribute("aria-pressed","true");
+    $("#v-estructura").setAttribute("aria-pressed","false");
+    document.querySelectorAll(".solo-estructura").forEach(x=>x.hidden=true);
+    $("#canvas-zona").hidden=false;
+    pintarCanvas();
+  });
+  $("#descargar-pagina").addEventListener("click",()=>{
+    const k=selPag.value;
+    bajar(new Blob([fragmentoDe(k)],{type:"text/html"}), nombreDe(k));
+  });
+  $("#descargar-paginas-zip").addEventListener("click",async()=>{
+    const zip=new JSZip();
+    // los fragmentos de descarga referencian Imagenes/FiguraN (sin blob URLs)
+    zip.file(code+"_inicio.html", CanvasGen.fragmentoInicio(c));
+    for(const p of c.estructura.paginas)
+      zip.file(code+"_semana-"+p.semana+".html", CanvasGen.fragmentoSemana(c,p,null));
+    const carpeta=zip.folder("Imagenes");
+    for(const img of (imagenesPorGuia[code]||{}).datos||[]) carpeta.file(img.nombre, img.datos);
+    bajar(await zip.generateAsync({type:"blob"}), code+"_paginas_canvas.zip");
+  });
+
+  function bajar(blob,nombre){
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob); a.download=nombre;
+    a.click(); URL.revokeObjectURL(a.href);
+  }
+  $("#descargar-json").addEventListener("click",()=>{
+    bajar(new Blob([JSON.stringify(c,null,1)],{type:"application/json"}), code+"_curso.json");
+  });
+  $("#descargar-word").addEventListener("click",async()=>{
+    const btn=$("#descargar-word"); btn.disabled=true; btn.textContent="Generando…";
+    try{
+      const r=await PipelineGuia.generarDocxEtiquetado(buffersPorGuia[code], JSZip, DOMParser, XMLSerializer);
+      bajar(new Blob([r.datos],{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"}),
+            code+"_etiquetado.docx");
+      btn.textContent="⬇ Word etiquetado ✓ ("+r.aplicados+" marcas)";
+    }catch(err){ btn.textContent="Error al generar"; console.error(err); }
+    finally{ btn.disabled=false; setTimeout(()=>btn.textContent="⬇ Word etiquetado (GD-)", 4000); }
+  });
+  $("#descargar-zip").addEventListener("click",async()=>{
+    const zip=new JSZip();
+    zip.file(code+"_curso.json", JSON.stringify(c,null,1));
+    const carpeta=zip.folder("Imagenes");
+    for(const img of (imagenesPorGuia[code]||{}).datos||[]) carpeta.file(img.nombre, img.datos);
+    bajar(await zip.generateAsync({type:"blob"}), code+"_paquete.zip");
+  });
+
+  const est_=$("#estructura");
+
+  // secciones 1 y 2
+  const sec=document.createElement("div"); sec.className="panel"; sec.style.margin="14px 0";
+  const subs=c.secciones.datos_informacion.subsecciones;
+  sec.innerHTML=`<h3>Secciones del documento</h3><div class="pills">
+    <span class="pill on">1. Datos de información (${subs.length} subsecciones: ${subs.map(s=>esc(s.clave)).join(", ")||"—"})</span>
+    <span class="pill ${c.secciones.metodologia.bloques.length?"on":"off"}">2. Metodología de aprendizaje (${c.secciones.metodologia.bloques.length} bloques)</span>
+    <span class="pill on">3. Orientaciones didácticas → ${c.estructura.paginas.length} páginas-semana</span>
+    ${["referencias","solucionario","glosario","anexos"].map(k=>{
+      const f=c.finales[k];
+      return `<span class="pill ${f?"on":"off"}">${k.charAt(0).toUpperCase()+k.slice(1)}${f?` (${f.bloques.length} bloques)`:" — ausente"}</span>`;
+    }).join("")}
+  </div>`;
+  est_.appendChild(sec);
+
+  // navegación por semana (una a la vez, sin scroll infinito)
+  const semNav=document.createElement("div"); semNav.className="sem-nav";
+  est_.appendChild(semNav);
+
+  // módulos por semana
+  let curBim=null, curRa=null;
+  const raBy={}; c.estructura.resultados_aprendizaje.forEach(r=>raBy[r.numero]=r);
+  const uniBy={}; c.estructura.unidades.forEach(u=>uniBy[u.numero]=u);
+  for(const p of c.estructura.paginas){
+    if(p.bimestre && p.bimestre!==curBim){
+      curBim=p.bimestre;
+      const h=document.createElement("div");h.className="bim";h.textContent=curBim;h.dataset.bim=curBim;est_.appendChild(h);
+    }
+    if(p.resultado_aprendizaje && p.resultado_aprendizaje!==curRa){
+      curRa=p.resultado_aprendizaje;
+      const r=raBy[curRa];
+      const d=document.createElement("div");d.className="ra";
+      d.innerHTML=`<b>Resultado de aprendizaje ${esc(curRa)}:</b> ${esc(r&&r.enunciado?r.enunciado:"enunciado no detectado")}
+        ${r&&r.contextualizacion
+          ?`<div class="ra-ctx"><b>Contextualización${r.contextualizacion_fuente==="implicita"?" (implícita — confirmar)":""}:</b> ${esc(r.contextualizacion)}</div>`
+          :`<div class="ra-ctx pendiente">Contextualización no incluida por el docente — la generará un agente de IA</div>`}`;
+      d.dataset.ra=curRa;
+      est_.appendChild(d);
+    }
+    const u=p.unidad?uniBy[p.unidad]:null;
+    const mod=document.createElement("section");mod.className="mod";mod.dataset.open="false";
+    mod.dataset.sem=String(p.semana);
+    mod.innerHTML=`<button class="mod-h" aria-expanded="false">
+      <svg class="tri" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l8 7-8 7z"/></svg>
+      <span class="wk">${esc(p.titulo)}</span>
+      <span class="un">${u?"· "+esc(u.titulo||("Unidad "+u.numero)):"· <em>sin unidad indicada</em>"}</span>
+      ${p.confianza&&p.confianza!=="alta"?`<span class="chip conf">detección: confianza ${p.confianza} — confirmar</span>`:""}
+      <span class="nb">${p.bloques.length} bloques</span></button>
+      <div class="mod-b"></div>`;
+    const btn=mod.querySelector(".mod-h"), body=mod.querySelector(".mod-b");
+    btn.addEventListener("click",()=>{
+      const open=mod.dataset.open==="true";
+      mod.dataset.open=String(!open); btn.setAttribute("aria-expanded",String(!open));
+      if(!open && !body.dataset.listo){
+        body.innerHTML=p.bloques.map(renderBloque).join("")||'<div class="bq parrafo"><div class="tx" style="color:var(--muted)">Sin bloques de contenido en esta semana</div></div>';
+        body.dataset.listo="1";
+      }
+    });
+    est_.appendChild(mod);
+  }
+
+  // pills de navegación + filtro de una semana a la vez
+  const pagsPorSem={}; c.estructura.paginas.forEach(p=>pagsPorSem[p.semana]=p);
+  const semanas=c.estructura.paginas.map(p=>p.semana);
+  let semSel=semanas[0];
+  const mostrarSemana=(n)=>{
+    semSel=n;
+    const p=pagsPorSem[n];
+    est_.querySelectorAll("[data-sem]").forEach(el=>{el.hidden = el.dataset.sem!==String(n);});
+    est_.querySelectorAll("[data-ra]").forEach(el=>{el.hidden = !p || el.dataset.ra!==String(p.resultado_aprendizaje);});
+    est_.querySelectorAll("[data-bim]").forEach(el=>{el.hidden = !p || !p.bimestre || el.dataset.bim!==p.bimestre;});
+    semNav.querySelectorAll("[data-pill]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.pill===String(n))));
+    // abrir automáticamente la semana visible
+    const mod=est_.querySelector(`.mod[data-sem="${n}"]`);
+    if(mod && mod.dataset.open!=="true") mod.querySelector(".mod-h").click();
+  };
+  semNav.innerHTML=`<span class="lbl">Semana</span>
+    <button class="flecha" id="sem-prev" aria-label="Semana anterior">‹</button>
+    ${semanas.map(s=>`<button data-pill="${s}" aria-pressed="false">${s}</button>`).join("")}
+    <button class="flecha" id="sem-next" aria-label="Semana siguiente">›</button>`;
+  semNav.querySelectorAll("[data-pill]").forEach(b=>b.addEventListener("click",()=>mostrarSemana(parseInt(b.dataset.pill,10))));
+  semNav.querySelector("#sem-prev").addEventListener("click",()=>{
+    const i=semanas.indexOf(semSel); mostrarSemana(semanas[(i-1+semanas.length)%semanas.length]);});
+  semNav.querySelector("#sem-next").addEventListener("click",()=>{
+    const i=semanas.indexOf(semSel); mostrarSemana(semanas[(i+1)%semanas.length]);});
+  mostrarSemana(semSel);
+
+  // autoevaluaciones por unidad
+  const autos=document.createElement("div");autos.className="panel autos";autos.style.margin="22px 0";
+  let filas="";
+  for(const u of c.estructura.unidades){
+    for(const a of u.autoevaluaciones){
+      const s=a.solucionario;
+      filas+=`<div class="fila" data-open="false">
+        <b>${esc(a.titulo)}</b>
+        <span class="det">Unidad ${a.unidad??"?"} · aparece en semana ${a.semana_en_que_aparece??"?"} · ${a.bloques.length} bloques de preguntas</span>
+        <span class="badge ${s.encontrado?(s.cotejado_por==="orden"?"warn":"ok"):"err"}">${s.encontrado?("solucionario ✓ por "+s.cotejado_por+(s.cotejado_por==="orden"?" — revisar":"")):"sin solucionario ✗"}</span>
+        <button class="ver">ver preguntas y respuestas</button>
+        <div class="cuerpo">
+          ${a.bloques.slice(0,60).map(renderBloque).join("")}
+          ${s.encontrado?`<div class="bim" style="margin:10px 14px 4px">Respuestas del solucionario</div>${s.bloques.slice(0,60).map(renderBloque).join("")}`:""}
+        </div></div>`;
+    }
+  }
+  autos.innerHTML=`<h3>Autoevaluaciones por unidad · cotejo con el solucionario</h3>${filas||'<div class="pills" style="color:var(--muted)">No se detectaron autoevaluaciones</div>'}`;
+  autos.querySelectorAll(".ver").forEach(b=>b.addEventListener("click",ev=>{
+    const f=ev.target.closest(".fila");
+    f.dataset.open=f.dataset.open==="true"?"false":"true";
+  }));
+  est_.appendChild(autos);
+}
+
+/* ------------------------------------------------------------------ init */
+fileInput.addEventListener("change",()=>{procesarArchivos(fileInput.files);fileInput.value="";});
+$("#subir-otra").addEventListener("click",()=>fileInput.click());
+vistaVacia();
+</script>
+</body>
+</html>

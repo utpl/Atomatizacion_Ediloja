@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Validador de Guías Didácticas — Word → JSON · EdiLoja</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root{
+    --nav:#003f72; --nav-hover:#00304f; --primary:#003f72; --primary-dark:#00304f;
+    --link:#0E68B3; --sec:#eaab00; --sec-dark:#c99200;
+    --border:#C7CDD1; --border-light:#E8EAEC; --bg:#F5F7FA; --ink:#273540; --muted:#5B6770;
+    --ok:#0B874B; --ok-bg:#E6F4EC; --warn:#8F6A00; --warn-bg:#FDF6E3; --err:#C22132; --err-bg:#FCEEF0;
+    --tema:#556572; --act:#BF5E0E; --quiz:#0B874B; --tabla:#7A5CA3; --caja:#B08A00;
+  }
+  a{color:var(--link)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{font-size:15px}
+  body{font-family:Lato,'Lucida Grande','Helvetica Neue',Arial,sans-serif;color:var(--ink);background:#fff;display:flex;min-height:100vh}
+  button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+  :focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+  table{border-collapse:collapse}
+
+  .rail{width:54px;background:var(--nav);flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding-top:10px;gap:4px}
+  .rail .logo{width:38px;height:38px;border-radius:50%;background:var(--sec);color:#fff;font-weight:900;font-size:.72rem;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+  .rail span{color:#fff;opacity:.85;font-size:.54rem;text-align:center;padding:8px 2px;line-height:1.3}
+
+  .lista{width:262px;flex-shrink:0;border-right:1px solid var(--border);background:#fff;overflow-y:auto;display:flex;flex-direction:column}
+  .lista h1{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:16px 16px 8px}
+  .g-btn{display:block;width:100%;text-align:left;padding:10px 14px 10px 12px;border-left:4px solid transparent;border-bottom:1px solid var(--border-light)}
+  .g-btn:hover{background:#F2F6F8}
+  .g-btn[aria-pressed="true"]{border-left-color:var(--primary);background:#EBF4FA}
+  .g-btn .code{font-size:.7rem;font-weight:700;color:var(--link)}
+  .g-btn .name{font-size:.85rem;font-weight:700;line-height:1.25;margin:2px 0}
+  .g-btn .meta{font-size:.7rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+  .dot.ok{background:var(--ok)} .dot.warn{background:#D9A600} .dot.err{background:var(--err)}
+  .subir-mini{margin:auto 12px 14px;border:1px dashed var(--border);border-radius:6px;padding:10px;text-align:center;font-size:.78rem;color:var(--muted)}
+  .subir-mini:hover{background:#F2F6F8;border-color:var(--primary);color:var(--primary)}
+
+  main{flex:1;min-width:0}
+  .vacio{max-width:640px;margin:8vh auto;padding:0 24px}
+  .vacio h2{font-weight:400;font-size:1.7rem;margin-bottom:6px}
+  .vacio p{color:var(--muted);margin-bottom:22px}
+  .drop{border:2px dashed var(--border);border-radius:8px;padding:56px 24px;text-align:center;background:#FAFBFC;cursor:pointer}
+  .drop.arrastrando{border-color:var(--primary);background:#EBF4FA}
+  .drop svg{width:44px;height:44px;color:var(--primary);margin-bottom:10px}
+  .drop .t1{font-size:1.05rem;font-weight:700}
+  .drop .t2{font-size:.82rem;color:var(--muted);margin-top:4px}
+  .pasos{display:flex;gap:14px;margin-top:26px}
+  .paso{flex:1;border:1px solid var(--border);border-radius:6px;padding:14px}
+  .paso .k{font-size:.66rem;font-weight:700;letter-spacing:.1em;color:var(--primary);text-transform:uppercase}
+  .paso .d{font-size:.82rem;margin-top:4px;line-height:1.4}
+
+  .cargando{display:flex;align-items:center;gap:12px;margin:60px auto;justify-content:center;color:var(--muted)}
+  .spin{width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:g 0.9s linear infinite}
+  @keyframes g{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.spin{animation-duration:2.5s}}
+
+  .cab{padding:18px 26px 8px}
+  .cab h2{font-weight:400;font-size:1.6rem}
+  .cab .sub{margin-top:4px;font-size:.85rem;color:var(--muted)}
+  .cab .sub b{color:var(--ink)}
+
+  .semaforo{margin:12px 26px;border-radius:6px;padding:13px 16px;display:flex;gap:12px;align-items:flex-start;max-width:1020px}
+  .semaforo svg{width:22px;height:22px;flex-shrink:0;margin-top:1px}
+  .semaforo .tt{font-weight:700;font-size:.95rem}
+  .semaforo .dd{font-size:.82rem;margin-top:2px}
+  .semaforo.ok{background:var(--ok-bg);border:1px solid #9BD3B4;color:#0A5B34}
+  .semaforo.err{background:var(--err-bg);border:1px solid #F1A3AC;color:#87121F}
+  .semaforo .acciones{margin-left:auto;flex-shrink:0;display:flex;gap:8px}
+  .btn{border:1px solid var(--border);border-radius:4px;padding:8px 14px;font-size:.85rem;background:#fff;font-weight:700}
+  .btn:hover{background:#F2F6F8}
+  .btn.pri{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn.pri:hover{background:var(--primary-dark)}
+  .btn.sec{background:var(--sec);border-color:var(--sec);color:#fff}
+  .btn.sec:hover{background:var(--sec-dark)}
+
+  .correcciones{margin:0 26px 8px;max-width:1020px}
+  .corr{border:1px solid #F1A3AC;background:var(--err-bg);border-radius:4px;padding:9px 12px;font-size:.82rem;margin-bottom:6px}
+  .corr b{color:#87121F}
+  .corr .fix{display:block;margin-top:2px;color:#5c3b40}
+  .nota-info{border:1px solid #EBDFAE;background:var(--warn-bg);border-radius:4px;padding:9px 12px;font-size:.82rem;margin-bottom:6px;color:#6b5300}
+
+  .panel{margin:14px 26px;max-width:1020px;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+  .panel > h3{background:var(--bg);padding:9px 14px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+  .cotejo{width:100%;font-size:.83rem}
+  .cotejo th,.cotejo td{text-align:left;padding:7px 14px;border-bottom:1px solid var(--border-light)}
+  .cotejo th{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+  .cotejo tr:last-child td{border-bottom:none}
+  .est{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:10px}
+  .est.pen{background:#EBF4FA;color:var(--primary-dark)}
+  .est.falta{background:var(--err-bg);color:var(--err)}
+  .fuente{color:var(--muted);font-size:.72rem}
+
+  .stats{display:flex;flex-wrap:wrap;gap:10px;padding:2px 26px 4px;max-width:1020px}
+  .stat{border:1px solid var(--border);border-radius:4px;padding:7px 13px;min-width:92px}
+  .stat .n{font-size:1.2rem;font-weight:700}
+  .stat .l{font-size:.64rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .stat.warn .n{color:var(--err)}
+
+  .estructura{padding:4px 26px 60px;max-width:1020px}
+  .bim{margin:20px 0 8px;font-size:.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:12px}
+  .bim::after{content:"";flex:1;height:1px;background:var(--border)}
+  .ra{border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:4px;background:#F7FAFC;padding:9px 13px;margin:10px 0;font-size:.83rem}
+  .ra b{color:var(--primary-dark)}
+  .ra-ctx{margin-top:5px;font-size:.78rem;color:var(--muted);border-top:1px dashed var(--border-light);padding-top:5px}
+  .ra-ctx b{color:var(--ink);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em}
+  .ra-ctx.pendiente{color:#7A5CA3;font-style:italic;border-top-style:dotted}
+
+  .mod{border:1px solid var(--border);border-radius:4px;margin:9px 0;background:#fff;overflow:hidden}
+  .mod-h{width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);text-align:left}
+  .mod-h:hover{background:#EDEFF1}
+  .mod-h .tri{transition:transform .15s;color:var(--muted);flex-shrink:0}
+  .mod[data-open="true"] .mod-h .tri{transform:rotate(90deg)}
+  .mod-h .wk{font-weight:700;font-size:.93rem;white-space:nowrap}
+  .mod-h .un{font-size:.77rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mod-h .nb{margin-left:auto;flex-shrink:0;font-size:.7rem;color:var(--muted)}
+  .mod-b{display:none;border-top:1px solid var(--border);max-height:520px;overflow-y:auto}
+  .mod[data-open="true"] .mod-b{display:block}
+  .bq{display:flex;gap:10px;padding:8px 16px 8px 34px;border-bottom:1px solid var(--border-light);font-size:.84rem;align-items:flex-start}
+  .bq:last-child{border-bottom:none}
+  .bq .ic{flex-shrink:0;width:15px;height:15px;margin-top:2px}
+  .bq.encabezado{font-weight:700}
+  .bq.encabezado .ic{color:var(--tema)}
+  .bq.parrafo .ic,.bq.lista .ic{color:#9AA6AF}
+  .bq.lista{padding-left:48px}
+  .bq.tabla .ic{color:var(--tabla)}
+  .bq.caja{background:#FDF8E7}
+  .bq.caja .ic{color:var(--caja)}
+  .bq.cuadro_texto{background:var(--warn-bg)}
+  .bq.cuadro_texto .ic{color:var(--warn)}
+  .bq.imagen .ic{color:#3A87AD}
+  .bq.autoevaluacion_ref{background:var(--ok-bg);font-weight:700}
+  .bq.focalizador{background:#FFFDF7;border-left:4px solid #E26D0E;padding-top:10px;padding-bottom:10px}
+  .bq.focalizador .ic{color:#E26D0E}
+  .foc-badge{display:inline-block;background:#E26D0E;color:#fff;font-size:.62rem;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:10px;margin-bottom:4px}
+  .foc-icono{font-size:.68rem;color:var(--muted);margin-left:6px}
+  .bq.actividades{display:block;background:#FBF7F1;border:1px solid #E5C9A3;border-left:4px solid #BF5E0E;
+    border-radius:4px;margin:8px 14px;padding:0}
+  .bq.actividades.evaluadas{background:#F1F7F3;border-color:#A3CDB4;border-left-color:#0B874B}
+  .act-head{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border-light)}
+  .act-head b{font-size:.9rem}
+  .act-badge{margin-left:auto;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:2px 9px;border-radius:10px;background:#BF5E0E;color:#fff}
+  .bq.actividades.evaluadas .act-badge{background:#0B874B}
+  .bq.cita{background:#F7F8F9;border-left:4px solid #9AA6AF;font-style:italic}
+  .bq.cita .ic{color:#9AA6AF}
+  .bq.cita .autor{display:block;text-align:right;font-style:normal;font-size:.78rem;color:var(--muted);margin-top:4px}
+  .bq.recurso_ediloja{background:#FDF0F5;border-left:4px solid #C2185B}
+  .bq.recurso_ediloja .ic{color:#C2185B}
+  .bq.recurso_ediloja .rec-badge{display:inline-block;background:#C2185B;color:#fff;font-size:.62rem;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;padding:2px 9px;border-radius:10px;margin-bottom:4px}
+  .bq.smartart{background:#F3EDFB;border-left:3px solid #7A5CA3}
+  .bq.smartart .ic{color:#7A5CA3}
+  .bq.smartart .etiqueta-ia{display:inline-block;background:#7A5CA3;color:#fff;font-size:.62rem;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-bottom:4px}
+  .bq.smartart ol{margin:4px 0 0 18px}
+  .bq img{max-width:min(420px,100%);height:auto;border:1px solid var(--border);border-radius:4px;display:block;margin:2px 0}
+  .bq .pie-figura{font-size:.74rem;color:var(--muted);font-style:italic}
+  .bq .nombre-figura{font-size:.7rem;color:var(--primary);font-weight:700}
+  .t-titulo{font-weight:700;font-size:.8rem;margin-bottom:3px}
+  .t-nota{font-size:.75rem;color:var(--muted);font-style:italic;margin-top:3px}
+  .bq .num{color:var(--primary-dark);font-weight:700;margin-right:4px}
+  .bq ul,.bq ol{margin:0 0 0 20px;padding:0}
+  .bq li{margin:3px 0}
+  .bq.autoevaluacion_ref .ic{color:var(--quiz)}
+  .bq .tx{min-width:0;word-break:break-word;white-space:pre-wrap}
+  .bq .tx a{color:var(--primary)}
+  .mini-tabla{border:1px solid var(--border);font-size:.76rem;margin-top:2px}
+  .mini-tabla td,.mini-tabla th{border:1px solid var(--border-light);padding:3px 7px;vertical-align:top}
+  .mini-tabla th{background:var(--bg)}
+  .ecu{display:inline-block;background:#EEF;border:1px solid #CCD;border-radius:3px;padding:0 5px;font-family:monospace;font-size:.76rem;margin:1px 2px}
+
+  .autos .fila{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border-light);font-size:.85rem;flex-wrap:wrap}
+  .autos .fila:last-child{border-bottom:none}
+  .badge{font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:10px}
+  .badge.ok{background:var(--ok-bg);color:#0A5B34}
+  .badge.err{background:var(--err-bg);color:var(--err)}
+  .badge.warn{background:var(--warn-bg);color:var(--warn)}
+  .chip.conf{color:#7A5CA3;border-color:#CBBBE3;background:#F8F5FC}
+  .autos .det{color:var(--muted);font-size:.74rem}
+  .autos .ver{margin-left:auto;color:var(--primary);font-size:.78rem;font-weight:700}
+  .autos .cuerpo{display:none;width:100%;border:1px solid var(--border-light);border-radius:4px;margin-top:6px;max-height:340px;overflow-y:auto}
+  .autos .fila[data-open="true"] .cuerpo{display:block}
+
+  .pills{padding:10px 14px}
+  .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:14px;padding:4px 12px;font-size:.78rem;margin:0 6px 6px 0}
+  .pill.on::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok)}
+  .pill.off{color:var(--muted);border-style:dashed}
+  .pill.off::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--err)}
+
+  .sem-nav{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:14px 0 10px;position:sticky;top:0;background:#fff;padding:8px 0;z-index:5;border-bottom:1px solid var(--border-light)}
+  .sem-nav .lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-right:4px}
+  .sem-nav button{border:1px solid var(--border);border-radius:16px;padding:5px 12px;font-size:.8rem;font-weight:700;background:#fff;color:var(--ink)}
+  .sem-nav button:hover{border-color:var(--link);color:var(--link)}
+  .sem-nav button[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+  .sem-nav .flecha{border-radius:4px;padding:5px 10px}
+  .vista-switch{display:flex;gap:6px;margin:0 26px 10px;max-width:1020px}
+  .vista-switch button{border:1px solid var(--border);border-radius:4px;padding:7px 16px;font-size:.84rem;background:#F5F5F5;font-weight:700}
+  .vista-switch button[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+  #canvas-zona{margin:0 26px 40px;max-width:1320px}
+  #canvas-zona .barra{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+  #canvas-zona select{font:inherit;padding:7px 10px;border:1px solid var(--border);border-radius:4px;min-width:180px}
+  #canvas-frame{width:100%;height:74vh;border:1px solid var(--border);border-radius:4px;background:#fff}
+  .error-carga{max-width:640px;margin:20px auto;border:1px solid #F1A3AC;background:var(--err-bg);border-radius:6px;padding:14px 18px;color:#87121F;font-size:.9rem}
+
+  @media (max-width:900px){
+    body{flex-direction:column}
+    .rail{display:none}
+    .lista{width:100%;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border)}
+    .lista h1{display:none}
+    .g-btn{min-width:185px;border-left:none;border-top:4px solid transparent;border-bottom:none;border-right:1px solid var(--border-light)}
+    .g-btn[aria-pressed="true"]{border-top-color:var(--primary)}
+    .subir-mini{margin:8px;min-width:130px}
+    .semaforo{flex-wrap:wrap}
+    .semaforo .acciones{margin-left:0;width:100%}
+    .pasos{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+  <nav class="rail" aria-label="Navegación global">
+    <div class="logo">EDI</div>
+    <span>Validador<br>Word→JSON</span>
+  </nav>
+
+  <nav class="lista" aria-label="Guías procesadas">
+    <h1>Guías procesadas</h1>
+    <div id="g-lista"></div>
+    <button class="subir-mini" id="subir-otra">＋ Subir otra guía (.docx)</button>
+  </nav>
+
+  <main id="main"></main>
+  <input type="file" id="file-input" accept=".docx" multiple hidden>
+
+<script>/* Núcleo del pipeline Word → JSON de curso (v2.1) — JavaScript.
+   v2.1: numeración automática de Word (numbering.xml), unidad dentro de la
+   página, listas agrupadas <ol>/<ul>, tabla como sección (título+tabla+nota),
+   imágenes → Imagenes/FiguraN, texto de SmartArt para generación posterior. */
+(function (root) {
+"use strict";
+const W  = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+const M  = "http://schemas.openxmlformats.org/officeDocument/2006/math";
+const A  = "http://schemas.openxmlformats.org/drawingml/2006/main";
+const R  = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+const DGM= "http://schemas.openxmlformats.org/drawingml/2006/diagram";
+const WP = "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing";
+
+/* Diccionario canónico (fuente: config_canonico.json). Editar variantes ahí
+   y regenerar; no es necesario tocar la lógica. */
+const CONFIG = {
+  "version": "1.0",
+  "tolerancia_difusa": 2,
+  "estilos_marca_prefijo": "GD-",
+  "anclas": {
+    "datos": ["datos de informacion", "datos informativos", "informacion general"],
+    "metodologia": ["metodologia de aprendizaje", "metodologia", "orientaciones metodologicas"],
+    "orientaciones": ["orientaciones didacticas por resultados de aprendizaje",
+                      "orientaciones didacticas por resultados de aprenizaje",
+                      "orientaciones didacticas"],
+    "referencias": ["referencias bibliograficas", "referencias", "bibliografia", "lista de referencias"],
+    "solucionario": ["solucionario", "solucionarios", "solucionario de las autoevaluaciones"],
+    "glosario": ["glosario", "glosario de terminos"],
+    "anexos": ["anexos", "anexo"]
+  },
+  "subsecciones_datos": {
+    "presentacion": ["presentacion de la asignatura", "presentacion"],
+    "competencias_genericas": ["competencias genericas de la utpl", "competencia generica de la utpl"],
+    "competencias_perfil": ["competencias del perfil profesional", "competencias especificas de la carrera"],
+    "problematica": ["problematica que aborda la asignatura", "problematica"]
+  },
+  "marcadores": {
+    "semana": "^semana\\s*(\\d{1,2})\\s*[:.\\-]?\\s*$",
+    "resultado": "^resultados?\\s+de\\s+apr\\w*\\s*(\\d+)?\\s*[:.]?\\s*$",
+    "unidad": "^unidad\\s*(\\d{1,2})\\s*[:.\\-]?\\s*(.*)$",
+    "autoevaluacion": "^autoevaluaci\\w+\\s*[:.]?\\s*(.*)$",
+    "bimestre": "^(primer|segundo)\\s+bimestre$|^planificacion\\s+del\\s+modulo$",
+    "actividades_recomendadas": "^actividad(es)?\\b.*recomendad",
+    "actividades_evaluadas": "^actividad(es)?\\b.*(evaluad|calificad)",
+    "contextualizacion": "^contextualizaci",
+    "focalizador_inicio": "^inicio\\s+focalizador\\s+(.+?)\\s*$",
+    "focalizador_fin": "^fin\\s+focalizador"
+  },
+  "focalizadores": [
+    ["informacion importante", "Información importante"],
+    ["orientacion a actividades", "Orientación a actividades"],
+    ["muy bien", "Muy bien"], ["apuntar", "Apuntar"], ["avancemos", "Avancemos"],
+    ["buscar", "Buscar"], ["caso", "Caso"], ["ejemplo", "Ejemplo"],
+    ["ejercicio", "Ejercicio"], ["enlace", "Enlace"], ["foro", "Foro"],
+    ["importante", "Importante"], ["lectura", "Lectura"], ["nota", "Nota"],
+    ["observe", "Observe"], ["recuerde", "Recuerde"], ["reflexione", "Reflexione"],
+    ["video", "Video"]
+  ]
+};
+
+/* ---------------------------------------------------------- utilidades */
+function norm(s){
+  s = (s||"").toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  return s.replace(/\s+/g," ");
+}
+const ROM = {i:1,ii:2,iii:3,iv:4,v:5,vi:6,vii:7,viii:8,ix:9,x:10,xi:11,xii:12,xiii:13,xiv:14,xv:15,xvi:16};
+function numDe(t){
+  let m = /\b(\d{1,2})\b/.exec(t||"");
+  if (m) return parseInt(m[1],10);
+  m = /\b([ivx]{1,4})\b/.exec(norm(t));
+  return m ? (ROM[m[1]]||null) : null;
+}
+function editDist(a,b,tol){
+  if (Math.abs(a.length-b.length)>tol) return tol+1;
+  let d=0,i=0,j=0;
+  while(i<a.length && j<b.length){
+    if(a[i]===b[j]){i++;j++;}
+    else{d++; if(a.length>b.length)i++; else if(b.length>a.length)j++; else {i++;j++;}
+         if(d>tol) return d;}
+  }
+  return d+(a.length-i)+(b.length-j);
+}
+function fuzzy(nt, candidatos, tol){
+  tol = tol==null?2:tol;
+  return candidatos.some(c => nt===c || editDist(nt,c,tol)<=tol);
+}
+function hijos(el, ns, nombre){
+  const out=[];
+  for(let n=el.firstChild;n;n=n.nextSibling)
+    if(n.nodeType===1 && n.localName===nombre && n.namespaceURI===ns) out.push(n);
+  return out;
+}
+function desc(el, ns, nombre){ return Array.from(el.getElementsByTagNameNS(ns, nombre)); }
+function attrW(el, nombre){ return el.getAttributeNS(W,nombre) ?? el.getAttribute("w:"+nombre); }
+function dentroDeTxbx(n, tope){
+  for(let p=n.parentNode; p && p!==tope; p=p.parentNode)
+    if(p.localName==="txbxContent") return true;
+  return false;
+}
+function textoDe(el, excluirTxbx){
+  let out="";
+  (function walk(n){
+    for(let c=n.firstChild;c;c=c.nextSibling){
+      if(c.nodeType!==1) continue;
+      if(excluirTxbx && c.localName==="txbxContent") continue;
+      if(c.namespaceURI===W && c.localName==="t"){ out+=c.textContent||""; continue; }
+      if(c.namespaceURI===W && (c.localName==="tab"||c.localName==="br")){ out+=" "; continue; }
+      walk(c);
+    }
+  })(el);
+  return out;
+}
+
+/* ------------------------------------ numeración automática de Word */
+function mapaNumeracion(numDoc){
+  const abstracts={}, nums={};
+  if(!numDoc) return {abstracts,nums};
+  for(const an of desc(numDoc,W,"abstractNum")){
+    const aid = an.getAttributeNS(W,"abstractNumId") ?? an.getAttribute("w:abstractNumId");
+    const lvls={};
+    for(const lvl of hijos(an,W,"lvl")){
+      const il = parseInt(attrW(lvl,"ilvl"),10);
+      const g = tag => { const e=hijos(lvl,W,tag)[0]; return e?attrW(e,"val"):null; };
+      lvls[il] = {fmt:g("numFmt")||"decimal", lvlText:g("lvlText")||"", start:parseInt(g("start")||"1",10)};
+    }
+    abstracts[aid]=lvls;
+  }
+  for(const n of desc(numDoc,W,"num")){
+    const nid = n.getAttributeNS(W,"numId") ?? n.getAttribute("w:numId");
+    const a = hijos(n,W,"abstractNumId")[0];
+    const overrides={};
+    for(const lo of hijos(n,W,"lvlOverride")){
+      const il=parseInt(attrW(lo,"ilvl"),10);
+      const so=hijos(lo,W,"startOverride")[0];
+      if(so) overrides[il]=parseInt(attrW(so,"val"),10);
+    }
+    nums[nid]={aid: a?attrW(a,"val"):null, overrides};
+  }
+  return {abstracts,nums};
+}
+function romano(n){
+  const t=[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],
+           [50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+  let r=""; for(const[v,s]of t){while(n>=v){r+=s;n-=v;}} return r;
+}
+function fmtVal(fmt,v){
+  if(fmt==="lowerLetter") return String.fromCharCode(97+((v-1)%26));
+  if(fmt==="upperLetter") return String.fromCharCode(65+((v-1)%26));
+  if(fmt==="lowerRoman")  return romano(v).toLowerCase();
+  if(fmt==="upperRoman")  return romano(v);
+  if(fmt==="none"||fmt==="bullet") return "";
+  return String(v);
+}
+function crearContador(info){
+  const estados={};
+  return { next(numId, ilvl){
+    const inf=info.nums[numId]; if(!inf) return null;
+    const lvls=info.abstracts[inf.aid]; if(!lvls||!lvls[ilvl]) return null;
+    let st=estados[inf.aid]; if(!st) st=estados[inf.aid]={c:{}};
+    const startDe=k=> inf.overrides[k]!=null ? inf.overrides[k] : (lvls[k]?lvls[k].start:1);
+    st.c[ilvl] = st.c[ilvl]==null ? startDe(ilvl) : st.c[ilvl]+1;
+    for(const k of Object.keys(st.c)) if(parseInt(k,10)>ilvl) delete st.c[k];
+    const lv=lvls[ilvl];
+    if(lv.fmt==="bullet") return {fmt:"bullet", texto:""};
+    const texto=(lv.lvlText||"").replace(/%(\d)/g,(_,d)=>{
+      const k=parseInt(d,10)-1;
+      const v=st.c[k]!=null?st.c[k]:startDe(k);
+      return fmtVal(lvls[k]?lvls[k].fmt:"decimal", v);
+    });
+    return {fmt:lv.fmt, texto};
+  }};
+}
+
+/* -------------------------------------------- lectura de estilos/rels */
+function mapaEstilos(stylesDoc){
+  const map={};
+  if(!stylesDoc) return map;
+  for(const st of desc(stylesDoc,W,"style")){
+    const id = st.getAttributeNS(W,"styleId") ?? st.getAttribute("w:styleId");
+    const nameEl = hijos(st,W,"name")[0];
+    const name = nameEl ? attrW(nameEl,"val") : id;
+    const basedEl = hijos(st,W,"basedOn")[0];
+    let outline=null, numId=null, ilvl=0;
+    const ppr = hijos(st,W,"pPr")[0];
+    if(ppr){
+      const ol=hijos(ppr,W,"outlineLvl")[0];
+      if(ol) outline=parseInt(attrW(ol,"val"),10)+1;
+      const np=hijos(ppr,W,"numPr")[0];
+      if(np){
+        const ni=hijos(np,W,"numId")[0], il=hijos(np,W,"ilvl")[0];
+        if(ni) numId=attrW(ni,"val");
+        if(il) ilvl=parseInt(attrW(il,"val"),10);
+      }
+    }
+    if(id) map[id]={name:name||id, outline, numId, ilvl,
+                    basedOn: basedEl?attrW(basedEl,"val"):null};
+  }
+  // resolver numeración y nivel de esquema heredados por basedOn
+  for(const id of Object.keys(map)){
+    let cur=map[id], saltos=0;
+    while(cur && cur.numId==null && cur.basedOn && saltos++<10) cur=map[cur.basedOn];
+    if(cur && cur.numId!=null && map[id].numId==null){
+      map[id].numId=cur.numId; map[id].ilvl=cur.ilvl;
+    }
+    cur=map[id]; saltos=0;
+    while(cur && cur.outline==null && cur.basedOn && saltos++<10) cur=map[cur.basedOn];
+    if(cur && cur.outline!=null && map[id].outline==null) map[id].outline=cur.outline;
+  }
+  return map;
+}
+function mapaRels(relsDoc){
+  const map={};
+  if(!relsDoc) return map;
+  for(const rel of Array.from(relsDoc.getElementsByTagName("Relationship")))
+    map[rel.getAttribute("Id")]=rel.getAttribute("Target");
+  return map;
+}
+
+/* ------------------------------------------------ lectura de bloques */
+function leerParrafo(p, ctx, bid){
+  const {estilos, rels, contador, diagramas} = ctx;
+  const ppr = hijos(p,W,"pPr")[0];
+  let styleId=null;
+  if(ppr){ const ps=hijos(ppr,W,"pStyle")[0]; if(ps) styleId=attrW(ps,"val"); }
+  const stInfo = styleId && estilos[styleId] ? estilos[styleId] : {name:styleId||"Normal", outline:null, numId:null, ilvl:0};
+  const estilo = stInfo.name || "Normal";
+  let nivel=null;
+  let m=/heading (\d)/i.exec(estilo)||/t.tulo (\d)/i.exec(estilo);
+  if(m) nivel=parseInt(m[1],10);
+  if(nivel==null && ppr){
+    const ol=hijos(ppr,W,"outlineLvl")[0];
+    if(ol) nivel=parseInt(attrW(ol,"val"),10)+1;
+  }
+  if(nivel==null && stInfo.outline) nivel=stInfo.outline;
+  // numeración efectiva: numPr directo del párrafo, o el del estilo
+  let numId=null, ilvl=0, directo=false;
+  if(ppr){
+    const np=hijos(ppr,W,"numPr")[0];
+    if(np){
+      const ni=hijos(np,W,"numId")[0], il=hijos(np,W,"ilvl")[0];
+      if(ni){ numId=attrW(ni,"val"); directo=true; }
+      if(il) ilvl=parseInt(attrW(il,"val"),10);
+    }
+  }
+  if(numId==null && stInfo.numId!=null){ numId=stInfo.numId; ilvl=stInfo.ilvl||0; }
+  if(numId==="0") numId=null;
+  let alineacion=null, sangria=0;
+  if(ppr){
+    const jc=hijos(ppr,W,"jc")[0];
+    if(jc) alineacion=attrW(jc,"val");
+    const ind=hijos(ppr,W,"ind")[0];
+    if(ind) sangria=parseInt(attrW(ind,"left")||ind.getAttributeNS(W,"start")||"0",10)||0;
+  }
+  const texto = textoDe(p,true).replace(/\s+/g," ").trim();
+  let numeracion=null, listaTipo=null;
+  if(numId!=null){
+    const r=contador.next(numId,ilvl);
+    if(r){ listaTipo = r.fmt==="bullet"?"ul":"ol";
+           if(r.fmt!=="bullet" && r.texto) numeracion=r.texto; }
+  }
+  // numeración escrita a mano en el texto: "1.1.Título", "2.1.1. Título", "3.7 Título"
+  let textoSinNum=null;
+  if(numeracion==null){
+    const mnum=/^(\d+(?:\.\d+)+)\.?\s*(.+)$/.exec(texto);
+    if(mnum && mnum[2].length>2){ numeracion=mnum[1]+"."; textoSinNum=mnum[2].trim(); }
+  }
+  let esLista = numId!=null && !nivel;
+  // numeración automática multinivel corta ("1.1", "2.3.1") = subtítulo, no ítem de lista
+  if(esLista && numeracion && /\d+\.\d+/.test(numeracion) && texto.length<90 && texto.length>2){
+    const puntos=(numeracion.match(/\./g)||[]).length;
+    nivel = Math.min(6, 1+puntos);
+    esLista=false;
+  }
+  // negrita dominante
+  let runsT=0, runsB=0;
+  for(const r of desc(p,W,"r")){
+    if(dentroDeTxbx(r,p)) continue;
+    if(!textoDe(r,false).trim()) continue;
+    runsT++;
+    const rpr=hijos(r,W,"rPr")[0];
+    if(rpr){ const b=hijos(rpr,W,"b")[0];
+      if(b){ const v=attrW(b,"val"); if(v!=="0"&&v!=="false") runsB++; } }
+  }
+  const negrita = runsT>0 && runsB===runsT;
+  // hipervínculos
+  const links=[];
+  for(const h of desc(p,W,"hyperlink")){
+    const rid=h.getAttributeNS(R,"id")||h.getAttribute("r:id");
+    const url=rid&&rels[rid]?rels[rid]:null;
+    const txt=textoDe(h,false).trim();
+    if(url||txt) links.push({texto:txt,url});
+  }
+  // ecuaciones OMML
+  const ecuaciones=[];
+  for(const om of desc(p,M,"oMath")){
+    let ec=""; for(const t of desc(om,M,"t")) ec+=t.textContent||"";
+    ecuaciones.push(ec.slice(0,200));
+  }
+  // imágenes (guardamos la ruta interna del zip; luego se renombran a FiguraN)
+  const imagenes=[];
+  for(const blip of desc(p,A,"blip")){
+    const rid=blip.getAttributeNS(R,"embed")||blip.getAttribute("r:embed");
+    if(rid&&rels[rid]) imagenes.push(rels[rid]);
+  }
+  // nombre original de la imagen (wp:docPr) — ahí sobrevive "foc_Recuerde.png"
+  // y el atributo descr es el TEXTO ALTERNATIVO (accesibilidad)
+  const nombresImg=[]; let altText=null;
+  for(const dp of desc(p,WP,"docPr")){
+    const nm=dp.getAttribute("name")||"", ds=dp.getAttribute("descr")||"";
+    if(nm) nombresImg.push(nm);
+    if(ds){ nombresImg.push(ds); if(!altText) altText=ds; }
+  }
+  // SmartArt: dgm:relIds → r:dm apunta al data model del diagrama
+  const smartarts=[];
+  for(const ri of desc(p,DGM,"relIds")){
+    const rid=ri.getAttributeNS(R,"dm")||ri.getAttribute("r:dm");
+    const target=rid&&rels[rid]?rels[rid]:null;
+    if(target && diagramas[target]) smartarts.push({origen:target, textos:diagramas[target]});
+  }
+  // --- caso EdiLoja 1: imagen inline en el MISMO párrafo que el título "Figura N ..."
+  if(imagenes.length && /^(figura|tabla|grafico|gráfico|ilustraci\w+)\s*\d+([.:]|\s)/i.test(texto)){
+    const bImg={id:bid,tipo:"imagen",estilo,texto:"",titulo:texto,imagenes};
+    if(altText) bImg.alt_text=altText;
+    const mn=/^figura\s*(\d+)/i.exec(texto);
+    if(mn){ bImg.figura_numero=parseInt(mn[1],10); bImg.decorativa=false; }
+    return [bImg];
+  }
+  // --- caso EdiLoja 2: imagen incrustada en un párrafo de texto normal (dentro de la
+  // "Nota:", o imagen flotante decorativa junto al texto) → separar imagen + párrafo.
+  // Excepción: iconos de focalizador (foc_*) se mantienen con su texto.
+  const esIconoFoc = nombresImg.some(n=>/foc[_ ]/i.test(n));
+  if(imagenes.length && texto && !esIconoFoc){
+    const bImg={id:bid,tipo:"imagen",estilo,texto:"",imagenes};
+    if(altText) bImg.alt_text=altText;
+    const bTxt={id:bid,tipo:"parrafo",estilo,texto};
+    if(negrita) bTxt.negrita=true;
+    if(links.length) bTxt.hipervinculos=links;
+    if(ecuaciones.length) bTxt.ecuaciones=ecuaciones;
+    if(alineacion) bTxt.alineacion=alineacion;
+    if(sangria) bTxt.sangria=sangria;
+    const resto=[bImg,bTxt];
+    for(const sa of smartarts)
+      resto.push({id:bid,tipo:"smartart",origen:sa.origen,textos:sa.textos,
+                  pendiente:"generar diagrama con IA a partir de los textos"});
+    return resto;
+  }
+  // un párrafo corto con numeración manual multinivel y en negrita es un subtítulo
+  const textoFinal = textoSinNum!=null ? textoSinNum : texto;
+  if(nivel==null && numeracion!=null && textoSinNum!=null && (negrita || textoFinal.length<90)){
+    const puntos=(numeracion.match(/\./g)||[]).length;
+    nivel = Math.min(6, 1+puntos);   // 1.1. → H2, 1.1.1. → H3
+  }
+  const bloques=[];
+  const tipo = nivel ? "encabezado" : esLista ? "lista"
+             : (imagenes.length && !textoFinal) ? "imagen" : "parrafo";
+  if(textoFinal || imagenes.length || ecuaciones.length){
+    const b={id:bid,tipo,estilo,texto:textoFinal};
+    if(nivel) b.nivel=nivel;
+    if(numeracion) b.numeracion=numeracion;
+    if(esLista){ b.nivel_lista=ilvl; b.lista_tipo=listaTipo||"ul"; }
+    if(negrita) b.negrita=true;
+    if(links.length) b.hipervinculos=links;
+    if(ecuaciones.length) b.ecuaciones=ecuaciones;
+    if(imagenes.length) b.imagenes=imagenes;
+    if(nombresImg.length) b._docpr=nombresImg;
+    if(alineacion) b.alineacion=alineacion;
+    if(sangria) b.sangria=sangria;
+    if(altText) b.alt_text=altText;
+    if(imagenes.length && /descrip|caption|epigraf/i.test(estilo)) b._estiloCaption=true;
+    bloques.push(b);
+  }
+  for(const sa of smartarts)
+    bloques.push({id:bid,tipo:"smartart",origen:sa.origen,textos:sa.textos,
+                  pendiente:"generar diagrama con IA a partir de los textos"});
+  for(const tb of desc(p,W,"txbxContent")){
+    const t=desc(tb,W,"p").map(wp=>textoDe(wp,false)).join("\n").trim();
+    if(t) bloques.push({id:bid,tipo:"cuadro_texto",estilo,texto:t});
+  }
+  return bloques;
+}
+function leerTabla(tbl,bid){
+  const filas=hijos(tbl,W,"tr");
+  const celdas=filas.map(tr=>hijos(tr,W,"tc").map(tc=>
+      hijos(tc,W,"p").map(p=>textoDe(p,false).trim()).filter(Boolean).join(" | ")));
+  const nf=celdas.length, nc=celdas[0]?celdas[0].length:0;
+  if(nf===1&&nc===1) return {id:bid,tipo:"caja",texto:celdas[0][0]};
+  return {id:bid,tipo:"tabla",n_filas:nf,n_columnas:nc,celdas};
+}
+function extraerBloques(docXml, ctx){
+  const body=desc(docXml,W,"body")[0];
+  const bloques=[]; let bid=0;
+  for(let n=body.firstChild;n;n=n.nextSibling){
+    if(n.nodeType!==1) continue;
+    bid++;
+    if(n.localName==="p"&&n.namespaceURI===W) bloques.push(...leerParrafo(n,ctx,bid));
+    else if(n.localName==="tbl"&&n.namespaceURI===W) bloques.push(leerTabla(n,bid));
+  }
+  return bloques;
+}
+
+/* ----------------------------- focalizadores (bloques destacados) */
+const FOC_TIPOS = CONFIG.focalizadores;
+const sinAcentos=s=>s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+function subtipoFoc(nt){
+  for(const [k,v] of FOC_TIPOS) if(nt.startsWith(k)) return v;
+  return null;
+}
+function clasificarFocalizadores(bloques){
+  for(const b of bloques){
+    if((b.tipo==="parrafo"||b.tipo==="caja"||b.tipo==="encabezado")
+       &&/^recursos?\s+ediloja/.test(norm(b.texto||""))){
+      b.tipo="recurso_ediloja";
+      b.pendiente="recurso por generar con agente de IA (EdiLoja)";
+      continue;
+    }
+    if(b.tipo==="caja"){
+      const s=subtipoFoc(norm(b.texto||""));
+      if(s){ b.tipo="focalizador"; b.subtipo=s; b.icono="foc_"+sinAcentos(s)+".png"; }
+    } else if(b._docpr){
+      for(const n of b._docpr){
+        const m=/foc[_ ](.+?)\.(png|jpe?g)/i.exec(n);
+        if(m){
+          const s=subtipoFoc(norm(m[1]))||m[1].trim();
+          b.tipo="focalizador"; b.subtipo=s; b.icono="foc_"+sinAcentos(s)+".png"; break;
+        }
+      }
+    }
+    delete b._docpr;
+  }
+}
+
+/* --- focalizadores delimitados por el revisor de DI:
+       "Inicio focalizador video" ... "Fin focalizador video" --- */
+function agruparFocDelimitados(bloques){
+  const out=[]; let i=0;
+  while(i<bloques.length){
+    const b=bloques[i];
+    const m=(b.tipo==="parrafo"||b.tipo==="encabezado")&&RX_FOC_INI.exec(norm(b.texto||""));
+    if(m){
+      // buscar el cierre en los siguientes 40 bloques
+      let fin=-1;
+      for(let j=i+1;j<Math.min(bloques.length,i+41);j++){
+        const bj=bloques[j];
+        if((bj.tipo==="parrafo"||bj.tipo==="encabezado")&&RX_FOC_FIN.test(norm(bj.texto||""))){fin=j;break;}
+      }
+      if(fin>i){
+        const s=subtipoFoc(norm(m[1]))||m[1].trim();
+        out.push({id:b.id,tipo:"focalizador",subtipo:s,icono:"foc_"+sinAcentos(s)+".png",
+                  delimitado:true,bloques:bloques.slice(i+1,fin)});
+        i=fin+1; continue;
+      }
+    }
+    out.push(b); i++;
+  }
+  return out;
+}
+
+/* ------------------- agrupación: listas, tabla+título+nota, figuras */
+const RX_MARCADOR = /^(semana\s*\d|unidad\s*\d|autoevaluaci|resultados?\s+de\s+apr|primer\s+bimestre|segundo\s+bimestre)/;
+function agruparBloques(bloques){
+  const RX_MANU_OL=/^(\d{1,2})[.)]\s+\S/;
+  const RX_MANU_UL=/^[•\-–]\s+\S/;
+  const RX_TIT_FIG=/^(figura|caso|grafico|gráfico|imagen|ilustraci\w+)\s*\d+([.:]|\s)/i;
+  const RX_NOTA=/^(nota|fuente)\s*[.:]/i;
+  const esCitaLinea=b=>b.tipo==="parrafo"&&!b.nivel&&((b.sangria||0)>=567||b.alineacion==="right"||b.alineacion==="end");
+  const out=[];
+  let i=0;
+  while(i<bloques.length){
+    const b=bloques[i];
+    // --- CITA: párrafos consecutivos sangrados/alineados a la derecha que abren con comillas
+    if(esCitaLinea(b)&&/^[“"«‘']/.test(b.texto||"")){
+      const lineas=[b.texto]; let j=i+1;
+      while(j<bloques.length&&esCitaLinea(bloques[j])){lineas.push(bloques[j].texto);j++;}
+      let autor=null;
+      if(lineas.length>1){
+        const ult=lineas[lineas.length-1];
+        if(ult.length<70&&!/^[“"«]/.test(ult)&&/\d{4}[.)”"]?$/.test(ult)){
+          autor=ult; lineas.pop();
+        }
+      }
+      out.push({id:b.id,tipo:"cita",texto:lineas.join(" ").replace(/\s+/g," ").trim(),
+                ...(autor?{autor}:{}),lineas:lineas.length+(autor?1:0)});
+      i=j; continue;
+    }
+    // --- listas automáticas de Word
+    if(b.tipo==="lista" && !RX_MARCADOR.test(norm(b.texto||""))){
+      const items=[];
+      let j=i;
+      while(j<bloques.length && bloques[j].tipo==="lista"
+            && !RX_MARCADOR.test(norm(bloques[j].texto||""))){
+        const it=bloques[j];
+        items.push({texto:it.texto, nivel:it.nivel_lista||0,
+                    tipo:it.lista_tipo||"ul", numeracion:it.numeracion||null,
+                    ...(it.hipervinculos?{hipervinculos:it.hipervinculos}:{}),
+                    ...(it.ecuaciones?{ecuaciones:it.ecuaciones}:{}),
+                    ...(it.imagenes?{imagenes:it.imagenes}:{})});
+        j++;
+      }
+      if(items.length>1){
+        // si el párrafo anterior era un ítem numerado a mano (p. ej. "1. Ingrese a…"),
+        // se incorpora como primer ítem de la lista
+        const prev=out[out.length-1];
+        if(prev&&prev.tipo==="parrafo"&&RX_MANU_OL.test(prev.texto||"")&&!RX_MARCADOR.test(norm(prev.texto||""))){
+          items.unshift({texto:prev.texto,nivel:0,tipo:"ol",
+                         numeracion:(RX_MANU_OL.exec(prev.texto)||[])[1]+".",
+                         ...(prev.hipervinculos?{hipervinculos:prev.hipervinculos}:{}),
+                         manual:true});
+          out.pop();
+        }
+        out.push({id:b.id, tipo:"lista", ordenada: items[0].tipo==="ol", items});
+        i=j; continue;
+      }
+    }
+    // --- listas escritas a mano por el docente ("1. …" / "- …" tecleados)
+    if(b.tipo==="parrafo"&&!b.nivel&&(RX_MANU_OL.test(b.texto||"")||RX_MANU_UL.test(b.texto||""))
+       &&!RX_MARCADOR.test(norm(b.texto||""))){
+      const items=[]; let j=i;
+      while(j<bloques.length&&bloques[j].tipo==="parrafo"&&!bloques[j].nivel
+            &&(RX_MANU_OL.test(bloques[j].texto||"")||RX_MANU_UL.test(bloques[j].texto||""))
+            &&!RX_MARCADOR.test(norm(bloques[j].texto||""))){
+        const it=bloques[j];
+        const mo=RX_MANU_OL.exec(it.texto||"");
+        items.push({texto:it.texto,nivel:0,tipo:mo?"ol":"ul",
+                    numeracion:mo?mo[1]+".":null,manual:true,
+                    ...(it.hipervinculos?{hipervinculos:it.hipervinculos}:{})});
+        j++;
+      }
+      if(items.length>=2){
+        out.push({id:b.id,tipo:"lista",ordenada:items[0].tipo==="ol",manual:true,items});
+        i=j; continue;
+      }
+    }
+    // --- título "Tabla N" (+ título) + tabla + "Nota./Fuente:" → una sección
+    if((b.tipo==="tabla"||b.tipo==="caja") && out.length){
+      const esTabLabel=x=>x&&x.tipo==="parrafo"&&/^tabla\s*$/i.test((x.texto||"").trim());
+      const esTabNum=x=>x&&(x.tipo==="parrafo"||x.tipo==="encabezado")&&/^tabla\s*\d+[.:]?\s*$/i.test((x.texto||"").trim());
+      const esTabNumTit=x=>x&&(x.tipo==="parrafo"||x.tipo==="encabezado")&&/^tabla\s*\d+[.:]/i.test(x.texto||"")&&(x.texto||"").length>11;
+      const esCap=x=>x&&/descrip|caption|epigraf/i.test(x.estilo||"");
+      if(esTabLabel(out[out.length-1])) out.pop();
+      if(esTabNumTit(out[out.length-1])||(esCap(out[out.length-1])&&/^tabla/i.test(out[out.length-1].texto||""))){
+        b.titulo=out.pop().texto;
+      } else {
+        const prev=out[out.length-1], prev2=out[out.length-2];
+        if(esTabNum(prev2) && prev && prev.tipo==="parrafo" && (prev.texto||"").length>3 && !RX_NOTA.test(prev.texto||"")){
+          b.titulo=(prev2.texto.replace(/[.:]\s*$/,"")+". "+prev.texto).trim(); out.pop(); out.pop();
+        } else if(esTabNum(prev)){ b.titulo=prev.texto; out.pop(); }
+      }
+      let j=i+1, sig=bloques[j];
+      if(esTabLabel(sig)){ j++; sig=bloques[j]; }
+      if(sig && sig.tipo==="parrafo" && RX_NOTA.test(sig.texto||"")){
+        b.nota=sig.texto; j++;
+      }
+      out.push(b); i=j; continue;
+    }
+    // --- figura como sección. Patrón EdiLoja observado:
+    //   [Figura N]  [título de la figura]  [palabra "Figura"]  IMAGEN  [Nota. ...]
+    // El título puede venir en 1 o 2 párrafos antes; "Figura" sola es etiqueta a descartar.
+    if(b.tipo==="imagen"){
+      // si la imagen ya trae su título (venía inline con el texto "Figura N ..."),
+      // solo hay que capturar la Nota. posterior
+      if(b.titulo){
+        let j=i+1, sig=bloques[j];
+        const esFigLbl=x=>x&&x.tipo==="parrafo"&&/^figura\s*$/i.test((x.texto||"").trim());
+        if(esFigLbl(sig)){ j++; sig=bloques[j]; }
+        if(sig && sig.tipo==="parrafo" && RX_NOTA.test(sig.texto||"")){ b.nota=sig.texto; j++; }
+        if(b.figura_numero==null && !b.nota && !b._estiloCaption) b.decorativa=true;
+        else if(b.decorativa==null) b.decorativa=false;
+        delete b._estiloCaption;
+        out.push(b); i=j; continue;
+      }
+      // recoger hacia atrás en out: etiqueta "Figura" suelta, luego título, luego "Figura N"
+      let numero=null, tituloTxt=null;
+      const esFigLabel=x=>x&&x.tipo==="parrafo"&&/^figura\s*$/i.test((x.texto||"").trim());
+      const esFigNum=x=>x&&(x.tipo==="parrafo"||x.tipo==="encabezado")&&/^figura\s*\d+[.:]?\s*$/i.test((x.texto||"").trim());
+      const esFigNumTit=x=>x&&(x.tipo==="parrafo"||x.tipo==="encabezado")&&RX_TIT_FIG.test(x.texto||"")&&(x.texto||"").length>12;
+      // descartar la palabra "Figura" inmediatamente anterior a la imagen
+      if(esFigLabel(out[out.length-1])) out.pop();
+      // "Figura N." + título en el mismo párrafo
+      if(esFigNumTit(out[out.length-1])){ tituloTxt=out.pop().texto; }
+      else {
+        // título suelto + "Figura N" en el párrafo anterior
+        const prev=out[out.length-1], prev2=out[out.length-2];
+        if(esFigNum(prev2) && prev && prev.tipo==="parrafo" && (prev.texto||"").length>3
+           && !RX_NOTA.test(prev.texto||"")){
+          tituloTxt=(prev2.texto.replace(/[.:]\s*$/,"")+". "+prev.texto).trim();
+          out.pop(); out.pop();
+        } else if(esFigNum(prev)){
+          tituloTxt=prev.texto; out.pop();
+        }
+      }
+      if(tituloTxt){
+        const mn=/^figura\s*(\d+)/i.exec(tituloTxt);
+        if(mn) numero=parseInt(mn[1],10);
+        b.titulo=tituloTxt;
+      }
+      // hacia adelante: saltar "Figura" suelta, capturar "Nota."
+      let j=i+1, sig=bloques[j];
+      if(esFigLabel(sig)){ j++; sig=bloques[j]; }
+      if(sig && sig.tipo==="parrafo" && RX_NOTA.test(sig.texto||"")){
+        b.nota=sig.texto; j++;
+      }
+      // clasificar decorativa vs. de contenido
+      if(numero!=null){
+        b.figura_numero=numero; b.decorativa=false;
+      } else if(!b.titulo && !b.nota && !b._estiloCaption){
+        b.decorativa=true;   // sin numeración, título ni nota → decorativa
+      } else {
+        b.decorativa=false;
+      }
+      delete b._estiloCaption;
+      out.push(b); i=j; continue;
+    }
+    out.push(b); i++;
+  }
+  return out;
+}
+function asignarFiguras(bloques){
+  const mapa=new Map();   // ruta interna → nombre FiguraN.ext
+  const lista=[];
+  const nombreDe=target=>{
+    if(mapa.has(target)) return mapa.get(target);
+    const ext=(target.split(".").pop()||"png").toLowerCase();
+    const nombre=`Figura${mapa.size+1}.${ext}`;
+    mapa.set(target,nombre);
+    lista.push({nombre, ruta_zip: target.startsWith("media/")?"word/"+target:
+                        (target.startsWith("word/")?target:"word/"+target.replace(/^\.\.\//,""))});
+    return nombre;
+  };
+  const proc=b=>{
+    if(b.imagenes) b.imagenes=b.imagenes.map(t=>({archivo:"Imagenes/"+nombreDe(t), origen:t}));
+    if(b.items) for(const it of b.items)
+      if(it.imagenes) it.imagenes=it.imagenes.map(t=>({archivo:"Imagenes/"+nombreDe(t), origen:t}));
+    if(b.bloques) b.bloques.forEach(proc);
+  };
+  bloques.forEach(proc);
+  return lista;
+}
+
+/* --------------------------------------- portada e info_general */
+function infoGeneral(bloques, nombreArchivo){
+  const codigo=nombreArchivo.split("_").slice(0,2).join("_");
+  const info={codigo_banner:codigo, archivo_origen:nombreArchivo,
+              facultad:null, departamento:null, asignatura:null,
+              carrera:null, nivel:null, autor:null};
+  const texDe=b=> b.texto!=null ? b.texto : (b.items&&b.items.length===1?b.items[0].texto:"");
+  const cab=bloques.slice(0,14);
+  for(let i=0;i<cab.length;i++){
+    const b=cab[i], t=texDe(b)||"", nt=norm(t);
+    if(b.tipo==="tabla"&&b.n_filas===2&&b.n_columnas===2){
+      const fila=b.celdas[1]||[];
+      info.carrera=fila[0]||null; info.nivel=fila[1]||null;
+    } else if(nt.startsWith("facultad")&&t.length<90&&!t.includes("…")&&!info.facultad){
+      info.facultad=t;
+    } else if(nt.startsWith("departamento")&&t.length<90){
+      info.departamento=t;
+    } else if(nt==="guia didactica"&&i>0){
+      const prev=texDe(cab[i-1])||"", np=norm(prev);
+      if(prev&&!np.startsWith("facultad")&&!np.startsWith("departamento")) info.asignatura=prev;
+    } else if(nt==="autor:"&&i+1<cab.length){
+      info.autor=texDe(cab[i+1])||null;
+    }
+  }
+  const mapa=[["codigo_banner","banner.asignatura.codigo"],["asignatura","banner.asignatura.nombre"],
+              ["carrera","banner.carrera.nombre"],["nivel","banner.malla.nivel"],
+              ["facultad","banner.facultad.nombre"],["autor","rrhh.docente.nombre_completo"]];
+  info.cotejo_bd=mapa.map(([c,v])=>({campo:c,valor:info[c],
+      fuente:c==="codigo_banner"?"nombre_archivo":"portada_documento",
+      verificar_contra:v, estado:info[c]?"pendiente":"faltante_en_documento"}));
+  return info;
+}
+
+/* ----------------------------------------- construcción del curso */
+const _RX = k => new RegExp(CONFIG.marcadores[k]);
+const RX_SEM=_RX("semana"), RX_RA=_RX("resultado"), RX_UNI=_RX("unidad"),
+      RX_AUTO=_RX("autoevaluacion"), RX_BIM=_RX("bimestre"),
+      RX_ACTR=_RX("actividades_recomendadas"), RX_ACTE=_RX("actividades_evaluadas"),
+      RX_ACT_ITEM=/^actividad\s+(recomendada|evaluada)\s*\d+\s*[:.\-]/i,
+      RX_ACT_SECC=/^actividades\s+(de\s+aprendizaje\s+)?(recomendad|evaluad)/i,
+      RX_FOC_INI=_RX("focalizador_inicio"), RX_FOC_FIN=_RX("focalizador_fin");
+const esMarcaGD = b => (b.estilo||"").startsWith(CONFIG.estilos_marca_prefijo);
+
+function esAncla(b, frases, tol){
+  if(b.tipo!=="encabezado"&&b.tipo!=="parrafo") return false;
+  if((b.estilo||"").startsWith("toc")) return false;
+  const marca=b.nivel===1||b.negrita||b.estilo==="Title"||esMarcaGD(b);
+  return marca&&fuzzy(norm(b.texto||""),frases,tol==null?CONFIG.tolerancia_difusa:tol);
+}
+
+function construirCurso(bloques, nombreArchivo, extras){
+  extras=extras||{};
+  const info=infoGeneral(bloques,nombreArchivo);
+  const nb=bloques.length;
+
+  const ANCLAS = Object.entries(CONFIG.anclas);
+  const FINALES=new Set(["referencias","solucionario","glosario","anexos"]);
+  const anclas={};
+  bloques.forEach((b,i)=>{
+    if((b.estilo||"").startsWith("toc")) return;
+    const nt=norm(b.texto||"");
+    for(const [clave,frases] of ANCLAS){
+      if(clave in anclas) continue;
+      if(FINALES.has(clave)&&i<nb*0.5) continue;
+      if(esAncla(b,frases)) anclas[clave]=i;
+      else if(clave==="solucionario"&&nt.startsWith("solucionario")
+              &&(b.texto||"").length<60&&(b.tipo==="parrafo"||b.tipo==="encabezado"))
+        anclas[clave]=i;
+    }
+  });
+  const ini=anclas.datos!=null?anclas.datos:0;
+  const finCand=["referencias","solucionario","glosario","anexos"]
+      .filter(k=>anclas[k]!=null).map(k=>anclas[k]);
+  const finCuerpo=finCand.length?Math.min(...finCand):nb;
+  const rebanar=(a,b)=>bloques.slice(a,b).filter(x=>!(x.estilo||"").startsWith("toc"));
+
+  const datosFin=anclas.metodologia!=null?anclas.metodologia:ini;
+  const SUB = Object.entries(CONFIG.subsecciones_datos);
+  const datos={titulo:"1. DATOS DE INFORMACIÓN",subsecciones:[],bloques:[]};
+  let curSub=null;
+  for(const b of rebanar(ini+1,datosFin)){
+    let es=false;
+    for(const [clave,frases] of SUB)
+      if((b.tipo==="encabezado"||b.negrita)&&fuzzy(norm(b.texto||""),frases)){
+        curSub={clave,titulo:b.texto,bloques:[]}; datos.subsecciones.push(curSub); es=true; break;
+      }
+    if(!es) (curSub?curSub.bloques:datos.bloques).push(b);
+  }
+  const metodologia={titulo:"2. METODOLOGÍA DE APRENDIZAJE",
+      bloques:rebanar((anclas.metodologia!=null?anclas.metodologia:ini)+1,
+                      anclas.orientaciones!=null?anclas.orientaciones:datosFin)};
+
+  const paginas=[], unidades={}, resultados=[], bimestres=[], preambulo=[];
+  let curBim=null,curRa=null,curUni=null,pagina=null,lastWeek=0,raAuto=0,autoAbierta=null,ctxRA=false;
+  let actAbierta=null, actRec=0, actEval=0;
+  const actividadesMalUbicadas=[];
+  const cerrarAuto=()=>{autoAbierta=null;};
+  const cerrarPag=()=>{cerrarAuto(); ctxRA=false;
+    if(actAbierta) delete actAbierta._itemActual;
+    actAbierta=null; if(pagina){paginas.push(pagina);pagina=null;}};
+
+  for(const b of rebanar((anclas.orientaciones!=null?anclas.orientaciones:ini)+1,finCuerpo)){
+    const t=b.texto||"", nt=norm(t);
+    const marca=b.tipo==="encabezado"||b.negrita||esMarcaGD(b);
+    const conf = (b.tipo==="encabezado"||esMarcaGD(b)) ? "alta" : (b.negrita?"media":"baja");
+    let m;
+    if((m=RX_BIM.exec(nt))&&marca){
+      cerrarPag(); curBim=t.trim();
+      if(!bimestres.includes(curBim)) bimestres.push(curBim);
+      continue;
+    }
+    if((m=RX_RA.exec(nt))&&marca){
+      const numRA=m[1]||String(raAuto+1);
+      if(curRa&&curRa.numero===numRA&&curRa.semanas.length===0) continue;  // "Resultado de aprendizaje N." repetido bajo el H1
+      cerrarPag(); raAuto++;
+      curRa={numero:m[1]||String(raAuto),enunciado:null,contextualizacion:null,
+             contextualizacion_fuente:null,bimestre:curBim,semanas:[]};
+      resultados.push(curRa); continue;
+    }
+    if(curRa&&curRa.enunciado==null&&b.tipo==="parrafo"&&t.length>25
+       &&!RX_SEM.test(nt)&&!nt.slice(0,12).includes("contenidos"))
+      curRa.enunciado=t;
+    // contextualización del RA: encabezado "Contextualización" + párrafos siguientes
+    if(curRa&&!pagina&&nt.startsWith("contextualizaci")&&marca&&t.length<40){
+      ctxRA=true; curRa.contextualizacion_fuente="encabezado"; continue;
+    }
+    if(ctxRA&&curRa){
+      if((b.tipo==="parrafo"||b.tipo==="lista")&&!nt.slice(0,12).includes("contenidos")
+         &&!RX_SEM.test(nt)&&!RX_UNI.test(nt)){
+        const tx=b.texto||(b.items?b.items.map(i=>i.texto).join(" "):"");
+        curRa.contextualizacion=(curRa.contextualizacion?curRa.contextualizacion+"\n":"")+tx;
+        continue;
+      }
+      ctxRA=false;   // cualquier encabezado u otro marcador cierra la contextualización
+    }
+    // contextualización IMPLÍCITA: párrafos que siguen al enunciado del RA,
+    // antes de cualquier encabezado o semana (técnica para guías sin el encabezado)
+    if(b.tipo==="encabezado"&&curRa&&!pagina) curRa._ctxCerrada=true;
+    if(curRa&&!pagina&&!ctxRA&&curRa.contextualizacion_fuente!=="encabezado"
+       &&!curRa._ctxCerrada&&curRa.enunciado&&b.tipo==="parrafo"
+       &&t!==curRa.enunciado&&t.length>60&&(curRa._ctxN||0)<4){
+      curRa.contextualizacion=(curRa.contextualizacion?curRa.contextualizacion+"\n":"")+t;
+      curRa.contextualizacion_fuente="implicita";
+      curRa._ctxN=(curRa._ctxN||0)+1;
+      continue;
+    }
+    if((m=RX_SEM.exec(nt))&&marca){
+      const n=parseInt(m[1],10);
+      if(n<=lastWeek&&lastWeek>=6) continue;
+      cerrarPag(); lastWeek=n;
+      pagina={tipo:"pagina",semana:n,titulo:"Semana "+n,bimestre:curBim,
+              resultado_aprendizaje:curRa?curRa.numero:null,unidad:curUni,
+              confianza:conf,bloques:[]};
+      if(curRa) curRa.semanas.push(n);
+      continue;
+    }
+    if((m=RX_UNI.exec(nt))&&marca){
+      const nu=parseInt(m[1],10);
+      actAbierta=null;
+      if(!unidades[nu]) unidades[nu]={numero:nu,titulo:t.trim(),semanas:[],autoevaluaciones:[]};
+      if(t.trim().length>(unidades[nu].titulo||"").length) unidades[nu].titulo=t.trim();
+      curUni=nu;
+      // v2.1: el título de la unidad forma parte del contenido de la página, como en el Word
+      const bloqueUni={...b, rol:"titulo_unidad", unidad:nu};
+      if(pagina){
+        pagina.unidad=nu;
+        if(!unidades[nu].semanas.includes(pagina.semana)) unidades[nu].semanas.push(pagina.semana);
+        pagina.bloques.push(bloqueUni);
+      } else preambulo.push(bloqueUni);
+      continue;
+    }
+    if((m=RX_AUTO.exec(nt))&&(marca||t.length<45)){
+      cerrarAuto(); actAbierta=null;
+      const total=Object.values(unidades).reduce((s,u)=>s+u.autoevaluaciones.length,0);
+      const uniLibre = curUni && unidades[curUni] && unidades[curUni].autoevaluaciones.length===0;
+      const nA=numDe(t)||(uniLibre?curUni:total+1);
+      autoAbierta={numero:nA,titulo:t.trim(),unidad:curUni,confianza:conf,
+                   semana_en_que_aparece:pagina?pagina.semana:null,
+                   bloques:[],solucionario:{encontrado:false,bloques:[]}};
+      const key=curUni||0;
+      if(!unidades[key]) unidades[key]={numero:key,titulo:null,semanas:[],autoevaluaciones:[]};
+      unidades[key].autoevaluaciones.push(autoAbierta);
+      if(pagina) pagina.bloques.push({tipo:"autoevaluacion_ref",numero:nA,titulo:t.trim(),unidad:curUni});
+      continue;
+    }
+    // encabezado de SECCIÓN de actividades ("Actividades de aprendizaje recomendadas/evaluadas")
+    if((marca||RX_ACT_SECC.test(t)) && t.length<80 && RX_ACT_SECC.test(t)){
+      cerrarAuto();
+      const clase=/evaluad/i.test(t)?"evaluadas":"recomendadas";
+      if(clase==="evaluadas") actEval++; else actRec++;
+      actAbierta={tipo:"actividades",clase,titulo:t.trim(),items:[],bloques:[]};
+      (pagina?pagina.bloques:preambulo).push(actAbierta);
+      continue;
+    }
+    // "Actividad recomendada N:" = item de actividad. Abre la sección si no hay una.
+    if(RX_ACT_ITEM.test(t)){
+      const clase=/evaluad/i.test(t)?"evaluadas":"recomendadas";
+      if(!actAbierta || actAbierta.clase!==clase){
+        if(clase==="evaluadas") actEval++; else actRec++;
+        actAbierta={tipo:"actividades",clase,titulo:clase==="evaluadas"?"Actividades evaluadas":"Actividades de aprendizaje recomendadas",
+                    items:[],bloques:[],_implicita:true};
+        (pagina?pagina.bloques:preambulo).push(actAbierta);
+      }
+      const itemAct={titulo:t.trim(),bloques:[]};
+      actAbierta.items.push(itemAct);
+      actAbierta._itemActual=itemAct;
+      continue;
+    }
+    if(actAbierta){
+      // cierra la sección: marcador estructural, encabezado H1-2, o un TEMA numerado
+      // ("1.3.4. Litósfera") — eso es material del texto, no actividad
+      const esTema = b.tipo==="encabezado" && b.numeracion && /\d+\.\d+/.test(b.numeracion);
+      const esCierre = RX_SEM.test(nt)||RX_UNI.test(nt)||RX_RA.test(nt)||RX_AUTO.test(nt)
+                     ||RX_BIM.test(nt)||(b.tipo==="encabezado"&&b.nivel&&b.nivel<=2)||esTema;
+      if(!esCierre){
+        (actAbierta._itemActual?actAbierta._itemActual.bloques:actAbierta.bloques).push(b);
+        continue;
+      }
+      if(esTema && pagina && !actividadesMalUbicadas.includes(pagina.semana))
+        actividadesMalUbicadas.push(pagina.semana);
+      delete actAbierta._itemActual;
+      actAbierta=null;
+    }
+    if(autoAbierta){autoAbierta.bloques.push(b);continue;}
+    if(pagina) pagina.bloques.push(b); else preambulo.push(b);
+  }
+  cerrarPag();
+
+  const ordenFin=Object.entries(anclas).filter(([k])=>FINALES.has(k))
+      .map(([k,v])=>[v,k]).sort((a,b)=>a[0]-b[0]);
+  const finales={};
+  ordenFin.forEach(([pos,clave],idx)=>{
+    const hasta=idx+1<ordenFin.length?ordenFin[idx+1][0]:nb;
+    finales[clave]={titulo:bloques[pos].texto,bloques:rebanar(pos+1,hasta)};
+  });
+
+  // cotejo autoevaluación ↔ solucionario (4 formatos; las listas agrupadas
+  // se recorren ítem por ítem para no perder entradas)
+  const solBloques=(finales.solucionario||{}).bloques||[];
+  const sol=[];
+  for(const b of solBloques){
+    if(b.tipo==="lista"&&b.items) for(const it of b.items)
+      sol.push({tipo:"lista",texto:it.texto,items:null,_item:true});
+    else sol.push(b);
+  }
+  const RX_ENT=/^(autoevaluaci\w+|solucionario)\s*[:.]?\s*(.*)$/;
+  const RX_ESEM=/^semana\s*(\d{1,2})\s*[:.\-]?/;
+  const entradas=new Map(); let curE=null;
+  const clave=(tipo,n)=>tipo+":"+n;
+  for(const b of sol){
+    const t=b.tipo!=="tabla"?(b.texto||""):"";
+    const nt=norm(t);
+    if(b.tipo==="tabla"){
+      const c0=norm((b.celdas[0]&&b.celdas[0][0])||"");
+      const n=RX_ENT.test(c0)?numDe(c0):null;
+      if(n){const k=clave("n",n);
+            if(!entradas.has(k))entradas.set(k,[]);
+            entradas.get(k).push(b);curE=entradas.get(k);}
+      else if(curE)curE.push(b);
+      continue;
+    }
+    let m=RX_ESEM.exec(nt);
+    if(m&&t.length<40){
+      const k=clave("sem",parseInt(m[1],10));
+      if(!entradas.has(k))entradas.set(k,[]);
+      curE=entradas.get(k);continue;
+    }
+    m=RX_ENT.exec(nt);
+    if(m&&t.length<130){
+      let n=numDe(t);
+      if(n||m[1].startsWith("autoevaluaci")){
+        if(!n){let mx=0;for(const k of entradas.keys())
+                if(k.startsWith("n:"))mx=Math.max(mx,parseInt(k.slice(2),10));
+              n=mx+1;}
+        const k=clave("n",n);
+        if(!entradas.has(k))entradas.set(k,[]);
+        curE=entradas.get(k);continue;
+      }
+    }
+    if(curE)curE.push(b);
+  }
+  const todasAuto=Object.values(unidades).flatMap(u=>u.autoevaluaciones);
+  if(entradas.size===0&&sol.length&&todasAuto.length===1)
+    entradas.set(clave("n",todasAuto[0].numero),sol);
+  const usadas=new Set();
+  for(const a of todasAuto){
+    const kN=clave("n",a.numero), kS=clave("sem",a.semana_en_que_aparece);
+    const eN=entradas.get(kN), eS=entradas.get(kS);
+    const e=eN||eS;
+    if(e&&e.length){
+      a.solucionario={encontrado:true,cotejado_por:eN?"numero":"semana",confianza:"alta",bloques:e};
+      usadas.add(eN?kN:kS);
+    }
+  }
+  // reparación segura: si sobran exactamente tantas entradas como autoevaluaciones
+  // sin cotejar, se vinculan POR ORDEN con confianza media
+  const sinMatch=todasAuto.filter(a=>!a.solucionario.encontrado);
+  const libres=[...entradas.entries()].filter(([k,v])=>!usadas.has(k)&&v.length);
+  if(sinMatch.length && sinMatch.length===libres.length){
+    sinMatch.forEach((a,i)=>{
+      a.solucionario={encontrado:true,cotejado_por:"orden",confianza:"media",bloques:libres[i][1]};
+    });
+  }
+
+  // validaciones
+  const semanasDet=paginas.map(p=>p.semana).sort((a,b)=>a-b);
+  const esperadas=semanasDet.length&&Math.max(...semanasDet)>8?16:8;
+  const sinSol=todasAuto.filter(a=>!a.solucionario.encontrado).map(a=>a.numero);
+  const nums=todasAuto.map(a=>a.numero);
+  const dup=[...new Set(nums.filter(n=>nums.filter(x=>x===n).length>1))].sort((a,b)=>a-b);
+  const alertas=[];
+  if(dup.length) alertas.push("Numeración de autoevaluaciones duplicada por el docente: ["+dup.join(", ")+"]");
+  const faltan=[];for(let n=1;n<=esperadas;n++)if(!semanasDet.includes(n))faltan.push(n);
+  if(faltan.length) alertas.push("Semanas no detectadas: ["+faltan.join(", ")+"]");
+  if(sinSol.length) alertas.push("Autoevaluaciones sin entrada en el solucionario: ["+sinSol.join(", ")+"]");
+  for(const c of info.cotejo_bd)
+    if(c.estado==="faltante_en_documento")
+      alertas.push("Campo de portada no encontrado en el documento: "+c.campo);
+  const nEcu=bloques.reduce((s,b)=>s+(b.ecuaciones?b.ecuaciones.length:0),0);
+  const nCtx=bloques.filter(b=>b.tipo==="cuadro_texto").length;
+  const nSmart=bloques.filter(b=>b.tipo==="smartart").length;
+  if(nEcu) alertas.push(nEcu+" ecuaciones OMML requieren conversión a LaTeX/MathML");
+  if(nCtx) alertas.push(nCtx+" cuadros de texto rescatados del XML (invisibles en extracción simple)");
+  if(nSmart) alertas.push(nSmart+" diagramas SmartArt: texto capturado; el diagrama debe generarse con IA en una etapa posterior");
+  const nRec=bloques.filter(b=>b.tipo==="recurso_ediloja").length;
+  if(nRec) alertas.push(nRec+" RECURSO(S) EDILOJA marcados: los generará otro agente de IA en una etapa posterior");
+  // figuras de contenido (numeradas) sin título completo, y accesibilidad (alt text)
+  const figsSinTit=[], figsSinAlt=[];
+  const todosBloques=b=>{const r=[];const walk=x=>{r.push(x);(x.bloques||[]).forEach(walk);(x.items||[]).forEach(()=>{});};b.forEach(walk);return r;};
+  for(const pg of paginas) for(const bb of todosBloques(pg.bloques)){
+    if(bb.tipo!=="imagen"||bb.decorativa) continue;
+    const nom=(bb.imagenes&&bb.imagenes[0]?bb.imagenes[0].archivo.split("/").pop():"imagen")+" (S"+pg.semana+")";
+    if(!bb.titulo) figsSinTit.push(nom);
+    if(!bb.alt_text) figsSinAlt.push(nom);
+  }
+  if(figsSinTit.length)
+    alertas.push("Figuras de contenido sin título \"Figura N. …\": "+figsSinTit.slice(0,8).join(", ")+(figsSinTit.length>8?" y "+(figsSinTit.length-8)+" más":""));
+  // tablas sin el formato "Tabla N." arriba + "Nota." abajo
+  const tabsMal=[];
+  for(const pg of paginas) for(const bb of todosBloques(pg.bloques))
+    if(bb.tipo==="tabla"&&(!bb.titulo||!bb.nota))
+      tabsMal.push("Semana "+pg.semana+(bb.titulo?"":" (sin título)")+(bb.nota?"":" (sin Nota)"));
+  if(tabsMal.length)
+    alertas.push("Tablas sin el formato completo (título \"Tabla N.\" arriba y \"Nota.\" abajo): "+tabsMal.slice(0,6).join(", ")+(tabsMal.length>6?" y "+(tabsMal.length-6)+" más":"")+" — REVISOR: complete el título o la nota/fuente en el Word");
+  // figuras de contenido sin nota/fuente
+  const figsSinNota=[];
+  for(const pg of paginas) for(const bb of todosBloques(pg.bloques))
+    if(bb.tipo==="imagen"&&!bb.decorativa&&bb.titulo&&!bb.nota)
+      figsSinNota.push((bb.imagenes&&bb.imagenes[0]?bb.imagenes[0].archivo.split("/").pop():"imagen")+" (S"+pg.semana+")");
+  if(figsSinNota.length)
+    alertas.push("Figuras de contenido sin \"Nota.\" o \"Fuente:\" debajo: "+figsSinNota.slice(0,6).join(", ")+(figsSinNota.length>6?" y más":"")+" — REVISOR: añada la fuente o marque la figura como decorativa");
+  // viñetas sueltas con símbolos no estándar (no se agrupan): el revisor las convierte
+  const vinSueltas=bloques.filter(b=>b.tipo==="lista"&&!b.items).length;
+  if(vinSueltas)
+    alertas.push(vinSueltas+" viñeta(s) sueltas de un solo elemento (símbolos no estándar como ➔): REVISOR: conviértalas en listas estándar de Word para que se agrupen");
+  if(actividadesMalUbicadas.length)
+    alertas.push("Actividades de aprendizaje a MITAD de la semana en ["+actividadesMalUbicadas.join(", ")+"] seguidas de contenido temático: REVISOR: mueva las actividades recomendadas al FINAL de la semana");
+  if(figsSinAlt.length)
+    alertas.push("Accesibilidad Canvas: "+figsSinAlt.length+" figura(s) numerada(s) sin texto alternativo — "+figsSinAlt.slice(0,6).join(", ")+(figsSinAlt.length>6?" y más":"")+". Toda figura no decorativa debe tener texto alternativo (Word: clic derecho en la imagen → Ver texto alternativo)");
+  // numeración automática de encabezados con reinicios dentro de la misma semana
+  const semNumMal=[];
+  for(const pg of paginas){
+    let prevNum=null;
+    for(const bb of pg.bloques){
+      if(bb.tipo==="encabezado"&&bb.numeracion){
+        const mn=/^(\d+)/.exec(bb.numeracion);
+        if(mn){const v=parseInt(mn[1],10);
+          if(prevNum!=null&&v<prevNum&&!semNumMal.includes(pg.semana)) semNumMal.push(pg.semana);
+          prevNum=v;}
+      }
+    }
+  }
+  if(semNumMal.length)
+    alertas.push("Numeración automática de encabezados con reinicios o saltos en semanas ["+semNumMal.join(", ")+"]: se conserva tal como la generó el docente; revísela en el Word etiquetado");
+  const uniReales=Object.values(unidades).filter(u=>u.numero);
+  const uniSinAuto=uniReales.filter(u=>u.autoevaluaciones.length===0).map(u=>u.numero);
+  const uniMulti=uniReales.filter(u=>u.autoevaluaciones.length>1).map(u=>u.numero);
+  const huerfanas=unidades[0]?unidades[0].autoevaluaciones.length:0;
+  if(uniSinAuto.length) alertas.push("Unidades sin autoevaluación ["+uniSinAuto.join(", ")+"]: la generará el agente de IA (debe existir exactamente una por unidad)");
+  if(uniMulti.length) alertas.push("Unidades con más de una autoevaluación ["+uniMulti.join(", ")+"]: el curso exige exactamente una por unidad; deje solo una en el Word");
+  if(huerfanas) alertas.push(huerfanas+" autoevaluación(es) sin unidad declarada: escriba el encabezado \"Unidad N. Título\" antes de cada autoevaluación");
+  resultados.forEach(r=>{delete r._ctxN; delete r._ctxCerrada;});
+  const ctxImpl=resultados.filter(r=>r.contextualizacion_fuente==="implicita").map(r=>r.numero);
+  if(ctxImpl.length) alertas.push("Contextualización detectada sin encabezado en RA ["+ctxImpl.join(", ")+"] (confianza media): confirme el texto o use el encabezado \"Contextualización\" en el Word");
+  // cada RA debe conducir a "Contenidos, recursos y actividades de aprendizaje recomendadas"
+  const RX_CRA=/contenidos,?\s+recursos\s+y\s+actividades\s+de\s+aprendizaje\s+recomendad/;
+  const hayCRA=bloques.some(b=>RX_CRA.test(norm(b.texto||"")));
+  if(resultados.length && !hayCRA)
+    alertas.push("No se encontró el encabezado de cierre \"Contenidos, recursos y actividades de aprendizaje recomendadas\": cada recurso de aprendizaje debe terminar con esa frase exacta");
+  const sinCtx=resultados.filter(r=>!r.contextualizacion).map(r=>r.numero);
+  if(sinCtx.length) alertas.push("Resultados de aprendizaje sin contextualización ["+sinCtx.join(", ")+"]: la generará el agente de IA en una etapa posterior");
+
+  return {
+    version:"2.1", generado:new Date().toISOString().slice(0,10),
+    info_general:info,
+    estadisticas:{
+      bloques_totales:nb, paginas_semana:paginas.length,
+      unidades:Object.values(unidades).filter(u=>u.numero).length,
+      resultados_aprendizaje:resultados.length,
+      autoevaluaciones:todasAuto.length,
+      autoevaluaciones_con_solucionario:todasAuto.length-sinSol.length,
+      tablas:bloques.filter(b=>b.tipo==="tabla").length,
+      cajas_destacadas:bloques.filter(b=>b.tipo==="caja").length,
+      focalizadores:bloques.filter(b=>b.tipo==="focalizador").length,
+      citas:bloques.filter(b=>b.tipo==="cita").length,
+      recursos_ediloja:bloques.filter(b=>b.tipo==="recurso_ediloja").length,
+      actividades_recomendadas:actRec, actividades_evaluadas:actEval,
+      listas:bloques.filter(b=>b.tipo==="lista"&&b.items).length,
+      imagenes:extras.figuras!=null?extras.figuras:0,
+      figuras_decorativas:bloques.filter(b=>b.tipo==="imagen"&&b.decorativa).length,
+      figuras_sin_alt:bloques.filter(b=>b.tipo==="imagen"&&!b.decorativa&&!b.alt_text).length,
+      smartart:nSmart,
+      hipervinculos:bloques.reduce((s,b)=>s+(b.hipervinculos?b.hipervinculos.length:0),0),
+      ecuaciones_omml:nEcu, cuadros_texto:nCtx,
+    },
+    secciones:{datos_informacion:datos,metodologia},
+    estructura:{
+      titulo:"3. ORIENTACIONES DIDÁCTICAS POR RESULTADOS DE APRENDIZAJE",
+      bimestres, resultados_aprendizaje:resultados,
+      unidades:Object.keys(unidades).map(Number).sort((a,b)=>a-b).filter(k=>k).map(k=>unidades[k]),
+      preambulo_bloques:preambulo, paginas,
+    },
+    finales,
+    validaciones:{semanas_esperadas:esperadas,semanas_detectadas:semanasDet,
+                  secuencia_completa:faltan.length===0,alertas},
+  };
+}
+
+/* --------- Word etiquetado: mapa id→estilo GD y generación del .docx --------- */
+const GD_DEFS=[
+  ["GD-SeccionMacro",0,"1F4E79"],["GD-Bimestre",0,"7030A0"],
+  ["GD-ResultadoAprendizaje",0,"C00000"],["GD-Contextualizacion",1,"C55A11"],
+  ["GD-Semana",1,"0070C0"],["GD-Unidad",1,"00838F"],["GD-Autoevaluacion",2,"2E7D32"],
+  ["GD-ActividadesRecomendadas",2,"BF5E0E"],["GD-ActividadesEvaluadas",2,"0B874B"]];
+function mapaEstilosGD(bloques){
+  const nb=bloques.length, mapa={}, anclasVistas=new Set();
+  const FIN=new Set(["referencias","solucionario","glosario","anexos"]);
+  let corte=nb;
+  bloques.forEach((b,i)=>{
+    if(i<nb*0.5||corte<nb) return;
+    if((b.estilo||"").startsWith("toc")) return;
+    const t=b.texto||""; if(!t||t.length>90) return;
+    const nt=norm(t);
+    for(const k of FIN){
+      let es=esAncla(b,CONFIG.anclas[k]);
+      if(!es&&k==="solucionario"&&nt.startsWith("solucionario")&&t.length<60&&
+         (b.tipo==="parrafo"||b.tipo==="encabezado")) es=true;
+      if(es){corte=i;break;}
+    }
+  });
+  let lastWeek=0;
+  bloques.forEach((b,i)=>{
+    if((b.estilo||"").startsWith("toc")||(b.estilo||"").startsWith("GD-")) return;
+    const t=(b.texto||"").trim(); if(!t||t.length>140) return;
+    const nt=norm(t);
+    const marca=b.tipo==="encabezado"||b.negrita;
+    for(const [k,frases] of Object.entries(CONFIG.anclas)){
+      if(anclasVistas.has(k)) continue;
+      if(FIN.has(k)&&i<nb*0.5) continue;
+      let es=marca&&fuzzy(nt,frases,CONFIG.tolerancia_difusa);
+      if(!es&&k==="solucionario"&&nt.startsWith("solucionario")&&t.length<60) es=true;
+      if(es){anclasVistas.add(k);mapa[b.id]="GD-SeccionMacro";return;}
+    }
+    if(i>=corte) return;
+    let m;
+    if(marca){
+      if(RX_BIM.test(nt)){mapa[b.id]="GD-Bimestre";return;}
+      if(RX_RA.test(nt)){mapa[b.id]="GD-ResultadoAprendizaje";return;}
+      if(nt.startsWith("contextualizaci")&&t.length<40){mapa[b.id]="GD-Contextualizacion";return;}
+      if((m=RX_SEM.exec(nt))){
+        const n=parseInt(m[1],10);
+        if(!(n<=lastWeek&&lastWeek>=6)){lastWeek=n;mapa[b.id]="GD-Semana";}
+        return;
+      }
+      if(RX_UNI.test(nt)){mapa[b.id]="GD-Unidad";return;}
+      if(t.length<80&&RX_ACTE.test(nt)){mapa[b.id]="GD-ActividadesEvaluadas";return;}
+      if(t.length<80&&RX_ACTR.test(nt)){mapa[b.id]="GD-ActividadesRecomendadas";return;}
+    }
+    if(RX_AUTO.test(nt)&&(marca||t.length<45)) mapa[b.id]="GD-Autoevaluacion";
+  });
+  return mapa;
+}
+async function generarDocxEtiquetado(arrayBuffer, JSZipImpl, DOMParserImpl, XMLSerializerImpl){
+  const zip=await JSZipImpl.loadAsync(arrayBuffer);
+  const leer=async n=>{const f=zip.file(n);if(!f)return null;
+    return (await f.async("string")).replace(/^\uFEFF/,"");};
+  const [docS,relsS,stylesS,numS]=await Promise.all([
+    leer("word/document.xml"),leer("word/_rels/document.xml.rels"),
+    leer("word/styles.xml"),leer("word/numbering.xml")]);
+  const P=new DOMParserImpl();
+  const docXml=P.parseFromString(docS,"text/xml");
+  const rels=mapaRels(relsS?P.parseFromString(relsS,"text/xml"):null);
+  const estilos=mapaEstilos(stylesS?P.parseFromString(stylesS,"text/xml"):null);
+  const contador=crearContador(mapaNumeracion(numS?P.parseFromString(numS,"text/xml"):null));
+  let bloques=extraerBloques(docXml,{estilos,rels,contador,diagramas:{}});
+  bloques=agruparBloques(bloques);
+  const mapa=mapaEstilosGD(bloques);
+  // aplicar pStyle a los párrafos marcados (recorrido idéntico al del extractor: bid)
+  const body=desc(docXml,W,"body")[0];
+  let bid=0, aplicados=0;
+  for(let n=body.firstChild;n;n=n.nextSibling){
+    if(n.nodeType!==1) continue;
+    bid++;
+    if(!(n.localName==="p"&&n.namespaceURI===W)) continue;
+    const gd=mapa[bid]; if(!gd) continue;
+    let ppr=hijos(n,W,"pPr")[0];
+    if(!ppr){ppr=docXml.createElementNS(W,"w:pPr");n.insertBefore(ppr,n.firstChild);}
+    let ps=hijos(ppr,W,"pStyle")[0];
+    if(!ps){ps=docXml.createElementNS(W,"w:pStyle");ppr.insertBefore(ps,ppr.firstChild);}
+    ps.setAttributeNS(W,"w:val",gd);
+    aplicados++;
+  }
+  const nuevoDoc=new XMLSerializerImpl().serializeToString(docXml);
+  // inyectar definiciones de estilos GD- si no existen
+  let nuevosEstilos=stylesS;
+  const defs=GD_DEFS.filter(([nm])=>!stylesS.includes('w:styleId="'+nm+'"'))
+    .map(([nm,olvl,color])=>
+      '<w:style w:type="paragraph" w:styleId="'+nm+'"><w:name w:val="'+nm+'"/><w:qFormat/>'+
+      '<w:pPr><w:keepNext/><w:spacing w:before="200" w:after="120"/><w:outlineLvl w:val="'+olvl+'"/></w:pPr>'+
+      '<w:rPr><w:b/><w:color w:val="'+color+'"/><w:sz w:val="'+(olvl===0?30:26)+'"/></w:rPr></w:style>').join("");
+  if(defs) nuevosEstilos=stylesS.replace("</w:styles>",defs+"</w:styles>");
+  zip.file("word/document.xml",nuevoDoc);
+  zip.file("word/styles.xml",nuevosEstilos);
+  const datos=await zip.generateAsync({type:"uint8array"});
+  return {datos, aplicados};
+}
+
+/* -------------------------------------------------------- API pública */
+async function procesarDocx(arrayBuffer, nombreArchivo, JSZipImpl, DOMParserImpl){
+  const zip=await JSZipImpl.loadAsync(arrayBuffer);
+  const leer=async n=>{
+    if(!zip.file(n)) return null;
+    const s=await zip.file(n).async("string");
+    return s.replace(/^\uFEFF/,"");
+  };
+  const [docS,relsS,stylesS,numS]=await Promise.all([
+    leer("word/document.xml"),leer("word/_rels/document.xml.rels"),
+    leer("word/styles.xml"),leer("word/numbering.xml")]);
+  if(!docS) throw new Error("El archivo no contiene word/document.xml — ¿es un .docx válido?");
+  const P=new DOMParserImpl();
+  const docXml=P.parseFromString(docS,"text/xml");
+  const rels=mapaRels(relsS?P.parseFromString(relsS,"text/xml"):null);
+  const estilos=mapaEstilos(stylesS?P.parseFromString(stylesS,"text/xml"):null);
+  const contador=crearContador(mapaNumeracion(numS?P.parseFromString(numS,"text/xml"):null));
+  // precargar textos de SmartArt (word/diagrams/dataN.xml)
+  const diagramas={};
+  for(const target of Object.values(rels)){
+    if(!/diagrams\/data\d*\.xml$/.test(target)) continue;
+    const ruta="word/"+target.replace(/^\.\.\//,"").replace(/^\/+/,"");
+    const s=await leer(ruta) || await leer(target);
+    if(!s) continue;
+    const dx=P.parseFromString(s,"text/xml");
+    const textos=[];
+    for(const pt of desc(dx,DGM,"pt")){
+      const tipo=pt.getAttribute("type");
+      if(tipo==="parTrans"||tipo==="sibTrans") continue;
+      let t="";for(const a of desc(pt,A,"t")) t+=a.textContent||"";
+      t=t.trim(); if(t) textos.push(t);
+    }
+    if(textos.length) diagramas[target]=textos;
+  }
+  let bloques=extraerBloques(docXml,{estilos,rels,contador,diagramas});
+  bloques=agruparBloques(bloques);
+  bloques=agruparFocDelimitados(bloques);
+  const figuras=asignarFiguras(bloques);
+  clasificarFocalizadores(bloques);
+  const curso=construirCurso(bloques,nombreArchivo,{figuras:figuras.length});
+  // extraer bytes de las imágenes para guardarlas como Imagenes/FiguraN
+  const imagenes=[];
+  const MIME={png:"image/png",jpg:"image/jpeg",jpeg:"image/jpeg",gif:"image/gif",
+              webp:"image/webp",bmp:"image/bmp",svg:"image/svg+xml",
+              emf:"image/emf",wmf:"image/wmf",tif:"image/tiff",tiff:"image/tiff"};
+  for(const f of figuras){
+    const file=zip.file(f.ruta_zip)||zip.file(f.ruta_zip.replace(/^word\//,""));
+    if(!file) continue;
+    const datos=await file.async("uint8array");
+    const ext=f.nombre.split(".").pop().toLowerCase();
+    imagenes.push({nombre:f.nombre,mime:MIME[ext]||"application/octet-stream",datos});
+  }
+  return {curso,imagenes};
+}
+
+root.PipelineGuia={procesarDocx,construirCurso,extraerBloques,agruparBloques,
+                   asignarFiguras,clasificarFocalizadores,mapaEstilos,mapaRels,
+                   mapaNumeracion,crearContador,mapaEstilosGD,generarDocxEtiquetado};
+})(typeof window!=="undefined"?window:(typeof module!=="undefined"?module.exports:this));
+</script>
+<script>/* Generador de páginas Canvas "Rediseño 3" (UTPL) a partir del JSON de curso.
+   Produce: fragmento ed-container por semana + página de inicio, y la vista
+   previa completa (fragmento + CSS del tema + JS mínimo de tabs/collapse). */
+(function(root){
+"use strict";
+const TEMA_CSS = "/* PLANTILLA CANVAS \"REDISE\u00d1O 3\" (UTPL) \u2014 estilos del tema global */\n@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');\n@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');\n.ed-container, .ed-container * { font-family: \"Roboto\", sans-serif; }\n.ed-container .header_course .ed-header .course-name,\n.ed-container #header_course .ed-header .course-name { font-family: \"Playfair Display\", serif !important; font-weight: 900 !important; }\n.ed-container { max-width: 1320px; margin: auto;\n  --ed-btn-bg:#f1f9ff; --ed-btn-bg_ho:#0f6ece; --ed-btn-txt:#0f6ece; --ed-btn-txt-dark:#212529;\n  --ed-lbl-txt:#0a427d; --ed-lbl-bg:#dfeffb; --ed-border:#a5cef6; --ed-border-gray:#adb5bd;\n  --ed-border_ho:#0f70d5; --ed-txt-white:#fff; --ed-border-radius:6px; --ed-padding-short:5px;\n  --ed-padding-large:1em; --ed-height-container:400px; --ed-transition:.5s ease; }\n.ed-container .title-section { display:grid; grid-template-columns:50px auto; color:var(--ed-lbl-txt); }\n.ed-container .title-section :nth-child(2){ padding-left:10px; margin-bottom:1em; }\n.ed-container .title-section.bg-color :nth-child(2){ color:#0a427d; background-color:#dfeffb; border-radius:var(--ed-border-radius); }\n.ed-container .subtitle-section{ color:#0a427d; border-left:5px solid #0f70d5; padding-left:10px; margin-bottom:1em; }\n.ed-container .indentation-3{ margin-left:3em; }\n.ed-container .table-design, .ed-container .table-general{ margin:auto; border-collapse:separate !important; border-spacing:5px !important; }\n.ed-container .table-design th, .ed-container .table-design td{ padding:5px 1em !important; border-radius:var(--ed-border-radius); }\n.ed-container .table-design th:nth-child(3n+1){ color:#fff; background-color:#3690ef; }\n.ed-container .table-design th:nth-child(3n+2){ color:#212529; background-color:#5ee7bd; }\n.ed-container .table-design th:nth-child(3n){ color:#fff; background-color:#768aff; }\n.ed-container .table-design td:nth-child(3n+1){ color:#212529; background-color:#dfeffb; }\n.ed-container .table-design td:nth-child(3n+2){ color:#212529; background-color:#c2fae8; }\n.ed-container .table-design td:nth-child(3n){ color:#212529; background-color:#dbe3ff; }\n.ed-container .table-general th{ padding:5px 1em !important; color:#fff; background-color:#6bacf4; }\n.ed-container .table-general td{ border-bottom:1px solid #0f70d5; }\n.ed-container .focuser{ display:grid; grid-template-columns:150px auto; max-width:600px; margin:0 auto;\n  color:#fff; background-color:#54a0f1; align-items:center; border:1px solid #2486ec; border-radius:var(--ed-border-radius); }\n.ed-container .course-header{ margin-bottom:1em; }\n.ed-container .ed-header{ display:grid; align-items:center; align-content:center; justify-content:start;\n  background-size:100% 100%; color:var(--ed-txt-white); min-height:240px; }\n.ed-container #header_course .ed-header{ background-image:url(\"https://www.ediloja.com/Virtualizacion/red3/curso.png\"); }\n.ed-container #week_course .ed-header{ background-image:url(\"https://www.ediloja.com/Virtualizacion/red3/semana.png\"); }\n.ed-container .ed-header h2{ margin-left:1em; font-size:36pt; border-bottom:1px solid var(--ed-txt-white); }\n.ed-container .pdf-downloadable{ display:flex; justify-content:flex-end; gap:1em; }\n.ed-container .pdf-downloadable a{ margin-top:1em; text-decoration:none !important; display:flex; align-items:center; gap:1em;\n  color:#0d5caa; background-color:#e7f1fb; transition:background-color var(--ed-transition),color var(--ed-transition),border-color var(--ed-transition);\n  border:1px solid #a5cef6; border-radius:var(--ed-border-radius); padding:.5em 2.5em .5em .5em; position:relative; }\n.ed-container .pdf-downloadable a:hover{ color:var(--ed-txt-white); background-color:var(--ed-btn-bg_ho); border-color:var(--ed-border_ho); }\n.ed-container .preliminary-tabs{ margin:1em 0; }\n.ed-container .preliminary-tabs .preliminary-tabs__nav{ display:flex; gap:4px; padding:0; border-bottom:2px solid var(--ed-border_ho); }\n.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label{ display:flex; align-items:center; justify-content:center;\n  flex:1; padding:12px 20px 10px; border-bottom:0; border-radius:6px 6px 0 0; height:40px; color:#1681e8; background:#edf6ff;\n  border:1px solid var(--ed-border); text-decoration:none !important;\n  transition:background-color var(--ed-transition),color var(--ed-transition),transform var(--ed-transition); position:relative; }\n.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label:hover,\n.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label.is-active{ color:var(--ed-txt-white); background-color:var(--ed-btn-bg_ho); }\n.ed-container .preliminary-tabs .preliminary-tabs__content{ display:none; padding:5px 1em; border:1px solid var(--ed-border);\n  border-top:0; border-radius:0 0 var(--ed-border-radius) var(--ed-border-radius); }\n.ed-container .preliminary-tabs__content.is-active{ display:block; animation:preliminaryTabsFade .3s ease; }\n@keyframes preliminaryTabsFade{ from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }\n.ed-container #preliminary #planning #learning_methodology{ padding:0 var(--ed-padding-large); border:1px solid var(--ed-border_ho);\n  border-radius:var(--ed-border-radius); max-height:var(--ed-height-container); overflow-y:auto; }\n.ed-container #learning_path .title-path{ text-align:center; color:var(--ed-lbl-txt); background-color:var(--ed-lbl-bg);\n  border-radius:var(--ed-border-radius); padding:var(--ed-padding-short); }\n.ed-container #learning_path .weeks-block{ display:grid; align-items:start; grid-template-columns:repeat(4,1fr);\n  border:1px solid #a5cef6; border-radius:var(--ed-border-radius); padding:2em 0; row-gap:2em;\n  background-image:url(\"https://www.ediloja.com/Virtualizacion/red3/watermark.svg\"); background-size:cover; }\n.ed-container #learning_path .weeks-block .week{ display:grid; justify-content:center; text-align:center; row-gap:.5em; }\n.ed-container #learning_path .weeks-block .week a{ text-decoration:none !important; }\n.ed-container #learning_path .weeks-block .week .state{ opacity:0; transition:opacity .3s ease; color:#0f6ece; background-color:#e7f1fb;\n  padding:1px 10px; border-radius:var(--ed-border-radius); }\n.ed-container #learning_path .weeks-block .week:has(.btn-week:hover) .state{ opacity:1; }\n.ed-container #learning_path .weeks-block .week .btn-week{ display:flex; align-items:center; justify-content:center; margin:auto;\n  width:60px; height:60px; color:var(--ed-btn-txt-dark); background-color:#f1f3f5; border-radius:var(--ed-border-radius); font-size:20pt;\n  transition:background-color var(--ed-transition),color var(--ed-transition),border-color var(--ed-transition); border:1px solid var(--ed-border-gray); }\n.ed-container #learning_path .weeks-block .week .btn-week:hover{ color:#fff; background-color:#54a0f1; border-color:#0f70d5; }\n.ed-container #learning_path .weeks-block .week .btn-week.completed{ color:#fff; background-color:#00b985; border-color:#00805a; }\n.ed-container #learning_path .weeks-block .week .btn-week.in-progress{ color:#fff; background-color:#54a0f1; border-color:#0f70d5; }\n.ed-container #learning_path .weeks-block .week .assessment{ color:#212529; background-color:#ffab46; padding:1px 10px;\n  border:1px solid #f86900; border-radius:var(--ed-border-radius); }\n.ed-container #general_sections{ margin:1em 0; }\n.ed-container #general_sections .general-container{ display:flex; gap:4px; padding:0; }\n.ed-container #general_sections .general-container a.btn-general{ display:flex; align-items:center; justify-content:center; flex:1;\n  padding:12px 20px 10px; border-bottom:0; border-radius:var(--ed-border-radius); height:40px; color:#1681e8; background:#edf6ff;\n  border:1px solid var(--ed-border); text-decoration:none !important;\n  transition:background-color var(--ed-transition),color var(--ed-transition),transform var(--ed-transition); position:relative; }\n.ed-container #general_sections .general-container a.btn-general:hover{ color:var(--ed-txt-white); background-color:var(--ed-btn-bg_ho); }\n.ed-container .container-homepage-bnt{ display:flex; column-gap:5px; margin-bottom:1em; }\n.ed-container .container-homepage-bnt .homepage-btn{ display:flex; align-items:center; justify-content:center; width:40px; height:40px;\n  padding:var(--ed-padding-short); border-radius:var(--ed-border-radius); background-color:#edf6ff; border:1px solid var(--ed-border);\n  text-decoration:none !important; transition:background-color var(--ed-transition),transform var(--ed-transition); position:relative; }\n.ed-container .container-homepage-bnt .homepage-btn:hover{ background-color:#0d5caa; }\n.ed-container .container-homepage-bnt .block{ display:flex; align-items:center; justify-content:end; column-gap:5px;\n  border-radius:var(--ed-border-radius); background-color:#f1f9ff; flex:1; padding-right:1em; }\n.ed-container .container-homepage-bnt .block span{ color:#0f6ece; }\n.ed-container .container-homepage-bnt .block a{ color:#0f6ece; background-color:#dfeffb; text-decoration:none !important; display:flex;\n  width:30px; height:30px; align-items:center; justify-content:center; border-radius:var(--ed-border-radius);\n  transition:background-color var(--ed-transition),box-shadow var(--ed-transition); }\n.ed-container .container-homepage-bnt .block a:hover{ color:#0d5caa; background-color:#f8f9fa; }\n.ed-container .ed-header h3{ margin-left:1.5em; font-size:24pt; }\n.ed-container #container-learning-outcome{ border:1px solid var(--ed-border); border-radius:var(--ed-border-radius);\n  padding:var(--ed-padding-short) var(--ed-padding-large); max-width:800px; margin:auto; }\n.ed-container #container-learning-outcome .title-learning-outcomes{ display:grid; grid-template-columns:200px auto; align-items:center; }\n.ed-container #container-learning-outcome .title-learning-outcomes h3{ font-size:18px; color:#0a427d; }\n.ed-container .collapse__link{ margin-left:auto; display:flex; align-items:center; justify-content:space-between; padding:5px 1em;\n  width:150px; color:#0f6ece; background-color:#e7f1fb; text-decoration:none !important; border:1px solid #a5cef6;\n  border-radius:var(--ed-border-radius) var(--ed-border-radius) 0 0; transition:all var(--ed-transition); }\n.ed-container .collapse__link:hover{ color:#fff; background-color:#0d5caa; border-color:#3690ef; }\n.ed-container .collapse.active .collapse__link{ color:#fff; background-color:#0d5caa; border-color:#3690ef; border-bottom:none; }\n.ed-container .collapse__icon{ font-size:24px; transition:transform .3s ease; }\n.ed-container .collapse__content{ max-height:0; overflow:hidden; opacity:0; transition:max-height .4s ease,opacity .3s ease; }\n.ed-container .collapse__inner{ padding:5px 1em; }\n.ed-container .collapse.active .collapse__content{ max-height:300px; opacity:1; border:1px solid #a5cef6;\n  border-radius:0 0 var(--ed-border-radius) var(--ed-border-radius); overflow-y:auto; }\n.ed-container .collapse.active .collapse__icon{ transform:rotate(45deg); }\n.ed-container .content .ctab{ margin:1.5rem auto; display:grid; grid-template-columns:180px auto; column-gap:5px; align-items:flex-start; }\n.ed-container .content .ctab__nav{ display:flex; flex-direction:column; gap:.4rem; margin:0; padding:0; list-style:none; }\n.ed-container .content .ctab__tab{ cursor:pointer; user-select:none; padding:.7rem 1rem; font-weight:600; color:#15539E; background:#EAF2FB;\n  border:1px solid #BBD4EE; border-radius:10px; transition:background .25s,color .25s,box-shadow .25s,transform .15s;\n  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }\n.ed-container .content .ctab__tab:hover{ background:#DCEAF6; transform:translateX(2px); }\n.ed-container .content .ctab__tab.is-active{ color:#fff; background:#15539E; border-color:#15539E; box-shadow:0 4px 12px rgba(21,83,158,.30); }\n.ed-container .content .ctab__panel{ display:none; flex:1; padding:1.5rem 1.7rem; background:#fff; border:1px solid #BBD4EE;\n  border-radius:14px; color:#243B53; line-height:1.75; max-height:var(--ed-height-container); overflow-y:auto; }\n.ed-container .content .ctab__panel.is-active{ display:block; animation:ctabIn .35s ease; }\n.ed-container .content .ctab__panel h2{ margin:0 0 .6rem; color:#15539E; }\n@keyframes ctabIn{ from{opacity:0;transform:translateX(12px);} to{opacity:1;transform:translateX(0);} }\n@media (max-width:600px){ .ctab{flex-direction:column;} .ctab__nav{flex:1 1 auto;flex-direction:row;flex-wrap:wrap;}\n  .ctab__tab{flex:1 1 calc(50% - .4rem);text-align:center;} }\n.ed-container .container-figure{ max-width:500px; margin:auto; }\n.ed-container #bibliography p{ margin-left:2em; text-indent:-2em; }\n";   // se inyecta en el build desde el CSS del tema global
+
+const esc = s => String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+const FOC_EMOJI = {reflexione:"🤔", importante:"❗", recuerde:"📌", video:"🎬",
+  lectura:"📖", ejemplo:"💡", nota:"📝", caso:"🧭", foro:"💬", enlace:"🔗",
+  ejercicio:"✏️", observe:"👀", buscar:"🔎", apuntar:"🖊️", avancemos:"➡️",
+  "muy bien":"👏", "informacion importante":"ℹ️", "orientacion a actividades":"🗂️"};
+const claseFoc = s => (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+
+function conLinks(texto, links){
+  let t = esc(texto||"");
+  if(links) for(const l of links)
+    if(l.url && l.texto)
+      t = t.replace(esc(l.texto),
+        `<a class="cc-link" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.texto)}</a>`);
+  return t;
+}
+function listaHTML(items, ordenada){
+  let h="", nivel=-1, pila=[];
+  const abrir=t=>{h+=t==="ol"?"<ol>":"<ul>";pila.push(t);};
+  const cerrar=()=>{h+=pila.pop()==="ol"?"</ol>":"</ul>";};
+  for(const it of items){
+    const n=it.nivel||0;
+    while(nivel<n){abrir(it.tipo||(ordenada?"ol":"ul"));nivel++;}
+    while(nivel>n){cerrar();nivel--;}
+    h+=`<li>${conLinks(it.texto,it.hipervinculos)}</li>`;
+  }
+  while(pila.length)cerrar();
+  return h;
+}
+function figuraHTML(b, urls){
+  const partes=(b.titulo||"").split(/(?<=\.)\s+/);   // "Figura 1." / resto
+  const cab=partes.length>1?`<strong>${esc(partes[0])}<br /></strong>${esc(partes.slice(1).join(" "))}`
+                           :`<strong>${esc(b.titulo||"Figura")}</strong>`;
+  const alt = b.decorativa ? "" : esc(b.alt_text || b.titulo || "");
+  const imgs=(b.imagenes||[]).map(im=>{
+    const nombre=(im.archivo||"").split("/").pop();
+    const src=(urls&&urls[nombre])||im.archivo||"";
+    return `<p><img src="${esc(src)}" alt="${alt}"${b.decorativa?' role="presentation"':''} width="500" /></p>`;
+  }).join("");
+  return `<figure class="container-figure">
+  <figcaption><p>${cab}</p></figcaption>
+  ${imgs}
+  ${b.nota?`<footer><p>${esc(b.nota)}</p></footer>`:""}
+</figure>`;
+}
+function tablaHTML(b){
+  const filas=b.celdas||[];
+  const head=filas[0]||[];
+  const cuerpo=filas.slice(1);
+  return `${b.titulo?`<p><em>${esc(b.titulo.replace(/^tabla\s*\d+[.:]\s*/i,""))}</em></p>`:""}
+<table class="table-general">
+  ${b.titulo?`<caption>${esc(b.titulo.replace(/^tabla\s*\d+[.:]\s*/i,""))}</caption>`:""}
+  <thead><tr>${head.map(c=>`<th scope="col">${esc(c)}</th>`).join("")}</tr></thead>
+  <tbody>${cuerpo.map(f=>`<tr>${f.map(c=>`<td style="text-align: center;">${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody>
+  ${b.nota?`<tfoot><tr><td colspan="${head.length||1}">${esc(b.nota)}</td></tr></tfoot>`:""}
+</table>`;
+}
+function focalizadorHTML(b, urls){
+  const cl=claseFoc(b.subtipo);
+  const emoji=FOC_EMOJI[cl]||"⭐";
+  let cuerpo="";
+  if(b.texto) cuerpo+=`<p>${esc(b.texto)}</p>`;
+  if(b.bloques) cuerpo+=b.bloques.map(x=>bloqueHTML(x,urls,0)).join("");
+  return `<div class="focuser ${esc(cl)}">
+  <p style="text-align: center;"><span class="foc-ico" role="img" aria-label="${esc(b.subtipo||"")}">${emoji}</span></p>
+  <div class="content-focuser"><p><strong>${esc(b.subtipo||"Focalizador")}</strong></p>${cuerpo}</div>
+</div>`;
+}
+function edilojaInsertHTML(semana, texto){
+  return `<p><strong>EDILOJA insertar S${semana}_ ${esc(texto)}</strong></p>`;
+}
+function bloqueHTML(b, urls, semana){
+  switch(b.tipo){
+    case "parrafo":{
+      const t=conLinks(b.texto,b.hipervinculos)
+        + (b.ecuaciones?b.ecuaciones.map(e=>` <code>${esc(e)}</code>`).join(""):"");
+      return b.negrita?`<p><strong>${t}</strong></p>`:`<p>${t}</p>`;
+    }
+    case "encabezado":{
+      const n=Math.min(6,Math.max(4,(b.nivel||3)+1));
+      return `<h${n}>${b.numeracion?esc(b.numeracion)+" ":""}${esc(b.texto)}</h${n}>`;
+    }
+    case "cita":
+      return `<blockquote>${esc(b.texto)}${b.autor?`<br /><em>${esc(b.autor)}</em>`:""}</blockquote>`;
+    case "lista":
+      if(!b.items || !b.items.length)
+        return `<ul><li>${conLinks(b.texto||"", b.hipervinculos)}</li></ul>`;
+      return listaHTML(b.items, b.ordenada);
+    case "tabla":
+      return tablaHTML(b);
+    case "caja":
+      return `<div class="focuser nota"><p style="text-align: center;"><span class="foc-ico">📝</span></p>
+  <div class="content-focuser"><p>${esc(b.texto)}</p></div></div>`;
+    case "focalizador":
+      return focalizadorHTML(b, urls);
+    case "imagen":
+      return figuraHTML(b, urls);
+    case "recurso_ediloja":
+      return edilojaInsertHTML(semana, (b.texto||"").replace(/^recursos?\s+ediloja\s*[:.]?\s*/i,""));
+    case "smartart":
+      return edilojaInsertHTML(semana, "Diagrama: "+(b.textos||[]).slice(0,4).join(" · "))
+        + `<p><em>(SmartArt capturado: ${(b.textos||[]).length} elementos; el recurso visual lo genera el equipo EdiLoja)</em></p>`;
+    case "autoevaluacion_ref":
+      return `<div class="focuser ejercicio"><p style="text-align: center;"><span class="foc-ico">✏️</span></p>
+  <div class="content-focuser"><p><strong>${esc(b.titulo)}</strong></p>
+  <p>Esta autoevaluación se gestiona como cuestionario de Canvas al cierre de la Unidad ${esc(b.unidad??"")}.</p></div></div>`;
+    case "cuadro_texto":
+      return `<p><em>${esc(b.texto)}</em></p>`;
+    default:
+      return b.texto?`<p>${esc(b.texto)}</p>`:"";
+  }
+}
+
+/* --------- página de SEMANA (fragmento ed-container) --------- */
+function fragmentoSemana(curso, pagina, urls){
+  const paginas=curso.estructura.paginas;
+  const ras=curso.estructura.resultados_aprendizaje||[];
+  const ra=ras.find(r=>r.numero===pagina.resultado_aprendizaje&&r.enunciado)
+        || ras.find(r=>r.numero===pagina.resultado_aprendizaje);
+  const uni=(curso.estructura.unidades||[]).find(u=>u.numero===pagina.unidad);
+  const tituloUni=uni? esc(uni.titulo||("Unidad "+uni.numero))
+                     : "Semana "+pagina.semana;
+  const mUni=/^(unidad\s*\d+[.:]?)(\s*)(.*)$/i.exec(uni?uni.titulo||"":"");
+  const h2=mUni?`<strong>${esc(mUni[1])}</strong> ${esc(mUni[3])}`:tituloUni;
+
+  const navSem=paginas.map(p=>
+    `<a title="Semana ${p.semana}" href="#semana-${p.semana}">${p.semana}</a>`).join(" ");
+
+  // dividir el contenido en pestañas: Introducción + cada tema numerado N.N.
+  const RX_TEMA=/^\d+\.\d+\.?$/;
+  const paneles=[{titulo:"Introducción", id:"ctab-intro", bloques:[]}];
+  let actRec=null, actEval=null;
+  for(const b of pagina.bloques){
+    if(b.rol==="titulo_unidad") continue;
+    if(b.tipo==="actividades"){
+      if(b.clase==="evaluadas") actEval=b; else actRec=b;
+      continue;
+    }
+    if(b.tipo==="encabezado"&&b.numeracion&&RX_TEMA.test(b.numeracion)){
+      paneles.push({titulo:b.numeracion+" "+b.texto, id:"ctab-"+(paneles.length), bloques:[]});
+      continue;
+    }
+    paneles[paneles.length-1].bloques.push(b);
+  }
+  const actHTML=a=>{
+    if(!a) return "";
+    const intro=(a.bloques||[]).map(b=>bloqueHTML(b,urls,pagina.semana)).join("\n                ");
+    const items=(a.items||[]).map(it=>
+      `<h4>${esc(it.titulo)}</h4>\n`+(it.bloques||[]).map(b=>bloqueHTML(b,urls,pagina.semana)).join("\n")).join("\n");
+    return intro+"\n"+items;
+  };
+  const tabsNav=paneles.map((p,i)=>
+    `<li class="ctab__tab${i===0?" is-active":""}" data-target="${p.id}">${esc(p.titulo)}</li>`).join("\n        ");
+  const tabsPan=paneles.map((p,i)=>`
+      <div id="${p.id}" class="ctab__panel${i===0?" is-active":""}">
+        <h3>${esc(p.titulo)}</h3>
+        ${p.bloques.map(b=>bloqueHTML(b,urls,pagina.semana)).join("\n        ")}
+      </div>`).join("");
+
+  const ctx = ra&&ra.contextualizacion ? esc(ra.contextualizacion)
+      : "Contextualización pendiente: la generará un agente de IA y será revisada por el docente.";
+
+  return `<div class="ed-container">
+    <section id="week_course" class="course-header">
+        <header class="ed-header">
+            <h2 id="unit_${pagina.unidad||pagina.semana}" class="unit">${h2}</h2>
+        </header>
+    </section>
+    <section class="container-homepage-bnt"><a class="homepage-btn" href="#inicio" title="Inicio"><span class="foc-ico" style="font-size:20px">🏠</span></a>
+        <div class="block"><span><strong>Semanas</strong></span> ${navSem}</div>
+    </section>
+    <section id="container-learning-outcome">
+        <div class="title-learning-outcomes">
+            <div>
+                <p style="text-align: center;"><span class="foc-ico">🎯</span></p>
+                <h3 style="text-align: center;">Resultados de aprendizaje</h3>
+            </div>
+            <div id="learning_outcomes"><ul><li>${esc(ra&&ra.enunciado?ra.enunciado:"(enunciado del resultado de aprendizaje)")}</li></ul></div>
+        </div>
+        <div class="collapse"><a class="collapse__link" role="button" href="#contenido-collapse" aria-expanded="false"> <span>Contextualizaci&oacute;n</span> <span class="collapse__icon" aria-hidden="true">+</span> </a>
+            <div id="contenido-collapse" class="collapse__content">
+                <div id="contextualization" class="collapse__inner"><p>${ctx}</p></div>
+            </div>
+        </div>
+    </section>
+    <section class="content">
+        <div id="introduction">
+            <p>Damos inicio al estudio de los temas planificados para la <strong>Semana ${pagina.semana}</strong>. Le invitamos a revisar detalladamente el material para avanzar con &eacute;xito en su aprendizaje.</p>
+        </div>
+        <div id="topics" class="ctab">
+            <ul class="ctab__nav">
+        ${tabsNav}
+            </ul>${tabsPan}
+        </div>
+        <div id="final_content">
+            <p>Con esto concluimos la revisi&oacute;n de los temas de esta semana. Recuerde repasar los puntos clave y realizar las actividades sugeridas antes de avanzar a la siguiente semana.</p>
+        </div>
+        <div class="title-section bg-color">
+            <p style="text-align: center;"><span class="foc-ico">🧩</span></p>
+            <h2>Zona de pr&aacute;ctica</h2>
+        </div>
+        <section id="sources_resources" class="preliminary-tabs">
+            <div class="preliminary-tabs__nav" role="tablist"><a class="preliminary-tabs__label is-active" role="tab" href="#recommended_activities" data-tab="recommended_activities"><span>Actividades recomendadas</span></a><a class="preliminary-tabs__label" role="tab" href="#activities_evaluated" data-tab="activities_evaluated"><span>Actividad evaluada</span></a></div>
+            <div id="recommended_activities" class="preliminary-tabs__content is-active" role="tabpanel">
+                <p>Las siguientes actividades son de car&aacute;cter formativo y no tienen calificaci&oacute;n.</p>
+                ${actRec?actHTML(actRec)
+                        :"<p><em>A&uacute;n no se han definido actividades recomendadas para esta semana.</em></p>"}
+            </div>
+            <div id="activities_evaluated" class="preliminary-tabs__content" role="tabpanel">
+                ${actEval?actHTML(actEval)
+                         :"<p>Las actividades evaluadas y su detalle se gestionan desde el libro de calificaciones de Canvas.</p>"}
+            </div>
+        </section>
+    </section>
+</div>`;
+}
+
+/* --------- página de INICIO (fragmento ed-container) --------- */
+function itemsDe(bloques){
+  const out=[];
+  for(const b of bloques||[]){
+    if(b.tipo==="lista"&&b.items) for(const it of b.items) out.push(it.texto);
+    else if(b.texto&&b.tipo!=="encabezado") out.push(b.texto);
+  }
+  return out;
+}
+function fragmentoInicio(curso){
+  const ig=curso.info_general;
+  const subs={}; (curso.secciones.datos_informacion.subsecciones||[])
+      .forEach(s=>subs[s.clave]=s.bloques);
+  const genericas=itemsDe(subs.competencias_genericas).map(t=>`<li>${esc(t)}</li>`).join("")||"<li>(por definir)</li>";
+  const perfil=itemsDe(subs.competencias_perfil).map(t=>`<li>${esc(t)}</li>`).join("")||"<li>(por definir)</li>";
+  const metod=(curso.secciones.metodologia.bloques||[])
+      .map(b=>bloqueHTML(b,null,0)).join("\n                ");
+  const semanas=curso.estructura.paginas.map(p=>{
+    const evalua = p.bloques.some(b=>b.tipo==="autoevaluacion_ref"||(b.tipo==="actividades"&&b.clase==="evaluadas"));
+    return `<div class="week"><span class="state">Pendiente</span> <a class="btn-week" title="Semana ${p.semana}" href="#semana-${p.semana}">${p.semana}</a>${evalua?' <a class="assessment" title="Zona de evaluación" href="#">Zona de evaluaci&oacute;n</a>':""}</div>`;
+  }).join("\n            ");
+  return `<div class="ed-container">
+    <section id="header_course">
+        <header class="ed-header"><h2 class="course-name">${esc(ig.asignatura||ig.codigo_banner)}</h2></header>
+    </section>
+    <section id="pdfs" class="pdf-downloadable"><a id="plan_docente_pd" href="#"><span>Plan docente</span></a> <a id="guia_didactica_gd" href="#"><span>Gu&iacute;a did&aacute;ctica</span></a></section>
+    <section id="preliminary" class="preliminary-tabs">
+        <div class="preliminary-tabs__nav" role="tablist"><a class="preliminary-tabs__label is-active" role="tab" href="#overview" data-tab="overview"><span>Visi&oacute;n General</span></a><a class="preliminary-tabs__label" role="tab" href="#planning" data-tab="planning"><span>Planificaci&oacute;n</span></a><a class="preliminary-tabs__label" role="tab" href="#mentor" data-tab="mentor"><span>Tu Mentor</span></a></div>
+        <div id="overview" class="preliminary-tabs__content is-active" role="tabpanel">
+            <p>Te damos la bienvenida a la asignatura <strong>${esc(ig.asignatura||"")}</strong> (${esc(ig.carrera||"")}, nivel ${esc(ig.nivel||"—")}). El video de presentaci&oacute;n se incorporar&aacute; pr&oacute;ximamente.</p>
+        </div>
+        <div id="planning" class="preliminary-tabs__content" role="tabpanel">
+            <div class="title-section"><p style="text-align: center;"><span class="foc-ico">🎯</span></p><h3>Prop&oacute;sito de aprendizaje</h3></div>
+            <h4><strong>Competencias gen&eacute;ricas</strong></h4>
+            <div id="generic_skills"><ul>${genericas}</ul></div>
+            <h4><strong>Competencias del perfil profesional</strong></h4>
+            <div id="professional_profile_skills"><ul>${perfil}</ul></div>
+            <div class="title-section"><p style="text-align: center;"><span class="foc-ico">🧭</span></p><h3>Metodolog&iacute;a de aprendizaje</h3></div>
+            <div id="learning_methodology">
+                ${metod}
+            </div>
+        </div>
+        <div id="mentor" class="preliminary-tabs__content" role="tabpanel">
+            <div class="mentor-card">
+                <div class="mentor-info">
+                    <p class="mentor-name"><strong>${esc(ig.autor||"Docente por asignar")}</strong></p>
+                    <p class="mentor-role">Docente autor</p>
+                    <p class="mentor-org">Universidad T&eacute;cnica Particular de Loja &middot; ${esc(ig.facultad||"")}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="learning_path">
+        <h2 class="title-path">Ruta de aprendizaje</h2>
+        <div class="weeks-block">
+            ${semanas}
+        </div>
+    </section>
+    <section id="general_sections">
+        <div class="general-container"><a class="btn-general" href="#"><span>Foro de asesor&iacute;a permanente</span></a> <a class="btn-general" href="#"><span>Encuentros en l&iacute;nea</span></a> <a class="btn-general" href="#"><span>Calendario de actividades</span></a> <a class="btn-general" href="#"><span>Fuentes y recursos</span></a></div>
+    </section>
+</div>`;
+}
+
+/* --------- documento completo para la vista previa (iframe) --------- */
+const EXTRA_CSS = `
+body{margin:0;padding:16px;background:#fff}
+.ed-container .foc-ico{font-size:34px;display:inline-block}
+.ed-container .homepage-btn .foc-ico{font-size:20px}
+.ed-container .ed-header{background-color:#0d5caa}
+.ed-container .focuser .content-focuser{padding:8px 14px 8px 0}
+.ed-container .mentor-card{display:flex;gap:1em;align-items:center;border:1px solid #a5cef6;border-radius:6px;padding:1em}
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label span{position:static}
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label{height:auto;padding:10px}
+.ed-container table.table-general{width:100%}
+.ed-container blockquote{border-left:4px solid #a5cef6;margin:1em 2em;padding:.3em 1em;color:#243B53;font-style:italic}
+.ed-container .content .ctab__panel{max-height:70vh}
+`;
+const TEMA_JS = `
+document.querySelectorAll(".preliminary-tabs").forEach(t=>{
+  t.querySelectorAll(".preliminary-tabs__label").forEach(a=>{
+    a.addEventListener("click",e=>{
+      e.preventDefault();
+      t.querySelectorAll(".preliminary-tabs__label").forEach(x=>x.classList.remove("is-active"));
+      t.querySelectorAll(".preliminary-tabs__content").forEach(x=>x.classList.remove("is-active"));
+      a.classList.add("is-active");
+      const c=t.querySelector("#"+a.dataset.tab); if(c)c.classList.add("is-active");
+    });
+  });
+});
+document.querySelectorAll(".ctab").forEach(t=>{
+  t.querySelectorAll(".ctab__tab").forEach(li=>{
+    li.addEventListener("click",()=>{
+      t.querySelectorAll(".ctab__tab").forEach(x=>x.classList.remove("is-active"));
+      t.querySelectorAll(".ctab__panel").forEach(x=>x.classList.remove("is-active"));
+      li.classList.add("is-active");
+      const p=t.querySelector("#"+li.dataset.target); if(p)p.classList.add("is-active");
+    });
+  });
+});
+document.querySelectorAll(".collapse__link").forEach(a=>{
+  a.addEventListener("click",e=>{e.preventDefault();a.closest(".collapse").classList.toggle("active");});
+});
+`;
+function paginaCompleta(fragmento, titulo){
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(titulo||"Vista previa Canvas")}</title>
+<style>${TEMA_CSS}</style><style>${EXTRA_CSS}</style></head>
+<body>${fragmento}<script>${TEMA_JS}<\/script></body></html>`;
+}
+
+root.CanvasGen = { fragmentoSemana, fragmentoInicio, paginaCompleta };
+})(typeof window!=="undefined"?window:(typeof module!=="undefined"?module.exports:this));
+</script>
+<script>
+"use strict";
+const guias = {};          // codigo → curso
+const imagenesPorGuia = {}; // codigo → {urls:{Figura1.png:objectURL}, datos:[{nombre,mime,datos}]}
+const buffersPorGuia = {};  // codigo → ArrayBuffer original (para generar el Word etiquetado)
+let urlsActivas = {};
+let activa = null;
+const $ = s => document.querySelector(s);
+const main = $("#main");
+const fileInput = $("#file-input");
+const esc = s => String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+/* ------------------------------------------------ clasificación de alertas */
+const GUIA_FIX = [
+  [/Tablas sin el formato completo/, "Cada tabla lleva tres partes: «Tabla N.» y su título arriba, la tabla, y «Nota.» (o «Fuente:») abajo. Complete lo que falte en el Word."],
+  [/Figuras de contenido sin .Nota/, "Añada debajo de la figura la línea «Nota. Tomado de …» con la fuente; si la imagen es solo decorativa, quítele el título y el número."],
+  [/viñeta\(s\) sueltas/, "Seleccione esas líneas en Word y aplíqueles una lista con viñetas o numeración estándar (botón de lista de la cinta), no símbolos insertados a mano."],
+  [/MITAD de la semana/, "Corte las actividades recomendadas y péguelas al FINAL de la semana, después de todo el contenido temático, bajo el encabezado «Actividades de aprendizaje recomendadas»."],
+  [/Accesibilidad Canvas/, "En Word, clic derecho sobre cada figura numerada → «Ver texto alternativo» y escriba una descripción. Canvas lo exige para accesibilidad; las figuras decorativas no lo necesitan."],
+  [/Contenidos, recursos y actividades de aprendizaje recomendadas/, "Cada resultado de aprendizaje debe cerrar con el encabezado exacto «Contenidos, recursos y actividades de aprendizaje recomendadas» antes de las semanas."],
+  [/más de una autoevaluación/, "Cada unidad debe cerrar con UNA sola autoevaluación. Fusione las preguntas en una única autoevaluación por unidad o elimine las sobrantes."],
+  [/sin unidad declarada/, "Escriba el encabezado «Unidad N. Título» antes de cada autoevaluación, para que quede asignada a su unidad."],
+  [/^Semanas no detectadas/, "En el Word, marque cada semana faltante como «Semana N:» usando un estilo de encabezado (o negrita). Verifique que no quedó dentro de una tabla o con otro nombre."],
+  [/sin entrada en el solucionario/, "Agregue en la sección SOLUCIONARIO una entrada con el mismo número («Autoevaluación N» o «Solucionario N») y sus respuestas."],
+  [/Numeración de autoevaluaciones duplicada/, "Renumere las autoevaluaciones en el Word para que cada una tenga un número único y coincida con su entrada del solucionario."],
+  [/Campo de portada no encontrado: (\w+)/, null],   // se arma dinámico
+];
+const CAMPO_TXT = {facultad:"la Facultad", asignatura:"el nombre de la asignatura (línea inmediatamente anterior a «Guía didáctica»)",
+  carrera:"la Carrera (tabla 2×2 de la portada)", nivel:"el nivel/PA (tabla 2×2 de la portada)", autor:"el nombre del autor (línea después de «Autor:»)"};
+function clasificarAlertas(alertas){
+  const estructurales=[], informativas=[];
+  for(const a of alertas){
+    if(/ecuaciones OMML|cuadros de texto rescatados|diagramas SmartArt|sin contextualización|Unidades sin autoevaluación|RECURSO\(S\) EDILOJA|Numeración automática de encabezados|Contextualización detectada sin encabezado|Figuras de contenido sin título/.test(a)){ informativas.push(a); continue; }
+    let fix=null;
+    for(const [rx,f] of GUIA_FIX){ if(rx.test(a)){ fix=f; break; } }
+    const m=/Campo de portada no encontrado en el documento: (\w+)/.exec(a);
+    if(m) fix="Complete en la portada del Word "+(CAMPO_TXT[m[1]]||m[1])+" y vuelva a subir el archivo.";
+    estructurales.push({texto:a, fix: fix||"Revise el documento Word y vuelva a subirlo."});
+  }
+  return {estructurales, informativas};
+}
+const estadoDe = c => clasificarAlertas(c.validaciones.alertas).estructurales.length ? "err"
+                    : (c.validaciones.alertas.length ? "warn" : "ok");
+
+/* ------------------------------------------------------------ vista vacía */
+function vistaVacia(){
+  main.innerHTML = `
+  <div class="vacio">
+    <h2>Validador de guías didácticas</h2>
+    <p>Suba la guía en Word, revise cómo quedó estructurada y descargue el JSON para continuar el proceso. Si algo está mal, corrija el Word y vuelva a subirlo.</p>
+    <div class="drop" id="drop" role="button" tabindex="0" aria-label="Subir guía .docx">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+      <div class="t1">Arrastre aquí la guía .docx</div>
+      <div class="t2">o haga clic para elegir el archivo — todo se procesa en su navegador, nada se sube a ningún servidor</div>
+    </div>
+    <div class="pasos">
+      <div class="paso"><div class="k">1 · Subir</div><div class="d">Seleccione la guía tal como la envió el docente. El nombre del archivo debe iniciar con el código Banner (ej. DERE_2070_...).</div></div>
+      <div class="paso"><div class="k">2 · Revisar</div><div class="d">Vea la información general, las semanas como páginas del curso, las autoevaluaciones por unidad y su cotejo con el solucionario.</div></div>
+      <div class="paso"><div class="k">3 · Decidir</div><div class="d">Si el semáforo está en verde, descargue el JSON y continúe el proceso. Si hay alertas, corrija el Word según las indicaciones y vuelva a subirlo.</div></div>
+    </div>
+    <div id="err-zona"></div>
+  </div>`;
+  const drop=$("#drop");
+  drop.addEventListener("click",()=>fileInput.click());
+  drop.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fileInput.click();}});
+  ["dragover","dragenter"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("arrastrando");}));
+  ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("arrastrando");}));
+  drop.addEventListener("drop",e=>procesarArchivos(e.dataTransfer.files));
+}
+
+/* ---------------------------------------------------------- procesamiento */
+async function procesarArchivos(files){
+  for(const f of files){
+    if(!f.name.toLowerCase().endsWith(".docx")){
+      mostrarError(`«${esc(f.name)}» no es un .docx. Guarde la guía como documento de Word (.docx) e intente de nuevo.`);
+      continue;
+    }
+    main.innerHTML = `<div class="cargando"><div class="spin"></div>Procesando ${esc(f.name)} — leyendo XML, segmentando semanas y cotejando autoevaluaciones…</div>`;
+    try{
+      const buf = await f.arrayBuffer();
+      const {curso, imagenes} = await PipelineGuia.procesarDocx(buf, f.name, JSZip, DOMParser);
+      const code = curso.info_general.codigo_banner;
+      guias[code] = curso;
+      buffersPorGuia[code] = buf;
+      const urls = {};
+      for(const img of imagenes){
+        try{ urls[img.nombre] = URL.createObjectURL(new Blob([img.datos],{type:img.mime})); }catch(e){}
+      }
+      imagenesPorGuia[code] = {urls, datos: imagenes};
+      activa = code;
+    }catch(err){
+      vistaVacia();
+      mostrarError(`No se pudo procesar «${esc(f.name)}»: ${esc(err.message)}. Verifique que el archivo no esté dañado ni protegido con contraseña.`);
+      return;
+    }
+  }
+  pintarLista();
+  if(activa) vistaCurso(activa);
+}
+function mostrarError(msg){
+  const zona=$("#err-zona");
+  if(zona) zona.innerHTML=`<div class="error-carga">${msg}</div>`;
+}
+
+/* ------------------------------------------------------- lista de guías */
+function pintarLista(){
+  const cont=$("#g-lista"); cont.innerHTML="";
+  for(const code of Object.keys(guias)){
+    const c=guias[code], est=estadoDe(c);
+    const b=document.createElement("button");
+    b.className="g-btn"; b.setAttribute("aria-pressed", code===activa?"true":"false");
+    b.innerHTML=`<span class="code">${esc(code.replace("_"," "))}</span>
+      <div class="name">${esc(c.info_general.asignatura||code)}</div>
+      <div class="meta"><span class="dot ${est}"></span>${c.estadisticas.paginas_semana} semanas · ${c.estadisticas.autoevaluaciones} autoeval.</div>`;
+    b.addEventListener("click",()=>{activa=code;pintarLista();vistaCurso(code);});
+    cont.appendChild(b);
+  }
+}
+
+/* ------------------------------------------------------- render de bloques */
+const IC={
+  encabezado:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h7"/></svg>',
+  parrafo:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg>',
+  lista:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="4" cy="6" r="1.4"/><circle cx="4" cy="12" r="1.4"/><circle cx="4" cy="18" r="1.4"/><path d="M9 6h11M9 12h11M9 18h11"/></svg>',
+  tabla:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 10h18M9 4v16M15 4v16"/></svg>',
+  caja:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>',
+  cuadro_texto:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2" stroke-dasharray="3 2"/><path d="M8 10h8M8 14h5"/></svg>',
+  imagen:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>',
+  autoevaluacion_ref:'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-5"/><circle cx="12" cy="12" r="9"/></svg>'
+};
+function listaHTML(items, ordenada){
+  // construye <ol>/<ul> anidados a partir de items planos con nivel
+  let h="", nivel=-1, pila=[];
+  const abrir=t=>{h+=t==="ol"?"<ol>":"<ul>";pila.push(t);};
+  const cerrar=()=>{h+=pila.pop()==="ol"?"</ol>":"</ul>";};
+  for(const it of items){
+    const n=it.nivel||0;
+    while(nivel<n){abrir(it.tipo||( ordenada?"ol":"ul"));nivel++;}
+    while(nivel>n){cerrar();nivel--;}
+    let tx=esc(it.texto||"");
+    if(it.hipervinculos) for(const l of it.hipervinculos)
+      if(l.url&&l.texto) tx=tx.replace(esc(l.texto),`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.texto)}</a>`);
+    if(it.ecuaciones) tx+=it.ecuaciones.map(e=>` <span class="ecu">${esc(e||"ecuación")}</span>`).join("");
+    h+=`<li>${tx}</li>`;
+  }
+  while(pila.length)cerrar();
+  return h;
+}
+function imgHTML(im){
+  const nombre=(im.archivo||"").split("/").pop();
+  const url=urlsActivas[nombre];
+  return (url?`<img src="${url}" alt="${esc(nombre)}" loading="lazy">`
+             :`<div class="pie-figura">[imagen ${esc(nombre)} — formato no visualizable en navegador, incluida en el ZIP]</div>`)
+       + `<span class="nombre-figura">${esc(im.archivo||nombre)}</span>`;
+}
+function renderBloque(b){
+  if(b.tipo==="lista"&&b.items){
+    return `<div class="bq lista">${IC.lista}<div class="tx">${listaHTML(b.items,b.ordenada)}</div></div>`;
+  }
+  if(b.tipo==="tabla"){
+    const filas=b.celdas.slice(0,8);
+    const resto=b.n_filas-filas.length;
+    return `<div class="bq tabla">${IC.tabla}<div class="tx">
+      ${b.titulo?`<div class="t-titulo">${esc(b.titulo)}</div>`:""}
+      <table class="mini-tabla">${filas.map((f,i)=>`<tr>${f.map(c=>`<t${i?'d':'h'}>${esc(c)}</t${i?'d':'h'}>`).join("")}</tr>`).join("")}</table>
+      ${resto>0?`<span style="color:var(--muted);font-size:.72rem">+${resto} filas más (completas en el JSON)</span>`:""}
+      ${b.nota?`<div class="t-nota">${esc(b.nota)}</div>`:""}</div></div>`;
+  }
+  if(b.tipo==="cita"){
+    return `<div class="bq cita">${IC.parrafo}<div class="tx">${esc(b.texto)}
+      ${b.autor?`<span class="autor">— ${esc(b.autor)}</span>`:""}</div></div>`;
+  }
+  if(b.tipo==="recurso_ediloja"){
+    return `<div class="bq recurso_ediloja">${IC.caja}<div class="tx">
+      <span class="rec-badge">Recurso EdiLoja · lo genera otro agente de IA</span>
+      <div>${esc(b.texto)}</div></div></div>`;
+  }
+  if(b.tipo==="focalizador"){
+    return `<div class="bq focalizador">${IC.caja}<div class="tx">
+      <span class="foc-badge">${esc(b.subtipo||"Focalizador")}</span><span class="foc-icono">${esc(b.icono||"")}${b.delimitado?" · marcado por el revisor DI":""}</span>
+      ${b.texto?`<div>${esc(b.texto)}</div>`:""}
+      ${(b.imagenes||[]).map(imgHTML).join("")}
+      ${b.bloques?b.bloques.map(renderBloque).join(""):""}</div></div>`;
+  }
+  if(b.tipo==="actividades"){
+    const intro=(b.bloques||[]).map(renderBloque).join("");
+    const items=(b.items||[]).map(it=>`
+      <div style="margin:6px 0;padding:6px 10px;border-left:3px solid ${b.clase==="evaluadas"?"#0B874B":"#BF5E0E"};background:#fff">
+        <div style="font-weight:700;font-size:.82rem">${esc(it.titulo)}</div>
+        ${(it.bloques||[]).map(renderBloque).join("")}</div>`).join("");
+    return `<div class="bq actividades ${b.clase}">
+      <div class="act-head"><b>${esc(b.titulo)}</b>
+        <span class="act-badge">Sección Canvas · ${b.clase}${b._implicita?" (encabezado implícito)":""}</span></div>
+      ${intro}${items}</div>`;
+  }
+  if(b.tipo==="smartart"){
+    return `<div class="bq smartart">${IC.caja}<div class="tx">
+      <span class="etiqueta-ia">SmartArt · diagrama pendiente de generación por IA</span>
+      <div style="font-size:.78rem;color:#5a4580">Texto capturado en orden (${b.textos.length} elementos) para que un agente lo convierta en recurso visual:</div>
+      <ol>${b.textos.map(t=>`<li>${esc(t)}</li>`).join("")}</ol></div></div>`;
+  }
+  if(b.tipo==="imagen"){
+    const badge = b.decorativa
+      ? `<span style="font-size:.62rem;font-weight:700;color:#6B7780;background:#EEF;padding:1px 7px;border-radius:9px">figura decorativa</span>`
+      : (!b.alt_text
+          ? `<span style="font-size:.62rem;font-weight:700;color:#C00000;background:#FCEEF0;padding:1px 7px;border-radius:9px">⚠ sin texto alternativo</span>`
+          : `<span style="font-size:.62rem;font-weight:700;color:#0B874B;background:#E6F4EC;padding:1px 7px;border-radius:9px">alt ✓</span>`);
+    return `<div class="bq imagen">${IC.imagen}<div class="tx">
+      ${b.titulo?`<div class="t-titulo">${esc(b.titulo)}</div>`:""}
+      ${(b.imagenes||[]).map(imgHTML).join("")}
+      ${b.nota?`<div class="t-nota">${esc(b.nota)}</div>`:""}
+      <div style="margin-top:3px">${badge}${b.alt_text?` <span style="font-size:.72rem;color:var(--muted)">alt: ${esc(b.alt_text.slice(0,80))}</span>`:""}</div></div></div>`;
+  }
+  if(b.tipo==="autoevaluacion_ref")
+    return `<div class="bq autoevaluacion_ref">${IC.autoevaluacion_ref}<div class="tx">${esc(b.titulo)} — extraída como quiz de la Unidad ${b.unidad??"?"} (ver panel de autoevaluaciones)</div></div>`;
+  let extra="";
+  if(b.ecuaciones) extra+=b.ecuaciones.slice(0,4).map(e=>`<span class="ecu">${esc(e||"ecuación")}</span>`).join("")+(b.ecuaciones.length>4?` <span style="color:var(--muted);font-size:.72rem">+${b.ecuaciones.length-4} ecuaciones</span>`:"");
+  if(b.imagenes) extra+="<div>"+b.imagenes.map(imgHTML).join("")+"</div>";
+  let txt=esc(b.texto||"");
+  if(b.hipervinculos) for(const h of b.hipervinculos)
+    if(h.url&&h.texto) txt=txt.replace(esc(h.texto),`<a href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.texto)}</a>`);
+  const num=b.numeracion?`<span class="num">${esc(b.numeracion)}</span>`:"";
+  return `<div class="bq ${b.tipo}">${IC[b.tipo]||IC.parrafo}<div class="tx">${num}${txt}${extra}</div></div>`;
+}
+/* ------------------------------------------------------- vista del curso */
+function vistaCurso(code){
+  const c=guias[code], ig=c.info_general, e=c.estadisticas, v=c.validaciones;
+  urlsActivas=(imagenesPorGuia[code]||{}).urls||{};
+  const {estructurales, informativas}=clasificarAlertas(v.alertas);
+  const est=estadoDe(c);
+
+  const okSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-5"/><circle cx="12" cy="12" r="9"/></svg>';
+  const errSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>';
+
+  const stats=[["Semanas → páginas",e.paginas_semana],["Unidades",e.unidades],
+    ["Result. aprendizaje",e.resultados_aprendizaje],
+    ["Autoeval. cotejadas",`${e.autoevaluaciones_con_solucionario}/${e.autoevaluaciones}`,e.autoevaluaciones_con_solucionario<e.autoevaluaciones],
+    ["Tablas",e.tablas],["Listas",e.listas||0],["Citas",e.citas||0],
+    ["Recursos EdiLoja p/IA",e.recursos_ediloja||0,(e.recursos_ediloja||0)>0],
+    ["Focalizadores",e.focalizadores||0],
+    ["Act. recomendadas",e.actividades_recomendadas||0],["Act. evaluadas",e.actividades_evaluadas||0],
+    ["Cajas sin tipificar",e.cajas_destacadas],
+    ["Figuras (Imagenes/)",e.imagenes],["Figuras decorativas",e.figuras_decorativas||0],
+    ["Figuras sin alt",e.figuras_sin_alt||0,(e.figuras_sin_alt||0)>0],["SmartArt p/IA",e.smartart||0,(e.smartart||0)>0],
+    ["Hipervínculos",e.hipervinculos],["Ecuaciones OMML",e.ecuaciones_omml,e.ecuaciones_omml>0],
+    ["Cuadros de texto",e.cuadros_texto,e.cuadros_texto>0]];
+
+  main.innerHTML=`
+  <div class="cab">
+    <h2>${esc(ig.asignatura||code)}</h2>
+    <div class="sub"><b>${esc(ig.carrera||"Carrera no detectada")}</b> · Nivel ${esc(ig.nivel||"—")} · ${esc(ig.facultad||"")} · Autor: <b>${esc(ig.autor||"—")}</b></div>
+  </div>
+
+  <div class="semaforo ${est==="ok"||est==="warn"?"ok":"err"}">
+    ${est==="err"?errSvg:okSvg}
+    <div>
+      <div class="tt">${est==="err"
+        ? "Hay problemas estructurales — corrija el Word y vuelva a subirlo"
+        : "Estructura correcta — el JSON está listo para continuar el proceso"}</div>
+      <div class="dd">${est==="err"
+        ? estructurales.length+" corrección(es) pendiente(s) en el documento de origen."
+        : (informativas.length? "Solo hay notas informativas para etapas posteriores del pipeline (no requieren tocar el Word)." : "Sin alertas.")}</div>
+    </div>
+    <div class="acciones">
+      <button class="btn" id="descargar-json">⬇ JSON</button>
+      <button class="btn" id="descargar-word">⬇ Word etiquetado (GD-)</button>
+      <button class="btn sec" id="descargar-zip">⬇ ZIP (JSON + Imagenes/)</button>
+    </div>
+  </div>
+
+  <div class="correcciones">
+    ${estructurales.map(a=>`<div class="corr"><b>⚠ ${esc(a.texto)}</b><span class="fix">Cómo corregirlo: ${esc(a.fix)}</span></div>`).join("")}
+    ${informativas.map(a=>`<div class="nota-info">ℹ ${esc(a)} — lo resuelve el pipeline en etapas posteriores.</div>`).join("")}
+  </div>
+
+  <div class="vista-switch" role="tablist">
+    <button id="v-estructura" aria-pressed="true">🧱 Estructura extraída</button>
+    <button id="v-canvas" aria-pressed="false">🎨 Vista Canvas (Rediseño 3)</button>
+  </div>
+  <div id="canvas-zona" hidden>
+    <div class="barra">
+      <label for="canvas-pagina" style="font-size:.84rem;font-weight:700">Página:</label>
+      <select id="canvas-pagina"></select>
+      <button class="btn" id="descargar-pagina">⬇ HTML de esta página (para pegar en Canvas)</button>
+      <button class="btn sec" id="descargar-paginas-zip">⬇ ZIP páginas Canvas + Imagenes/</button>
+      <span class="note" style="font-size:.74rem;color:var(--muted)">Vista con el tema global Rediseño 3 · los «EDILOJA insertar» y contextualizaciones pendientes se completan con los agentes de IA</span>
+    </div>
+    <iframe id="canvas-frame" title="Vista previa Canvas"></iframe>
+  </div>
+  <div class="panel solo-estructura">
+    <h3>Información general · cotejo con base de datos</h3>
+    <table class="cotejo">
+      <tr><th>Campo</th><th>Valor extraído</th><th>Fuente</th><th>Verificar contra</th><th>Estado</th></tr>
+      ${ig.cotejo_bd.map(x=>`<tr>
+        <td><b>${esc(x.campo)}</b></td>
+        <td>${esc(x.valor||"—")}</td>
+        <td class="fuente">${esc(x.fuente)}</td>
+        <td class="fuente">${esc(x.verificar_contra)}</td>
+        <td><span class="est ${x.estado==="pendiente"?"pen":"falta"}">${x.estado==="pendiente"?"pendiente de cotejo":"falta en el Word"}</span></td>
+      </tr>`).join("")}
+    </table>
+  </div>
+
+  <div class="stats solo-estructura">${stats.map(([l,n,w])=>`<div class="stat${w?" warn":""}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("")}</div>
+
+  <div class="estructura solo-estructura" id="estructura"></div>`;
+
+  // ---------- Vista Canvas ----------
+  const selPag=$("#canvas-pagina"), frame=$("#canvas-frame");
+  const urlsImg=(imagenesPorGuia[code]||{}).urls||{};
+  const opciones=[{k:"inicio",t:"Página de inicio"}]
+    .concat(c.estructura.paginas.map(p=>({k:"s"+p.semana,t:p.titulo+(p.unidad?" · Unidad "+p.unidad:"")})));
+  selPag.innerHTML=opciones.map(o=>`<option value="${o.k}">${esc(o.t)}</option>`).join("");
+  const fragmentoDe=k=>{
+    if(k==="inicio") return CanvasGen.fragmentoInicio(c);
+    const p=c.estructura.paginas.find(x=>"s"+x.semana===k);
+    return CanvasGen.fragmentoSemana(c,p,urlsImg);
+  };
+  const nombreDe=k=>k==="inicio"?code+"_inicio.html":code+"_semana-"+k.slice(1)+".html";
+  const pintarCanvas=()=>{
+    try{
+      const k=selPag.value;
+      frame.srcdoc=CanvasGen.paginaCompleta(fragmentoDe(k), code+" · "+selPag.selectedOptions[0].text);
+    }catch(e){
+      frame.srcdoc=`<body style="font-family:sans-serif;padding:2em;color:#C22132">
+        <h3>No se pudo previsualizar esta página</h3><p>${String(e.message||e)}</p>
+        <p style="color:#5B6770">Reporte este mensaje al equipo técnico; el resto del validador sigue funcionando.</p></body>`;
+    }
+  };
+  selPag.addEventListener("change",pintarCanvas);
+  $("#v-estructura").addEventListener("click",()=>{
+    $("#v-estructura").setAttribute("aria-pressed","true");
+    $("#v-canvas").setAttribute("aria-pressed","false");
+    $("#canvas-zona").hidden=true;
+    document.querySelectorAll(".solo-estructura").forEach(x=>x.hidden=false);
+  });
+  $("#v-canvas").addEventListener("click",()=>{
+    $("#v-canvas").setAttribute("aria-pressed","true");
+    $("#v-estructura").setAttribute("aria-pressed","false");
+    document.querySelectorAll(".solo-estructura").forEach(x=>x.hidden=true);
+    $("#canvas-zona").hidden=false;
+    pintarCanvas();
+  });
+  $("#descargar-pagina").addEventListener("click",()=>{
+    const k=selPag.value;
+    bajar(new Blob([fragmentoDe(k)],{type:"text/html"}), nombreDe(k));
+  });
+  $("#descargar-paginas-zip").addEventListener("click",async()=>{
+    const zip=new JSZip();
+    // los fragmentos de descarga referencian Imagenes/FiguraN (sin blob URLs)
+    zip.file(code+"_inicio.html", CanvasGen.fragmentoInicio(c));
+    for(const p of c.estructura.paginas)
+      zip.file(code+"_semana-"+p.semana+".html", CanvasGen.fragmentoSemana(c,p,null));
+    const carpeta=zip.folder("Imagenes");
+    for(const img of (imagenesPorGuia[code]||{}).datos||[]) carpeta.file(img.nombre, img.datos);
+    bajar(await zip.generateAsync({type:"blob"}), code+"_paginas_canvas.zip");
+  });
+
+  function bajar(blob,nombre){
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob); a.download=nombre;
+    a.click(); URL.revokeObjectURL(a.href);
+  }
+  $("#descargar-json").addEventListener("click",()=>{
+    bajar(new Blob([JSON.stringify(c,null,1)],{type:"application/json"}), code+"_curso.json");
+  });
+  $("#descargar-word").addEventListener("click",async()=>{
+    const btn=$("#descargar-word"); btn.disabled=true; btn.textContent="Generando…";
+    try{
+      const r=await PipelineGuia.generarDocxEtiquetado(buffersPorGuia[code], JSZip, DOMParser, XMLSerializer);
+      bajar(new Blob([r.datos],{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"}),
+            code+"_etiquetado.docx");
+      btn.textContent="⬇ Word etiquetado ✓ ("+r.aplicados+" marcas)";
+    }catch(err){ btn.textContent="Error al generar"; console.error(err); }
+    finally{ btn.disabled=false; setTimeout(()=>btn.textContent="⬇ Word etiquetado (GD-)", 4000); }
+  });
+  $("#descargar-zip").addEventListener("click",async()=>{
+    const zip=new JSZip();
+    zip.file(code+"_curso.json", JSON.stringify(c,null,1));
+    const carpeta=zip.folder("Imagenes");
+    for(const img of (imagenesPorGuia[code]||{}).datos||[]) carpeta.file(img.nombre, img.datos);
+    bajar(await zip.generateAsync({type:"blob"}), code+"_paquete.zip");
+  });
+
+  const est_=$("#estructura");
+
+  // secciones 1 y 2
+  const sec=document.createElement("div"); sec.className="panel"; sec.style.margin="14px 0";
+  const subs=c.secciones.datos_informacion.subsecciones;
+  sec.innerHTML=`<h3>Secciones del documento</h3><div class="pills">
+    <span class="pill on">1. Datos de información (${subs.length} subsecciones: ${subs.map(s=>esc(s.clave)).join(", ")||"—"})</span>
+    <span class="pill ${c.secciones.metodologia.bloques.length?"on":"off"}">2. Metodología de aprendizaje (${c.secciones.metodologia.bloques.length} bloques)</span>
+    <span class="pill on">3. Orientaciones didácticas → ${c.estructura.paginas.length} páginas-semana</span>
+    ${["referencias","solucionario","glosario","anexos"].map(k=>{
+      const f=c.finales[k];
+      return `<span class="pill ${f?"on":"off"}">${k.charAt(0).toUpperCase()+k.slice(1)}${f?` (${f.bloques.length} bloques)`:" — ausente"}</span>`;
+    }).join("")}
+  </div>`;
+  est_.appendChild(sec);
+
+  // navegación por semana (una a la vez, sin scroll infinito)
+  const semNav=document.createElement("div"); semNav.className="sem-nav";
+  est_.appendChild(semNav);
+
+  // módulos por semana
+  let curBim=null, curRa=null;
+  const raBy={}; c.estructura.resultados_aprendizaje.forEach(r=>raBy[r.numero]=r);
+  const uniBy={}; c.estructura.unidades.forEach(u=>uniBy[u.numero]=u);
+  for(const p of c.estructura.paginas){
+    if(p.bimestre && p.bimestre!==curBim){
+      curBim=p.bimestre;
+      const h=document.createElement("div");h.className="bim";h.textContent=curBim;h.dataset.bim=curBim;est_.appendChild(h);
+    }
+    if(p.resultado_aprendizaje && p.resultado_aprendizaje!==curRa){
+      curRa=p.resultado_aprendizaje;
+      const r=raBy[curRa];
+      const d=document.createElement("div");d.className="ra";
+      d.innerHTML=`<b>Resultado de aprendizaje ${esc(curRa)}:</b> ${esc(r&&r.enunciado?r.enunciado:"enunciado no detectado")}
+        ${r&&r.contextualizacion
+          ?`<div class="ra-ctx"><b>Contextualización${r.contextualizacion_fuente==="implicita"?" (implícita — confirmar)":""}:</b> ${esc(r.contextualizacion)}</div>`
+          :`<div class="ra-ctx pendiente">Contextualización no incluida por el docente — la generará un agente de IA</div>`}`;
+      d.dataset.ra=curRa;
+      est_.appendChild(d);
+    }
+    const u=p.unidad?uniBy[p.unidad]:null;
+    const mod=document.createElement("section");mod.className="mod";mod.dataset.open="false";
+    mod.dataset.sem=String(p.semana);
+    mod.innerHTML=`<button class="mod-h" aria-expanded="false">
+      <svg class="tri" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5l8 7-8 7z"/></svg>
+      <span class="wk">${esc(p.titulo)}</span>
+      <span class="un">${u?"· "+esc(u.titulo||("Unidad "+u.numero)):"· <em>sin unidad indicada</em>"}</span>
+      ${p.confianza&&p.confianza!=="alta"?`<span class="chip conf">detección: confianza ${p.confianza} — confirmar</span>`:""}
+      <span class="nb">${p.bloques.length} bloques</span></button>
+      <div class="mod-b"></div>`;
+    const btn=mod.querySelector(".mod-h"), body=mod.querySelector(".mod-b");
+    btn.addEventListener("click",()=>{
+      const open=mod.dataset.open==="true";
+      mod.dataset.open=String(!open); btn.setAttribute("aria-expanded",String(!open));
+      if(!open && !body.dataset.listo){
+        body.innerHTML=p.bloques.map(renderBloque).join("")||'<div class="bq parrafo"><div class="tx" style="color:var(--muted)">Sin bloques de contenido en esta semana</div></div>';
+        body.dataset.listo="1";
+      }
+    });
+    est_.appendChild(mod);
+  }
+
+  // pills de navegación + filtro de una semana a la vez
+  const pagsPorSem={}; c.estructura.paginas.forEach(p=>pagsPorSem[p.semana]=p);
+  const semanas=c.estructura.paginas.map(p=>p.semana);
+  let semSel=semanas[0];
+  const mostrarSemana=(n)=>{
+    semSel=n;
+    const p=pagsPorSem[n];
+    est_.querySelectorAll("[data-sem]").forEach(el=>{el.hidden = el.dataset.sem!==String(n);});
+    est_.querySelectorAll("[data-ra]").forEach(el=>{el.hidden = !p || el.dataset.ra!==String(p.resultado_aprendizaje);});
+    est_.querySelectorAll("[data-bim]").forEach(el=>{el.hidden = !p || !p.bimestre || el.dataset.bim!==p.bimestre;});
+    semNav.querySelectorAll("[data-pill]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.pill===String(n))));
+    // abrir automáticamente la semana visible
+    const mod=est_.querySelector(`.mod[data-sem="${n}"]`);
+    if(mod && mod.dataset.open!=="true") mod.querySelector(".mod-h").click();
+  };
+  semNav.innerHTML=`<span class="lbl">Semana</span>
+    <button class="flecha" id="sem-prev" aria-label="Semana anterior">‹</button>
+    ${semanas.map(s=>`<button data-pill="${s}" aria-pressed="false">${s}</button>`).join("")}
+    <button class="flecha" id="sem-next" aria-label="Semana siguiente">›</button>`;
+  semNav.querySelectorAll("[data-pill]").forEach(b=>b.addEventListener("click",()=>mostrarSemana(parseInt(b.dataset.pill,10))));
+  semNav.querySelector("#sem-prev").addEventListener("click",()=>{
+    const i=semanas.indexOf(semSel); mostrarSemana(semanas[(i-1+semanas.length)%semanas.length]);});
+  semNav.querySelector("#sem-next").addEventListener("click",()=>{
+    const i=semanas.indexOf(semSel); mostrarSemana(semanas[(i+1)%semanas.length]);});
+  mostrarSemana(semSel);
+
+  // autoevaluaciones por unidad
+  const autos=document.createElement("div");autos.className="panel autos";autos.style.margin="22px 0";
+  let filas="";
+  for(const u of c.estructura.unidades){
+    for(const a of u.autoevaluaciones){
+      const s=a.solucionario;
+      filas+=`<div class="fila" data-open="false">
+        <b>${esc(a.titulo)}</b>
+        <span class="det">Unidad ${a.unidad??"?"} · aparece en semana ${a.semana_en_que_aparece??"?"} · ${a.bloques.length} bloques de preguntas</span>
+        <span class="badge ${s.encontrado?(s.cotejado_por==="orden"?"warn":"ok"):"err"}">${s.encontrado?("solucionario ✓ por "+s.cotejado_por+(s.cotejado_por==="orden"?" — revisar":"")):"sin solucionario ✗"}</span>
+        <button class="ver">ver preguntas y respuestas</button>
+        <div class="cuerpo">
+          ${a.bloques.slice(0,60).map(renderBloque).join("")}
+          ${s.encontrado?`<div class="bim" style="margin:10px 14px 4px">Respuestas del solucionario</div>${s.bloques.slice(0,60).map(renderBloque).join("")}`:""}
+        </div></div>`;
+    }
+  }
+  autos.innerHTML=`<h3>Autoevaluaciones por unidad · cotejo con el solucionario</h3>${filas||'<div class="pills" style="color:var(--muted)">No se detectaron autoevaluaciones</div>'}`;
+  autos.querySelectorAll(".ver").forEach(b=>b.addEventListener("click",ev=>{
+    const f=ev.target.closest(".fila");
+    f.dataset.open=f.dataset.open==="true"?"false":"true";
+  }));
+  est_.appendChild(autos);
+}
+
+/* ------------------------------------------------------------------ init */
+fileInput.addEventListener("change",()=>{procesarArchivos(fileInput.files);fileInput.value="";});
+$("#subir-otra").addEventListener("click",()=>fileInput.click());
+vistaVacia();
+</script>
+</body>
+</html>
