@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}App-EdiLoja{% endblock %}</title>
+  <link rel="stylesheet" href="/estatico/tokens.css">
+  <script src="/estatico/vendor/htmx.min.js" defer></script>
+</head>
+
+<body>
+
+  <header class="ed-cabecera">
+    <strong>UTPL</strong>
+  </header>
+
+  <main class="ed-lienzo">
+    {% block contenido %}{% endblock %}
+  </main>
+
+</body>
+
+</html>

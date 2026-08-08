@@ -1,0 +1,616 @@
+{
+  "modalidades_por_nivel": {
+    "tecnologia": [
+      {
+        "value": "sin-registro",
+        "label": "Sin modalidad registrada"
+      }
+    ],
+    "grado": [
+      {
+        "value": "distancia",
+        "label": "A distancia"
+      },
+      {
+        "value": "en-linea",
+        "label": "En línea"
+      },
+      {
+        "value": "presencial",
+        "label": "Presencial"
+      }
+    ],
+    "posgrado": [
+      {
+        "value": "en-linea",
+        "label": "En línea"
+      },
+      {
+        "value": "presencial",
+        "label": "Presencial"
+      },
+      {
+        "value": "hibrida",
+        "label": "Híbrida"
+      }
+    ],
+    "doctorado": [
+      {
+        "value": "presencial",
+        "label": "Presencial"
+      }
+    ]
+  },
+  "oferta_academica": {
+    "tecnologia": {
+      "sin-registro": [
+        {
+          "value": "sin-facultad",
+          "label": "Sin facultad registrada",
+          "programs": [
+            {
+              "value": "comunicacion-estrategica-marketing-digital",
+              "label": "Comunicación Estratégica y Marketing Digital"
+            },
+            {
+              "value": "negociacion-ventas",
+              "label": "Negociación y Ventas"
+            },
+            {
+              "value": "modelado-bim-industria-construccion",
+              "label": "Modelado BIM para la Industria de la Construcción"
+            },
+            {
+              "value": "marketing-turistico-digital",
+              "label": "Marketing Turístico Digital"
+            },
+            {
+              "value": "creacion-audiovisual-digital-online",
+              "label": "Creación Audiovisual Digital -online"
+            },
+            {
+              "value": "contabilidad-asesoria-tributaria",
+              "label": "Contabilidad y Asesoría Tributaria"
+            }
+          ]
+        }
+      ]
+    },
+    "grado": {
+      "distancia": [
+        {
+          "value": "facultad-ciencias-comportamiento",
+          "label": "Facultad de Ciencias del Comportamiento",
+          "programs": [
+            {
+              "value": "psicologia",
+              "label": "Psicología"
+            },
+            {
+              "value": "psicopedagogia",
+              "label": "Psicopedagogía"
+            }
+          ]
+        }
+      ],
+      "en-linea": [
+        {
+          "value": "facultad-ciencias-economicas-empresariales",
+          "label": "Facultad de Ciencias Económicas y Empresariales",
+          "programs": [
+            {
+              "value": "govtech-administracion-publica",
+              "label": "GovTech y Administración Pública"
+            },
+            {
+              "value": "negocios-internacionales",
+              "label": "Negocios Internacionales"
+            },
+            {
+              "value": "negocios-turisticos-gastronomicos",
+              "label": "Negocios Turísticos y Gastronómicos"
+            },
+            {
+              "value": "administracion-empresas",
+              "label": "Administración de Empresas"
+            },
+            {
+              "value": "contabilidad-auditoria",
+              "label": "Contabilidad y Auditoría"
+            },
+            {
+              "value": "economia",
+              "label": "Economía"
+            },
+            {
+              "value": "finanzas",
+              "label": "Finanzas"
+            },
+            {
+              "value": "turismo",
+              "label": "Turismo"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-exactas-naturales",
+          "label": "Facultad de Ciencias Exactas y Naturales",
+          "programs": [
+            {
+              "value": "ingenieria-recursos-naturales-sostenibilidad",
+              "label": "Ingeniería en Recursos Naturales y Sostenibilidad"
+            },
+            {
+              "value": "ingenieria-riesgos-cambio-climatico",
+              "label": "Ingeniería en Riesgos y Cambio Climático"
+            },
+            {
+              "value": "agronegocios",
+              "label": "Agronegocios"
+            },
+            {
+              "value": "gestion-ambiental",
+              "label": "Gestión Ambiental"
+            },
+            {
+              "value": "seguridad-salud-ocupacional",
+              "label": "Seguridad y Salud Ocupacional"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-comportamiento",
+          "label": "Facultad de Ciencias del Comportamiento",
+          "programs": [
+            {
+              "value": "psicologia",
+              "label": "Psicología"
+            },
+            {
+              "value": "psicopedagogia",
+              "label": "Psicopedagogía"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-sociales-educacion-humanidades",
+          "label": "Facultad de Ciencias Sociales, Educación y Humanidades",
+          "programs": [
+            {
+              "value": "comunicacion",
+              "label": "Comunicación"
+            },
+            {
+              "value": "educacion-basica",
+              "label": "Educación Básica"
+            },
+            {
+              "value": "educacion-inicial",
+              "label": "Educación Inicial"
+            },
+            {
+              "value": "pedagogia-lengua-literatura",
+              "label": "Pedagogía de la Lengua y la Literatura"
+            },
+            {
+              "value": "pedagogia-quimica-biologia",
+              "label": "Pedagogía de las Ciencias Experimentales (Pedagogía de la Química y Biología)"
+            },
+            {
+              "value": "pedagogia-matematicas-fisica",
+              "label": "Pedagogía de las Ciencias Experimentales (Pedagogía de las Matemáticas y la Física)"
+            },
+            {
+              "value": "pedagogia-idiomas-nacionales-extranjeros",
+              "label": "Pedagogía de los Idiomas Nacionales y Extranjeros"
+            },
+            {
+              "value": "pedagogia-ciencias-sociales-humanidades",
+              "label": "Pedagogía en Ciencias Sociales y Humanidades"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-juridicas-politicas",
+          "label": "Facultad de Ciencias Jurídicas y Políticas",
+          "programs": [
+            {
+              "value": "ciencias-politicas-relaciones-internacionales",
+              "label": "Ciencias Políticas y Relaciones Internacionales"
+            },
+            {
+              "value": "derecho",
+              "label": "Derecho"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ingenierias-arquitectura",
+          "label": "Facultad de Ingenierías y Arquitectura",
+          "programs": [
+            {
+              "value": "ingenieria-energia",
+              "label": "Ingeniería en Energía"
+            },
+            {
+              "value": "logistica-transporte",
+              "label": "Logística y Transporte"
+            },
+            {
+              "value": "redes-analitica-datos",
+              "label": "Redes y Analítica de Datos"
+            },
+            {
+              "value": "tecnologias-informacion",
+              "label": "Tecnologías de la Información"
+            }
+          ]
+        }
+      ],
+      "presencial": [
+        {
+          "value": "facultad-ciencias-economicas-empresariales",
+          "label": "Facultad de Ciencias Económicas y Empresariales",
+          "programs": [
+            {
+              "value": "administracion-empresas",
+              "label": "Administración de Empresas"
+            },
+            {
+              "value": "contabilidad-auditoria",
+              "label": "Contabilidad y Auditoría"
+            },
+            {
+              "value": "economia",
+              "label": "Economía"
+            },
+            {
+              "value": "finanzas",
+              "label": "Finanzas"
+            },
+            {
+              "value": "gastronomia",
+              "label": "Gastronomía"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-exactas-naturales",
+          "label": "Facultad de Ciencias Exactas y Naturales",
+          "programs": [
+            {
+              "value": "agropecuaria",
+              "label": "Agropecuaria"
+            },
+            {
+              "value": "alimentos",
+              "label": "Alimentos"
+            },
+            {
+              "value": "biologia",
+              "label": "Biología"
+            },
+            {
+              "value": "ingenieria-ambiental",
+              "label": "Ingeniería Ambiental"
+            },
+            {
+              "value": "bioquimica-farmacia",
+              "label": "Bioquímica y Farmacia"
+            },
+            {
+              "value": "ingenieria-industrial",
+              "label": "Ingeniería Industrial"
+            },
+            {
+              "value": "ingenieria-quimica",
+              "label": "Ingeniería Química"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-comportamiento",
+          "label": "Facultad de Ciencias del Comportamiento",
+          "programs": [
+            {
+              "value": "psicologia",
+              "label": "Psicología"
+            },
+            {
+              "value": "psicopedagogia",
+              "label": "Psicopedagogía"
+            },
+            {
+              "value": "psicologia-clinica",
+              "label": "Psicología Clínica"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-sociales-educacion-humanidades",
+          "label": "Facultad de Ciencias Sociales, Educación y Humanidades",
+          "programs": [
+            {
+              "value": "artes-escenicas",
+              "label": "Artes Escénicas"
+            },
+            {
+              "value": "artes-visuales",
+              "label": "Artes Visuales"
+            },
+            {
+              "value": "pedagogia-idiomas-nacionales-extranjeros",
+              "label": "Pedagogía de los Idiomas Nacionales y Extranjeros"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-juridicas-politicas",
+          "label": "Facultad de Ciencias Jurídicas y Políticas",
+          "programs": [
+            {
+              "value": "derecho",
+              "label": "Derecho"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ingenierias-arquitectura",
+          "label": "Facultad de Ingenierías y Arquitectura",
+          "programs": [
+            {
+              "value": "arquitectura",
+              "label": "Arquitectura"
+            },
+            {
+              "value": "geologia",
+              "label": "Geología"
+            },
+            {
+              "value": "ingenieria-civil",
+              "label": "Ingeniería Civil"
+            },
+            {
+              "value": "telecomunicaciones",
+              "label": "Telecomunicaciones"
+            },
+            {
+              "value": "computacion",
+              "label": "Computación"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-salud",
+          "label": "Facultad de Ciencias de la Salud",
+          "programs": [
+            {
+              "value": "enfermeria",
+              "label": "Enfermería"
+            },
+            {
+              "value": "fisioterapia",
+              "label": "Fisioterapia"
+            },
+            {
+              "value": "medicina",
+              "label": "Medicina"
+            },
+            {
+              "value": "nutricion-dietetica",
+              "label": "Nutrición y Dietética"
+            }
+          ]
+        }
+      ]
+    },
+    "posgrado": {
+      "en-linea": [
+        {
+          "value": "facultad-ciencias-economicas-empresariales",
+          "label": "Facultad de Ciencias Económicas y Empresariales",
+          "programs": [
+            {
+              "value": "especializacion-tributacion",
+              "label": "Especialización en Tributación"
+            },
+            {
+              "value": "gestion-innovacion-alimentos-bebidas",
+              "label": "Gestión e Innovación de Alimentos y Bebidas"
+            },
+            {
+              "value": "gestion-financiera-administracion-riesgos-financieros",
+              "label": "Gestión Financiera y Administración de Riesgos Financieros"
+            },
+            {
+              "value": "auditoria-gestion-riesgo-fraude-financiero-auditoria-forense",
+              "label": "Auditoría con mención en Gestión del Riesgo de Fraude Financiero y Auditoría Forense"
+            },
+            {
+              "value": "finanzas",
+              "label": "Finanzas"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-exactas-naturales",
+          "label": "Facultad de Ciencias Exactas y Naturales",
+          "programs": [
+            {
+              "value": "bioeconomia",
+              "label": "Bioeconomía"
+            },
+            {
+              "value": "seguridad-industrial-prevencion-riesgos-laborales",
+              "label": "Seguridad Industrial mención Prevención de Riesgos Laborales"
+            },
+            {
+              "value": "ciencias-ambientales-educacion-ambiental",
+              "label": "Ciencias Ambientales con mención en Educación Ambiental"
+            },
+            {
+              "value": "produccion-operaciones-industriales",
+              "label": "Producción y Operaciones Industriales"
+            },
+            {
+              "value": "recursos-naturales-renovables-manejo-preservacion",
+              "label": "Recursos Naturales Renovables con mención en Manejo y Preservación de los Recursos Naturales"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-sociales-educacion-humanidades",
+          "label": "Facultad de Ciencias Sociales, Educación y Humanidades",
+          "programs": [
+            {
+              "value": "comunicacion-estrategica-comunicacion-digital",
+              "label": "Comunicación Estratégica mención Comunicación Digital"
+            },
+            {
+              "value": "educacion-literatura-infantil-juvenil",
+              "label": "Educación con mención en Literatura Infantil y Juvenil"
+            },
+            {
+              "value": "educacion-ensenanza-matematica",
+              "label": "Educación, Mención en Enseñanza de la Matemática"
+            },
+            {
+              "value": "investigacion-educacion",
+              "label": "Investigación en Educación"
+            },
+            {
+              "value": "pedagogia-idiomas-ensenanza-ingles",
+              "label": "Pedagogía de los Idiomas Nacionales y Extranjeros, mención Enseñanza de Inglés"
+            },
+            {
+              "value": "pedagogia-artes",
+              "label": "Pedagogía en las Artes"
+            },
+            {
+              "value": "comunicacion-contenidos-inteligencia-artificial",
+              "label": "Comunicación, Ideación y Creación de Contenidos con Inteligencia Artificial"
+            },
+            {
+              "value": "educacion-curriculo-evaluacion-educativa",
+              "label": "Educación con Mención en Currículo y Evaluación Educativa"
+            },
+            {
+              "value": "educacion-orientacion-familiar-educativa",
+              "label": "Educación mención 1. Orientación Familiar, mención 2. Orientación Educativa"
+            },
+            {
+              "value": "educacion-gestion-aprendizaje-tic",
+              "label": "Educación, Mención en Gestión del Aprendizaje mediado por TIC"
+            },
+            {
+              "value": "educacion-innovacion-liderazgo-educativo",
+              "label": "Educación, Mención Innovación y Liderazgo Educativo"
+            },
+            {
+              "value": "educacion-inclusion-atencion-diversidad",
+              "label": "Educación con mención en Inclusión Educativa y Atención a la Diversidad"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-juridicas-politicas",
+          "label": "Facultad de Ciencias Jurídicas y Políticas",
+          "programs": [
+            {
+              "value": "derecho-constitucional",
+              "label": "Derecho Constitucional"
+            },
+            {
+              "value": "derecho-mencion-derecho-procesal",
+              "label": "Derecho mención Derecho Procesal"
+            },
+            {
+              "value": "derecho-penal-derecho-procesal-penal",
+              "label": "Derecho Penal mención Derecho Procesal Penal"
+            },
+            {
+              "value": "derecho-procesal-administrativo",
+              "label": "Derecho Procesal Administrativo"
+            },
+            {
+              "value": "derecho-tributario",
+              "label": "Derecho Tributario"
+            },
+            {
+              "value": "ciencias-politicas-politicas-publicas",
+              "label": "Ciencias Políticas con mención en Políticas Públicas"
+            },
+            {
+              "value": "criminologia-politica-criminal",
+              "label": "Criminología y Política Criminal"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-salud",
+          "label": "Facultad de Ciencias de la Salud",
+          "programs": [
+            {
+              "value": "gerencia-instituciones-salud",
+              "label": "Gerencia de Instituciones de Salud"
+            },
+            {
+              "value": "gestion-calidad-auditoria-salud",
+              "label": "Gestión de la Calidad y Auditoría en Salud"
+            }
+          ]
+        }
+      ],
+      "presencial": [
+        {
+          "value": "facultad-ciencias-exactas-naturales",
+          "label": "Facultad de Ciencias Exactas y Naturales",
+          "programs": [
+            {
+              "value": "ciencias-quimicas",
+              "label": "Ciencias Químicas"
+            },
+            {
+              "value": "doctorado-quimica",
+              "label": "Doctorado en Química"
+            }
+          ]
+        },
+        {
+          "value": "facultad-ciencias-salud",
+          "label": "Facultad de Ciencias de la Salud",
+          "programs": [
+            {
+              "value": "especializacion-medicina-familiar-comunitaria",
+              "label": "Especialización en Medicina Familiar y Comunitaria"
+            },
+            {
+              "value": "analisis-biologico-diagnostico-laboratorio",
+              "label": "Análisis Biológico y Diagnóstico de Laboratorio"
+            },
+            {
+              "value": "especializacion-anestesiologia-reanimacion-terapia-dolor",
+              "label": "Especialización en Anestesiología, Reanimación y Terapia del Dolor"
+            },
+            {
+              "value": "especializacion-imagenologia",
+              "label": "Especialización en Imagenología"
+            }
+          ]
+        }
+      ],
+      "hibrida": [
+        {
+          "value": "facultad-ciencias-exactas-naturales",
+          "label": "Facultad de Ciencias Exactas y Naturales",
+          "programs": [
+            {
+              "value": "farmacia-asistencial-atencion",
+              "label": "Farmacia Asistencial y Atención"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

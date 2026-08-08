@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block titulo %}Datos de la asignatura — App-EdiLoja{% endblock %}
+
+{% block contenido %}
+<div class="ed-formulario ed-formulario--ancho">
+  <h1>Datos de la asignatura</h1>
+  <p class="ed-meta">
+    Con esto trabaja el agente. Los tres campos largos son los importantes:
+    el agente respeta literalmente lo que escriba y solo cita lo que le entregue.
+  </p>
+
+  {% if error %}<p class="ed-error" role="alert">{{ error }}</p>{% endif %}
+
+  <form method="post" action="/guias-vista/{{ guia.id }}/requerimientos">
+
+    <h2 class="ed-seccion">Identificación</h2>
+
+    <label for="level">Nivel de formación <span class="ed-req">*</span></label>
+    <select id="level" name="level" required
+            hx-get="/ui/modalidades" hx-target="#modality" hx-swap="innerHTML"
+            hx-include="this" hx-trigger="change">
+      <option value="">Seleccione un nivel</option>
+      {% for valor, texto in niveles %}<option value="{{ valor }}">{{ texto }}</option>{% endfor %}
+    </select>
+
+    <label for="modality">Modalidad <span class="ed-req">*</span></label>
+    <select id="modality" name="modality" required
+            hx-get="/ui/facultades" hx-target="#faculty" hx-swap="innerHTML"
+            hx-include="#level, this" hx-trigger="change">
+      <option value="">Seleccione primero un nivel</option>
+    </select>
+
+    <label for="faculty">Facultad <span class="ed-req">*</span></label>
+    <select id="faculty" name="faculty" required
+            hx-get="/ui/carreras" hx-target="#program" hx-swap="innerHTML"
+            hx-include="#level, #modality, this" hx-trigger="change">
+      <option value="">Seleccione primero una modalidad</option>
+    </select>
+
+    <label for="program">Carrera o programa <span class="ed-req">*</span></label>
+    <select id="program" name="program" required>
+      <option value="">Seleccione primero una facultad</option>
+    </select>
+
+    <div class="ed-rejilla">
+      <div>
+        <label for="subjectCode">Código de la asignatura <span class="ed-req">*</span></label>
+        <input id="subjectCode" name="subjectCode" required maxlength="100"
+               value="{{ guia.codigo_banner }}">
+      </div>
+      <div>
+        <label for="academicPeriod">Periodo académico <span class="ed-req">*</span></label>
+        <input id="academicPeriod" name="academicPeriod" required maxlength="100"
+               value="{{ guia.periodo }}" placeholder="Oct. 2026–Feb. 2027">
+      </div>
+    </div>
+
+    <label for="subjectName">Nombre de la asignatura <span class="ed-req">*</span></label>
+    <input id="subjectName" name="subjectName" required maxlength="200"
+           value="{{ guia.nombre_asignatura }}">
+
+    <div class="ed-rejilla">
+      <div>
+        <label for="weeks">Duración <span class="ed-req">*</span></label>
+        {# Desplegable y no número: el esquema solo admite 8 o 16. Su
+           formulario original dejaba escribir 1–20 y el servidor lo
+           rechazaba después. #}
+        <select id="weeks" name="weeks" required>
+          <option value="8" {% if guia.total_semanas == 8 %}selected{% endif %}>8 semanas</option>
+          <option value="16" {% if guia.total_semanas == 16 %}selected{% endif %}>16 semanas</option>
+        </select>
+      </div>
+      <div>
+        <label for="credits">Número de créditos <span class="ed-req">*</span></label>
+        <input id="credits" name="credits" required maxlength="50" placeholder="3">
+      </div>
+    </div>
+
+    <h2 class="ed-seccion">Planificación</h2>
+
+    <label for="learningOutcome">Resultado de aprendizaje <span class="ed-req">*</span></label>
+    <textarea id="learningOutcome" name="learningOutcome" required maxlength="8000"
+      placeholder="Copie el resultado de aprendizaje oficial de la asignatura."></textarea>
+    <p class="ed-ayuda">El agente lo reproduce literalmente. No lo parafrasea.</p>
+
+    <label for="contents">Unidades, temas y subtemas <span class="ed-req">*</span></label>
+    <textarea id="contents" name="contents" required maxlength="20000" class="ed-alto"
+      placeholder="Unidad 1: …&#10;  Tema 1.1: …&#10;  Tema 1.2: …&#10;Unidad 2: …"></textarea>
+    <p class="ed-ayuda">
+      Indique el orden y, si puede, qué semanas cubre cada unidad. De aquí sale
+      el reparto semanal y dónde va cada autoevaluación.
+    </p>
+
+    <label for="methodology">Metodología <span class="ed-req">*</span></label>
+    <textarea id="methodology" name="methodology" required maxlength="8000"
+      placeholder="Describa la metodología activa o estrategia didáctica seleccionada."></textarea>
+
+    <label for="bibliography">Bibliografía <span class="ed-req">*</span></label>
+    <textarea id="bibliography" name="bibliography" required maxlength="20000" class="ed-alto"
+      placeholder="Referencias en formato APA, una por línea."></textarea>
+    <p class="ed-ayuda">
+      El agente solo cita lo que aparezca aquí. Si algo falta, lo dirá en vez
+      de inventárselo.
+    </p>
+
+    <button type="submit">Guardar y generar</button>
+    <a class="ed-cancelar" href="/guias-vista">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

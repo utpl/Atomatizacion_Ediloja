@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block titulo %}Prueba — App-EdiLoja{% endblock %}
+
+{% block contenido %}
+  <h1>Hola, {{ nombre }}</h1>
+  <ul>
+    {% for n in numeros %}
+      <li>{{ n }} al cuadrado es {{ n * n }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

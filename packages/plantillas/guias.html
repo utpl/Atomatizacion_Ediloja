@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block titulo %}Mis guías — App-EdiLoja{% endblock %}
+
+{% block contenido %}
+
+  <div class="ed-fila-titulo">
+    <div>
+      <h1>Guías</h1>
+      <p class="ed-meta">
+        {{ usuario.nombre_completo }} · {{ usuario.correo }}
+        · roles: {{ usuario.codigos_de_rol() | sort | join(", ") }}
+      </p>
+    </div>
+    <a class="ed-salir" href="/salir">Cerrar sesión</a>
+  </div>
+
+  {% if guias %}
+    <table class="ed-tabla-guias">
+      <thead>
+        <tr>
+          <th>Código</th><th>Asignatura</th><th>Periodo</th>
+          <th>Semanas</th><th>Estado</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for g in guias %}
+        <tr>
+          <td class="ed-mono">{{ g.codigo_banner }}</td>
+          <td>{{ g.nombre_asignatura }}</td>
+          <td>{{ g.periodo }}</td>
+          <td>{{ g.total_semanas }}</td>
+          <td><span class="ed-estado ed-estado--{{ g.estado }}">{{ g.estado }}</span></td>
+          <td><a href="/curso">Abrir</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    {# Una pantalla vacía es una invitación a actuar, no un mensaje de error. #}
+    <div class="ed-vacio">
+      <p>Todavía no hay ninguna guía.</p>
+      {% if puede_crear %}<p>Crea la primera para empezar.</p>{% endif %}
+    </div>
+  {% endif %}
+
+  {% if puede_crear %}
+    <p style="margin-top:24px"><a class="ed-boton" href="/guias-vista/nueva">Nueva guía</a></p>
+  {% endif %}
+
+{% endblock %}

@@ -1,0 +1,6 @@
+{# Fragmento: solo las <option> de un <select>. htmx lo inserta dentro
+   del select con hx-target. Sin herencia: no es una página. #}
+<option value="">{{ vacio }}</option>
+{% for o in opciones %}
+  <option value="{{ o.value }}">{{ o.label }}</option>
+{% endfor %}

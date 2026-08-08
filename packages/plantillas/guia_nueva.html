@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titulo %}Nueva guía — App-EdiLoja{% endblock %}
+
+{% block contenido %}
+<div class="ed-formulario">
+  <h1>Nueva guía</h1>
+  <p class="ed-meta">Datos de la asignatura. El contenido lo genera el agente después.</p>
+
+  {% if error %}<p class="ed-error" role="alert">{{ error }}</p>{% endif %}
+
+  <form method="post" action="/guias-vista/nueva">
+    <label for="codigo_banner">Código Banner</label>
+    <input id="codigo_banner" name="codigo_banner" required
+           placeholder="ADMI_1104" autofocus>
+
+    <label for="nombre_asignatura">Asignatura</label>
+    <input id="nombre_asignatura" name="nombre_asignatura" required
+           placeholder="Banca y Finanzas">
+
+    <label for="periodo">Periodo académico</label>
+    <input id="periodo" name="periodo" required placeholder="2026-1">
+
+    <label for="total_semanas">Duración</label>
+    <select id="total_semanas" name="total_semanas">
+      <option value="8">8 semanas</option>
+      <option value="16">16 semanas</option>
+    </select>
+
+    <button type="submit">Crear y continuar</button>
+    <a class="ed-cancelar" href="/guias-vista">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

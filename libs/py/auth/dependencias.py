@@ -3,7 +3,7 @@
 from collections.abc import Callable
 
 import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -56,3 +56,50 @@ def exigir_roles(*codigos: str) -> Callable:
         return usuario
 
     return comprobar
+
+
+# ---------------------------------------------------------------------------
+# Variante para las vistas HTML
+# ---------------------------------------------------------------------------
+# El navegador, al pinchar un enlace, no manda la cabecera Authorization:
+# manda cookies. usuario_actual() corta con 401 antes de llegar aquí porque
+# OAuth2PasswordBearer solo mira esa cabecera.
+#
+# Esta versión mira en las dos fuentes, con la cabecera por delante. Así la
+# API sigue funcionando igual para Postman, los tests y el agente de la UTPL,
+# y además funciona el navegador. No se modifica nada de lo anterior.
+#
+# La cookie se emite HttpOnly (ver rutas/vistas.py): JavaScript no puede
+# leerla. Importa en este proyecto, que publica HTML generado por IA en
+# Canvas: si algún día se cuela un script, no podrá robar sesiones.
+
+NOMBRE_COOKIE = "ediloja_sesion"
+
+
+def token_de_peticion(request: Request) -> str | None:
+    """Saca el token de la cabecera o, en su defecto, de la cookie."""
+    cabecera = request.headers.get("Authorization", "")
+    if cabecera.lower().startswith("bearer "):
+        return cabecera[7:].strip()
+    return request.cookies.get(NOMBRE_COOKIE)
+
+
+def usuario_web_opcional(
+    request: Request,
+    sesion: Session = Depends(obtener_sesion),
+) -> Usuario | None:
+    """Devuelve el usuario, o None si no hay sesión. NO lanza 401.
+
+    Las vistas HTML no deben devolver 401: deben redirigir al login. Por eso
+    esta versión no lanza y la ruta decide qué hacer.
+    """
+    token = token_de_peticion(request)
+    if not token:
+        return None
+    try:
+        carga = leer_token(token)
+        usuario_id = int(carga["sub"])
+    except (jwt.PyJWTError, KeyError, ValueError):
+        return None
+    usuario = sesion.get(Usuario, usuario_id)
+    return usuario if usuario is not None and usuario.activo else None

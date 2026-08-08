@@ -29,8 +29,8 @@ def _pagina(semana: int) -> dict:
             },
             {
                 "tipo": "focalizador",
-                "variante": "recuerde",
-                "contenido": [
+                "focalizador": "recuerde",
+                "bloques": [
                     {"tipo": "parrafo", "texto": "Repase el material antes de continuar."}
                 ],
             },
@@ -38,7 +38,7 @@ def _pagina(semana: int) -> dict:
             {
                 "tipo": "lista",
                 "ordenada": False,
-                "elementos": ["Identificar", "Registrar", "Clasificar"],
+                "items": [{"texto": "Identificar"}, {"texto": "Registrar"}, {"texto": "Clasificar"}],
             },
         ],
     }
@@ -68,18 +68,25 @@ def validador_provisional(curso: dict) -> dict:
 
 
 def main() -> None:
+    # Claves canónicas del curso.json v1.0.0. No "nombre" ni "codigo":
+    # el ensamblado las escribe tal cual en info_general, y ahí el esquema
+    # exige estos nombres exactos.
     datos_curso = {
-        "nombre": "Contabilidad General",
-        "codigo": "CONT-1140",
+        "asignatura": "Contabilidad General",
+        "codigo_banner": "CONT1140",
         "periodo": "2026-1",
-        "semanas": 8,
+        "total_semanas": 8,
+        "unidades": [
+            {"id": "u1", "numero": 1, "titulo": "Fundamentos contables"},
+            {"id": "u2", "numero": 2, "titulo": "Estados financieros"},
+        ],
     }
     plan = [
         {"semana": n, "unidad": 1 if n <= 4 else 2, "cierra_unidad": n in (4, 8)}
         for n in range(1, 9)
     ]
 
-    curso = generar_guia(
+    curso, telemetria = generar_guia(
         datos_curso,
         plan=plan,
         bibliografia=["Horngren, C. (2012). Contabilidad de costos. Pearson."],
@@ -92,7 +99,7 @@ def main() -> None:
 
     print(f"Escrito: {SALIDA}")
     print(json.dumps(curso["estadisticas"], ensure_ascii=False, indent=2))
-    print(json.dumps(curso["telemetria"], ensure_ascii=False, indent=2))
+    print(json.dumps(telemetria, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
