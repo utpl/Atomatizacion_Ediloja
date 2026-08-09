@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block titulo %}Importar de Canvas — App-EdiLoja{% endblock %}
+
+{% block contenido %}
+<div class="ed-formulario">
+  <h1>Importar un curso existente</h1>
+  <p class="ed-meta">
+    Lee el temario y la bibliografía de un curso ya publicado en Canvas y los
+    trae al formulario de requerimientos. Desde ahí se regenera con la
+    plantilla y las reglas vigentes.
+  </p>
+
+  {% if error %}<p class="ed-error" role="alert">{{ error }}</p>{% endif %}
+
+  <form method="post" action="/guias-vista/importar">
+    <label for="canvas_curso_id">Id del curso de origen <span class="ed-req">*</span></label>
+    <input id="canvas_curso_id" name="canvas_curso_id" type="number" required
+           placeholder="90015" autofocus>
+    <p class="ed-ayuda">
+      Sale de la URL: <code>/courses/<strong>90015</strong></code>.
+      El curso de origen no se modifica: solo se lee.
+    </p>
+
+    <label for="canvas_url">Instancia</label>
+    <input id="canvas_url" name="canvas_url" value="https://utpl.test.instructure.com">
+
+    <fieldset class="ed-modos">
+      <legend>Qué hacer con el contenido</legend>
+      <label class="ed-modo">
+        <input type="radio" name="modo" value="rescatar" checked>
+        <span><strong>Rescatar el contenido</strong><br>
+        Trae los textos, tablas, figuras y focalizadores como bloques
+        editables. Podrá revisar, corregir o borrar lo que no sirva y
+        republicarlo con la plantilla nueva.</span>
+      </label>
+      <label class="ed-modo">
+        <input type="radio" name="modo" value="regenerar">
+        <span><strong>Regenerar desde cero</strong><br>
+        Trae solo el temario y la bibliografía al formulario, y el agente
+        reescribe la guía entera con las reglas vigentes. Se pierde el texto
+        original.</span>
+      </label>
+    </fieldset>
+
+    <button type="submit">Importar</button>
+    <a class="ed-cancelar" href="/panel">Cancelar</a>
+  </form>
+
+  <p class="ed-ayuda" style="margin-top:20px">
+    Se importan los temas y las referencias. El nivel, la modalidad, la
+    carrera y el resultado de aprendizaje hay que completarlos a mano: no se
+    pueden deducir del curso viejo, y ponerlos mal cambia el tono de toda la
+    guía. Las autoevaluaciones tampoco se importan — el agente las genera con
+    sus diez preguntas.
+  </p>
+</div>
+{% endblock %}

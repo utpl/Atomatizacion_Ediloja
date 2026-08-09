@@ -101,6 +101,37 @@ def _titulos_de(texto: str) -> list[str]:
     return salida
 
 
+def _bibliografia_de(extraido: dict[str, Any]) -> list[str]:
+    """Referencias de la pagina "Fuentes y recursos".
+
+    Se toma linea a linea y se descartan los encabezados y las lineas cortas.
+    No se valida el formato APA: el curso viejo trae de todo -- apellidos con
+    guion, comas donde va punto, listas de autores sin inicial -- y filtrar
+    por formato perderia referencias buenas. Que las revise el docente.
+    """
+    paginas = []
+    for mod in extraido.get("modulos", []):
+        paginas.extend(mod.get("items", []))
+    paginas.extend(extraido.get("paginas_sueltas", []))
+
+    salida: list[str] = []
+    vistas: set[str] = set()
+    for pagina in paginas:
+        titulo = (pagina.get("titulo") or "").strip().lower()
+        if "fuente" not in titulo and "bibliograf" not in titulo:
+            continue
+        for linea in _texto(pagina.get("html", "")).splitlines():
+            linea = linea.lstrip("- ").strip()
+            if len(linea) < 30 or not re.search(r"\(?\d{4}", linea):
+                continue
+            clave = linea[:60].lower()
+            if clave in vistas:
+                continue
+            vistas.add(clave)
+            salida.append(linea)
+    return salida[:60]
+
+
 def requerimientos_desde_curso(extraido: dict[str, Any]) -> dict[str, Any]:
     """Convierte la salida de extraer_curso() en los 12 campos del formulario.
 
@@ -150,6 +181,14 @@ def requerimientos_desde_curso(extraido: dict[str, Any]) -> dict[str, Any]:
 
     texto_completo = "\n\n".join(todo)
 
+    # Las referencias viven en su propia pagina ("Fuentes y recursos"), no
+    # desperdigadas por el temario. Buscarlas ahi da muchos menos falsos
+    # positivos que rastrear el texto entero: un parrafo que cita "(2020)"
+    # se parece mucho a una referencia y no lo es.
+    bibliografia = _bibliografia_de(extraido)
+    if not bibliografia:
+        bibliografia = _referencias(texto_completo)
+
     return {
         "subjectName": extraido.get("nombre", ""),
         "subjectCode": "",
@@ -163,7 +202,7 @@ def requerimientos_desde_curso(extraido: dict[str, Any]) -> dict[str, Any]:
         "learningOutcome": "",
         "contents": contents,
         "methodology": "",
-        "bibliography": "\n".join(_referencias(texto_completo)),
+        "bibliography": "\n".join(bibliografia),
         # Trazabilidad: de qué curso salió esto. Sin esto, dentro de un año
         # nadie sabe si una guía es original o remigrada.
         "_origen_migracion": {

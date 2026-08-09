@@ -25,7 +25,7 @@ from libs.py.auth.dependencias import NOMBRE_COOKIE, usuario_web_opcional
 from libs.py.auth.seguridad import crear_token, verificar_contrasena
 from libs.py.canon import oferta, temas
 from libs.py.db.modelos_auth import Usuario
-from libs.py.db.modelos_contenido import EdicionBloque
+from libs.py.db.modelos_contenido import EdicionBloque, VersionGuia
 from libs.py.db.modelos_dominio import Guia, SolicitudGeneracion
 from libs.py.db.session import obtener_sesion
 from libs.py.edicion.esquemas import ActualizarBloque
@@ -543,6 +543,8 @@ def editor(
         "hojas_tema": temas.hojas_de(),
         # Congelada = en revisión: todo en modo lectura.
         "editable": not version.congelada,
+        "puede_aprobar": usuario.tiene_rol("qa", "coordinador", "admin"),
+        "puede_publicar": usuario.tiene_rol("operador", "coordinador", "admin"),
     })
 
 
@@ -797,3 +799,164 @@ def panel(
         "puede_crear": bool(roles & {"docente", "admin"}),
         "es_revisor": bool(roles & {"revisor_di", "qa", "coordinador", "admin"}),
     })
+
+
+@router.get("/guias-vista/importar")
+def formulario_importar(request: Request, usuario=Depends(usuario_web_opcional)):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not usuario.tiene_rol("operador", "coordinador", "admin", "docente"):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+    return plantillas.TemplateResponse("importar.html", {"request": request, "error": None})
+
+
+@router.post("/guias-vista/importar")
+def procesar_importacion(
+    request: Request,
+    canvas_curso_id: int = Form(...),
+    canvas_url: str = Form("https://utpl.test.instructure.com"),
+    modo: str = Form("regenerar"),
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    """Extrae el temario de un curso viejo y crea la guía con sus requerimientos.
+
+    Es síncrono: extraer_curso son unas pocas llamadas a la API de Canvas y
+    tarda segundos, no minutos. No merece la cola.
+    """
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+
+    import os
+    import sys
+
+    sys.path.insert(0, str(RAIZ / "apps" / "migrador-canvas"))
+    from extraer_canvas import extraer_curso  # noqa: PLC0415
+
+    from libs.py.publicacion.importar import requerimientos_desde_curso  # noqa: PLC0415
+
+    try:
+        extraido = extraer_curso(canvas_url.rstrip("/"), os.getenv("CANVAS_TOKEN"),
+                                 canvas_curso_id, log=lambda *a: None)
+    except Exception as exc:
+        return plantillas.TemplateResponse(
+            "importar.html",
+            {"request": request,
+             "error": f"No se pudo leer el curso {canvas_curso_id}: {exc}"},
+            status_code=422)
+
+    from libs.py.publicacion.html_a_bloques import curso_desde_extraido  # noqa: PLC0415
+
+    # Se guarda el extraído en la sesión no: se procesa ya y se ofrecen los
+    # dos caminos. Volver a llamar a Canvas para el segundo sería gastar
+    # tiempo en algo que ya tenemos.
+    reqs = requerimientos_desde_curso(extraido)
+    curso_migrado = curso_desde_extraido(extraido)
+    paginas = len(curso_migrado["estructura"]["paginas"])
+
+    if modo == "rescatar" and paginas:
+        return _crear_desde_migracion(
+            request, sesion, usuario, extraido, curso_migrado, canvas_curso_id)
+
+    if not reqs.get("contents"):
+        return plantillas.TemplateResponse(
+            "importar.html",
+            {"request": request,
+             "error": "El curso no tiene páginas de contenido reconocibles. "
+                      "Comprueba que el id sea correcto."},
+            status_code=422)
+
+    guia = Guia(
+        codigo_banner="POR-DEFINIR",
+        nombre_asignatura=reqs.get("subjectName") or f"Curso {canvas_curso_id}",
+        periodo="",
+        total_semanas=8,
+        autor_id=usuario.id,
+    )
+    sesion.add(guia)
+    sesion.commit()
+    sesion.refresh(guia)
+
+    # Los requerimientos quedan en borrador: el formulario los muestra
+    # rellenos y el docente completa lo que la migración no puede deducir
+    # (nivel, modalidad, resultado de aprendizaje). Inventarlos sería peor:
+    # el nivel equivocado cambia el tono de toda la guía.
+    sesion.add(SolicitudGeneracion(
+        guia_id=guia.id, solicitada_por=usuario.id,
+        requerimientos=reqs, alcance="guia_completa", estado="borrador",
+    ))
+    sesion.commit()
+
+    return RedirectResponse(url=f"/guias-vista/{guia.id}/generar", status_code=303)
+
+
+def _crear_desde_migracion(request, sesion, usuario, extraido, curso, canvas_curso_id):
+    """Crea la guía con el contenido migrado ya como versión editable.
+
+    origen='migrado' y los bloques con origen='docente': ese contenido no lo
+    escribió el agente, y contarlo como suyo falsearía estadisticas.por_origen,
+    que es la métrica de si el agente está mejorando.
+    """
+    import hashlib
+
+    from libs.py.agente import ensamblado
+    from libs.py.esquema.validador import validar
+
+    guia = Guia(
+        codigo_banner="SIN-CODIGO",
+        nombre_asignatura=extraido.get("nombre") or f"Curso {canvas_curso_id}",
+        periodo="",
+        total_semanas=curso["info_general"]["total_semanas"],
+        autor_id=usuario.id,
+    )
+    sesion.add(guia)
+    sesion.commit()
+    sesion.refresh(guia)
+
+    for pagina in curso["estructura"]["paginas"]:
+        ensamblado.poner_ids_y_origen(pagina["bloques"], origen="docente")
+
+    resultado = validar(curso)
+    curso["validaciones"] = resultado.como_dict()
+
+    sesion.add(VersionGuia(
+        guia_id=guia.id, numero=1, origen="migrado",
+        contenido=curso, version_esquema="1.0.0",
+        sha256=hashlib.sha256(
+            json.dumps(curso, ensure_ascii=False, sort_keys=True).encode()).hexdigest(),
+        semaforo=resultado.semaforo,
+        alertas=resultado.como_dict()["alertas"],
+        congelada=False, es_actual=True, creada_por=usuario.id,
+    ))
+    sesion.commit()
+
+    return RedirectResponse(url=f"/guias-vista/{guia.id}/editor", status_code=303)
+
+
+@router.post("/guias-vista/{guia_id}/aprobar")
+def aprobar_guia(
+    guia_id: int, request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    """Marca la guía como aprobada, que es lo que habilita publicar.
+
+    El docente no puede aprobarse a sí mismo: quien revisa no es quien
+    escribe, y si el autor pudiera aprobar, el ciclo de vida no serviría
+    de nada.
+    """
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not usuario.tiene_rol("qa", "coordinador", "admin"):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    guia = sesion.get(Guia, guia_id)
+    if guia is None:
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    guia.estado = "aprobada"
+    version = next((v for v in guia.versiones if v.es_actual), None)
+    if version is not None:
+        version.congelada = False
+    sesion.commit()
+    return RedirectResponse(url=f"/guias-vista/{guia.id}/publicar", status_code=303)

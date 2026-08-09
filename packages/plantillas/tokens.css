@@ -284,3 +284,29 @@ body {
 .ed-acciones { white-space: nowrap; }
 .ed-acciones a { margin-right: 12px; font-size: 0.875rem; }
 .ed-acciones a:last-child { margin-right: 0; }
+
+/* --- importar: elección de modo ----------------------------- */
+.ed-modos { border: 0; padding: 0; margin: 24px 0 0; }
+.ed-modos legend {
+  font-size: 0.8125rem; font-weight: 600; padding: 0; margin-bottom: 8px;
+}
+.ed-modo {
+  display: flex; gap: 12px; align-items: flex-start;
+  border: 1px solid var(--ed-linea); border-radius: 6px;
+  padding: 14px 16px; margin-bottom: 10px; cursor: pointer;
+  font-weight: 400; font-size: 0.9375rem; line-height: 1.5;
+}
+.ed-modo:has(input:checked) {
+  border-color: var(--ed-azul-600);
+  background: var(--ed-papel-2);
+}
+.ed-modo input { width: auto; margin-top: 3px; flex: 0 0 auto; }
+
+/* --- barra de acciones del editor --------------------------- */
+.ed-barra-acciones {
+  display: flex; align-items: center; gap: 16px;
+  margin: 20px 0; padding-bottom: 16px;
+  border-bottom: 1px solid var(--ed-linea);
+}
+.ed-en-linea { display: inline; margin: 0; }
+.ed-en-linea button { margin: 0; }

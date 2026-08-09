@@ -9,6 +9,24 @@
     {% if not editable %}· <strong>en revisión (solo lectura)</strong>{% endif %}
   </p>
 
+  {#- El botón de publicar solo aparece cuando la guía está aprobada: el ciclo
+      de vida existe para que nadie publique sin revisión. Si el usuario puede
+      aprobar, se le ofrece hacerlo aquí mismo. -#}
+  <div class="ed-barra-acciones">
+    <a class="ed-cancelar" href="/panel">← Panel</a>
+    {% if puede_aprobar and guia.estado not in ("aprobada", "publicada") %}
+      <form method="post" action="/guias-vista/{{ guia.id }}/aprobar" class="ed-en-linea">
+        <button class="ed-boton" type="submit">Aprobar</button>
+      </form>
+    {% endif %}
+    {% if puede_publicar and guia.estado in ("aprobada", "publicada") %}
+      <a class="ed-boton" href="/guias-vista/{{ guia.id }}/publicar">Publicar en Canvas</a>
+    {% endif %}
+    {% if guia.canvas_url %}
+      <a class="ed-cancelar" href="{{ guia.canvas_url }}" target="_blank" rel="noopener">Ver en Canvas ↗</a>
+    {% endif %}
+  </div>
+
   <nav class="ed-semanas">
     {% for p in paginas %}
       <a class="ed-semana" href="/guias-vista/{{ guia.id }}/editor/{{ p.id }}"
