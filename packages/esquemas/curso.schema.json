@@ -175,6 +175,11 @@
               "semana_fin": {
                 "type": "integer",
                 "minimum": 1
+              },
+              "contextualizacion": {
+                "type": "string",
+                "minLength": 50,
+                "description": "Párrafo que explica al estudiante cómo esta unidad contribuye al resultado de aprendizaje. Lo genera el agente junto al reparto de semanas. Se muestra una sola vez, en la semana donde arranca la unidad. Campo opcional: añadirlo no rompe documentos anteriores."
               }
             }
           }

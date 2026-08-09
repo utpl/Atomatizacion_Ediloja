@@ -5,7 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}App-EdiLoja{% endblock %}</title>
+  {#- tokens.css es el cromo de la herramienta. Las hojas del tema son
+      una copia de lo que Canvas aplica al publicar: van despues para que
+      el tema mande sobre el contenido. -#}
   <link rel="stylesheet" href="/estatico/tokens.css">
+  {% for hoja in hojas_tema | default([]) %}
+  <link rel="stylesheet" href="{{ hoja }}">
+  {% endfor %}
   <script src="/estatico/vendor/htmx.min.js" defer></script>
 </head>
 

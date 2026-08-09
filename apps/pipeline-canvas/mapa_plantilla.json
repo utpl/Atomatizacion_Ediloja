@@ -1,0 +1,307 @@
+{
+  "banners/header_semana": {
+    "file_id": 26574513,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574513/preview",
+    "carpeta": "plantilla/banners"
+  },
+  "banners/hero_inicio": {
+    "file_id": 26574514,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574514/preview",
+    "carpeta": "plantilla/banners"
+  },
+  "focalizadores/apuntar": {
+    "file_id": 26574515,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574515/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/avancemos": {
+    "file_id": 26574516,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574516/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/buscar": {
+    "file_id": 26574517,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574517/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/caso": {
+    "file_id": 26574518,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574518/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/ejemplo": {
+    "file_id": 26574519,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574519/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/ejercicio": {
+    "file_id": 26574520,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574520/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/enlace": {
+    "file_id": 26574521,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574521/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/foro": {
+    "file_id": 26574522,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574522/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/importante": {
+    "file_id": 26574523,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574523/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/informacion_importante": {
+    "file_id": 26574524,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574524/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/lectura": {
+    "file_id": 26574525,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574525/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/muy_bien": {
+    "file_id": 26574526,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574526/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/nota": {
+    "file_id": 26574527,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574527/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/observe": {
+    "file_id": 26574528,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574528/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/orientacion_actividades": {
+    "file_id": 26574529,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574529/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/recuerde": {
+    "file_id": 26574530,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574530/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/reflexione": {
+    "file_id": 26574531,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574531/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "focalizadores/video": {
+    "file_id": 26574532,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574532/preview",
+    "carpeta": "plantilla/focalizadores"
+  },
+  "iconos/actividad_evaluada": {
+    "file_id": 26574533,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574533/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/actividades_recomendadas": {
+    "file_id": 26574534,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574534/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/autoevaluacion": {
+    "file_id": 26574535,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574535/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/calendario_actividades": {
+    "file_id": 26574536,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574536/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/carga_horaria": {
+    "file_id": 26574537,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574537/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/contextualizacion": {
+    "file_id": 26574538,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574538/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/datos_informacion": {
+    "file_id": 26574539,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574539/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/dummie": {
+    "file_id": 26574540,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574540/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/encuentros_en_linea": {
+    "file_id": 26574541,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574541/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/foro_asesoria_permanente": {
+    "file_id": 26574542,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574542/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/fuentes_recursos": {
+    "file_id": 26574543,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574543/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/guia_didactica": {
+    "file_id": 26574544,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574544/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/home": {
+    "file_id": 26574545,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574545/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/hover/actividad_evaluada": {
+    "file_id": 26574546,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574546/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/actividades_recomendadas": {
+    "file_id": 26574547,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574547/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/autoevaluacion": {
+    "file_id": 26574548,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574548/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/calendario_actividades": {
+    "file_id": 26574549,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574549/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/encuentros_en_linea": {
+    "file_id": 26574550,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574550/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/foro_asesoria_permanente": {
+    "file_id": 26574551,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574551/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/fuentes_recursos": {
+    "file_id": 26574552,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574552/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/guia_didactica": {
+    "file_id": 26574553,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574553/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/home": {
+    "file_id": 26574554,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574554/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/mentor": {
+    "file_id": 26574555,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574555/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/plan_docente": {
+    "file_id": 26574556,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574556/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/planificacion": {
+    "file_id": 26574557,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574557/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/tema": {
+    "file_id": 26574558,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574558/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/hover/vision_general": {
+    "file_id": 26574559,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574559/preview",
+    "carpeta": "plantilla/iconos/hover"
+  },
+  "iconos/mail": {
+    "file_id": 26574560,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574560/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/mentor": {
+    "file_id": 26574561,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574561/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/metodologia": {
+    "file_id": 26574562,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574562/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/metodologia_aprendizaje": {
+    "file_id": 26574563,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574563/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/orientaciones_didacticas": {
+    "file_id": 26574564,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574564/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/phone": {
+    "file_id": 26574565,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574565/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/plan_docente": {
+    "file_id": 26574566,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574566/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/planificacion": {
+    "file_id": 26574567,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574567/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/progress": {
+    "file_id": 26574568,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574568/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/propositos_aprendizaje": {
+    "file_id": 26574569,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574569/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/resultado_aprendizaje": {
+    "file_id": 26574570,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574570/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/tema": {
+    "file_id": 26574571,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574571/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/vision_general": {
+    "file_id": 26574572,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574572/preview",
+    "carpeta": "plantilla/iconos"
+  },
+  "iconos/zona_practica": {
+    "file_id": 26574573,
+    "url": "https://utpl.test.instructure.com/courses/90019/files/26574573/preview",
+    "carpeta": "plantilla/iconos"
+  }
+}

@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ediloja.com/schemas/esquema_canonico.schema.json",
+  "title": "Esquema canónico EdiLoja",
+  "type": "object",
+  "required": ["metadata", "secciones"],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["asignatura"],
+      "additionalProperties": false,
+      "properties": {
+        "asignatura": { "type": "string" },
+        "codigo": { "type": "string" },
+        "docente": { "type": "string" },
+        "nivel": { "type": "string" },
+        "periodo": { "type": "string" },
+        "canvas_course_id": { "type": ["integer", "null"] }
+      }
+    },
+    "secciones": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/seccion" }
+    }
+  },
+  "$defs": {
+    "seccion": {
+      "oneOf": [
+        { "$ref": "#/$defs/seccion_contenido" },
+        { "$ref": "#/$defs/seccion_autoevaluacion" },
+        { "$ref": "#/$defs/seccion_solucionario" },
+        { "$ref": "#/$defs/seccion_glosario" },
+        { "$ref": "#/$defs/seccion_referencias" },
+        { "$ref": "#/$defs/seccion_pagina" }
+      ]
+    },
+    "seccion_contenido": {
+      "type": "object",
+      "required": ["tipo", "unidades"],
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "contenido" },
+        "titulo": { "type": "string" },
+        "unidades": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["numero", "nombre_pagina", "bloques"],
+            "additionalProperties": false,
+            "properties": {
+              "numero": { "type": "integer" },
+              "nombre_pagina": { "type": "string" },
+              "titulo": { "type": "string" },
+              "bloques": { "type": "array", "items": { "$ref": "#/$defs/bloque" } }
+            }
+          }
+        }
+      }
+    },
+    "seccion_autoevaluacion": {
+      "type": "object",
+      "required": ["tipo", "unidad", "preguntas"],
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "autoevaluacion" },
+        "unidad": { "type": ["integer", "null"] },
+        "titulo": { "type": "string" },
+        "instrucciones": { "type": "string" },
+        "preguntas": { "type": "array", "items": { "$ref": "#/$defs/pregunta" } },
+        "estado_curacion": {
+          "enum": ["generar_desde_cero", "completar_a_diez", "curar"],
+          "description": "Diagnóstico para el agente: generar todo, completar hasta 10, o solo curar lo existente."
+        },
+        "preguntas_minimas": { "type": "integer" },
+        "preguntas_faltantes": { "type": "integer" }
+      }
+    },
+    "seccion_solucionario": {
+      "type": "object",
+      "required": ["tipo", "soluciones"],
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "solucionario" },
+        "titulo": { "type": "string" },
+        "soluciones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["unidad", "numero", "respuesta_correcta", "retroalimentacion"],
+            "additionalProperties": false,
+            "properties": {
+              "unidad": { "type": "integer" },
+              "numero": { "type": "integer" },
+              "respuesta_correcta": { "type": "string", "minLength": 1 },
+              "retroalimentacion": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "seccion_glosario": {
+      "type": "object",
+      "required": ["tipo", "terminos"],
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "glosario" },
+        "titulo": { "type": "string" },
+        "terminos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["termino", "definicion"],
+            "additionalProperties": false,
+            "properties": {
+              "termino": { "type": "string" },
+              "definicion": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "seccion_referencias": {
+      "type": "object",
+      "required": ["tipo", "entradas"],
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "referencias" },
+        "titulo": { "type": "string" },
+        "entradas": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "seccion_pagina": {
+      "type": "object",
+      "required": ["tipo", "titulo", "bloques"],
+      "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "pagina" },
+        "titulo": { "type": "string" },
+        "bloques": { "type": "array", "items": { "$ref": "#/$defs/bloque" } }
+      }
+    },
+    "pregunta": {
+      "type": "object",
+      "required": ["numero", "tipo_pregunta", "enunciado", "opciones"],
+      "additionalProperties": false,
+      "properties": {
+        "numero": { "type": "integer" },
+        "tipo_pregunta": { "enum": ["opcion_multiple", "verdadero_falso", "abierta"] },
+        "enunciado": { "type": "string" },
+        "opciones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["letra", "texto"],
+            "additionalProperties": false,
+            "properties": {
+              "letra": { "type": "string", "pattern": "^[a-z]$" },
+              "texto": { "type": "string" },
+              "correcta": { "type": "boolean" }
+            }
+          }
+        },
+        "respuesta_correcta": { "type": "string" },
+        "retroalimentacion": { "type": "string" }
+      }
+    },
+    "bloque": {
+      "oneOf": [
+        { "$ref": "#/$defs/b_parrafo" },
+        { "$ref": "#/$defs/b_subtitulo" },
+        { "$ref": "#/$defs/b_lista" },
+        { "$ref": "#/$defs/b_idea_clave" },
+        { "$ref": "#/$defs/b_cita" },
+        { "$ref": "#/$defs/b_enlace" },
+        { "$ref": "#/$defs/b_referencia" },
+        { "$ref": "#/$defs/b_figura" },
+        { "$ref": "#/$defs/b_tabla" },
+        { "$ref": "#/$defs/b_video" },
+        { "$ref": "#/$defs/b_focalizador" },
+        { "$ref": "#/$defs/b_recurso" },
+        { "$ref": "#/$defs/b_resultado_aprendizaje" },
+        { "$ref": "#/$defs/b_contextualizacion" },
+        { "$ref": "#/$defs/b_encuentros_linea" },
+        { "$ref": "#/$defs/b_tema_principal" },
+        { "$ref": "#/$defs/b_actividad_recomendada" }
+      ]
+    },
+    "b_parrafo": {
+      "type": "object", "required": ["tipo", "texto"], "additionalProperties": false,
+      "properties": { "tipo": { "const": "parrafo" }, "texto": { "type": "string" } }
+    },
+    "b_subtitulo": {
+      "type": "object", "required": ["tipo", "nivel", "texto"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "subtitulo" },
+        "nivel": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "texto": { "type": "string" }
+      }
+    },
+    "b_lista": {
+      "type": "object", "required": ["tipo", "estilo", "items"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "lista" },
+        "estilo": { "enum": ["vinetas", "numerada"] },
+        "items": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "b_idea_clave": {
+      "type": "object", "required": ["tipo", "texto"], "additionalProperties": false,
+      "properties": { "tipo": { "const": "idea_clave" }, "texto": { "type": "string" } }
+    },
+    "b_cita": {
+      "type": "object", "required": ["tipo", "texto"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "cita" },
+        "texto": { "type": "string" },
+        "fuente": { "type": "string" }
+      }
+    },
+    "b_enlace": {
+      "type": "object", "required": ["tipo", "url"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "enlace" },
+        "url": { "type": "string", "format": "uri" },
+        "texto": { "type": "string" },
+        "descripcion": { "type": "string" }
+      }
+    },
+    "b_referencia": {
+      "type": "object", "required": ["tipo", "texto"], "additionalProperties": false,
+      "properties": { "tipo": { "const": "referencia" }, "texto": { "type": "string" } }
+    },
+    "b_figura": {
+      "type": "object", "required": ["tipo", "numero", "titulo", "nota", "origen"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "figura" },
+        "numero": { "type": "integer" },
+        "titulo": { "type": "string" },
+        "origen": { "enum": ["imagen", "formas_word"] },
+        "imagen": {
+          "type": "object",
+          "required": ["src", "alt"],
+          "additionalProperties": false,
+          "properties": {
+            "src": { "type": "string" },
+            "alt": { "type": "string", "minLength": 1 }
+          }
+        },
+        "elementos": { "type": "array", "items": { "type": "string" } },
+        "nota": { "type": "string" }
+      }
+    },
+    "b_tabla": {
+      "type": "object", "required": ["tipo", "numero", "titulo", "encabezados", "filas", "nota"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "tabla" },
+        "numero": { "type": "integer" },
+        "titulo": { "type": "string" },
+        "encabezados": { "type": "array", "items": { "type": "string" } },
+        "filas": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } },
+        "nota": { "type": "string" }
+      }
+    },
+    "b_video": {
+      "type": "object", "required": ["tipo", "plataforma", "url"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "video" },
+        "plataforma": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "titulo": { "type": "string" }
+      }
+    },
+    "b_focalizador": {
+      "type": "object", "required": ["tipo", "subtipo", "contenido"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "focalizador" },
+        "subtipo": {
+          "enum": [
+            "apuntar", "avancemos", "buscar", "caso", "ejemplo", "ejercicio", "enlace",
+            "foro", "importante", "informacion_importante", "lectura", "muy_bien", "nota",
+            "observe", "orientacion_actividades", "recuerde", "reflexione", "video",
+            "idea_clave_focal", "invitacion_explorar", "cierre_reflexivo",
+            "apoyo_visual", "orientacion"
+          ]
+        },
+        "contenido": { "type": "array", "items": { "$ref": "#/$defs/bloque" } }
+      }
+    },
+    "b_resultado_aprendizaje": {
+      "type": "object", "required": ["tipo", "contenido"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "resultado_aprendizaje" },
+        "titulo": { "type": "string" },
+        "contenido": { "type": "array", "items": { "$ref": "#/$defs/bloque" } }
+      }
+    },
+    "b_contextualizacion": {
+      "type": "object", "required": ["tipo", "contenido"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "contextualizacion" },
+        "titulo": { "type": "string" },
+        "contenido": { "type": "array", "items": { "$ref": "#/$defs/bloque" } }
+      }
+    },
+    "b_encuentros_linea": {
+      "type": "object", "required": ["tipo", "contenido"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "encuentros_linea" },
+        "titulo": { "type": "string" },
+        "contenido": { "type": "array", "items": { "$ref": "#/$defs/bloque" } }
+      }
+    },
+    "b_tema_principal": {
+      "type": "object", "required": ["tipo", "contenido"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "tema_principal" },
+        "titulo": { "type": "string" },
+        "contenido": { "type": "array", "items": { "$ref": "#/$defs/bloque" } }
+      }
+    },
+    "b_actividad_recomendada": {
+      "type": "object", "required": ["tipo", "contenido"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "actividad_recomendada" },
+        "contenido": { "type": "array", "items": { "$ref": "#/$defs/bloque" } }
+      }
+    },
+    "b_recurso": {
+      "type": "object", "required": ["tipo", "descripcion"], "additionalProperties": false,
+      "properties": {
+        "tipo": { "const": "recurso" },
+        "formato": { "type": "string" },
+        "titulo": { "type": "string" },
+        "descripcion": { "type": "string" }
+      }
+    }
+  }
+}

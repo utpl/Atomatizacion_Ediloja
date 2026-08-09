@@ -16,10 +16,16 @@
     {% endfor %}
   </nav>
 
+  {#- .ed-container es el envoltorio que espera la hoja institucional: TODOS
+      sus selectores son `.ed-container .algo`. Sin el, ninguna regla aplica.
+      Lo que se publique en Canvas tambien tiene que ir envuelto igual, o el
+      tema global de la cuenta tampoco lo alcanzara. -#}
   <article class="ed-hoja">
     <h2>{{ pagina.titulo }}</h2>
-    {% for b in pagina.bloques %}
-      {% include "_bloque.html" %}
-    {% endfor %}
+    <div class="ed-container">
+      {% for b in pagina.bloques %}
+        {% include "_bloque.html" %}
+      {% endfor %}
+    </div>
   </article>
 {% endblock %}

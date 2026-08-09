@@ -1,0 +1,1175 @@
+/* ===================================================================
+   PLANTILLA CANVAS "REDISEÑO 3" (UTPL)
+   Archivo de estilos único · Prefijo de proyecto: ed-
+   -------------------------------------------------------------------
+   Todo el CSS está delimitado por el contenedor raíz .cc-curso para
+   evitar conflictos con los estilos propios de Canvas (LMS).
+   No se declara ninguna familia tipográfica: se hereda la fuente que
+   Canvas aplique por defecto.
+   =================================================================== */
+
+
+/* =====================================================================
+   === GENERAL ===
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+/* Tipografia */
+
+.ed-container,
+.ed-container * {
+    font-family: "Roboto", sans-serif;
+}
+
+.ed-container .ed-header h2,
+.ed-container .ed-header h2 strong {
+    font-family: "Playfair Display", serif;
+    font-weight: 900;
+}
+
+/* Contenedor principal */
+
+.ed-container {
+
+    /* Grid */
+
+    max-width: 1000px;
+    margin: auto;
+
+    /* Colors */
+
+    /* PREVIEW = CANVAS: este archivo redefinia la paleta ANTIGUA (azul de
+       accion #0f6ece), y como se carga DESPUES de style.css ganaba por
+       cascada: el previsualizador pintaba de azul lo que en Canvas va en
+       amarillo institucional (hover de pestañas y botones, barra de
+       progreso, etc.). Ahora usa la MISMA paleta corporativa de style.css
+       (julio 2026), asi lo que se ve aqui es lo que queda en el LMS. */
+
+    /* Azul marca */
+    --ed-blue-900: #083e70;
+    --ed-blue-800: #3a648b;
+    --ed-blue-700: #527799;
+    --ed-blue-600: #6b8aa7;
+    --ed-blue-500: #9bb1c4;
+    --ed-blue-050: #e5eaef;
+
+    /* Azules claros */
+    --ed-sky-600: #79add1;
+    --ed-sky-500: #85b5d5;
+    --ed-sky-400: #92bdd9;
+    --ed-sky-300: #adcde2;
+    --ed-sky-200: #bbd6e7;
+    --ed-sky-150: #c8ddeb;
+    --ed-sky-100: #d5e5f0;
+    --ed-sky-050: #e3edf5;
+    --ed-sky-025: #f0f5f9;
+
+    /* Amarillos — acento y estado activo */
+    --ed-amber-600: #eaa621;
+    --ed-amber-500: #eeb741;
+    --ed-amber-400: #f0bf56;
+    --ed-amber-300: #f4d184;
+    --ed-amber-100: #faebcc;
+    --ed-amber-050: #fcf5e5;
+
+    /* Estados de la ruta de aprendizaje */
+    --ed-green-500: #12b886;
+    --ed-green-700: #087f5b;
+    --ed-green-100: #d8f5a2;
+    --ed-green-300: #94d82d;
+
+    --ed-info-400: #66acef;
+    --ed-info-600: #0a72cc;
+    --ed-info-100: #bac8ff;
+    --ed-info-300: #91a7ff;
+
+    --ed-gray-100: #f1f3f5;
+    --ed-gray-400: #adb5bd;
+
+    --ed-orange-300: #ffa94d;
+    --ed-orange-600: #f76707;
+
+    --ed-white: #fff;
+
+    /* Alias semánticos (mismos nombres que style.css) */
+    --ed-btn-bg: var(--ed-sky-025);
+    --ed-btn-bg_ho: var(--ed-blue-900);
+    --ed-btn-txt: var(--ed-blue-900);
+    --ed-btn-txt-dark: var(--ed-blue-900);
+
+    --ed-lbl-txt: var(--ed-blue-900);
+    --ed-lbl-bg: var(--ed-sky-050);
+
+    --ed-border: var(--ed-sky-200);
+    --ed-border-gray: var(--ed-gray-400);
+    --ed-border_ho: var(--ed-blue-900);
+
+    --ed-txt-white: var(--ed-white);
+
+    /* Sizes */
+    --ed-border-radius: 6px;
+    --ed-padding-short: 5px;
+    --ed-padding-large: 1em;
+    --ed-height-container: 400px;
+
+    /* Transitions */
+    --ed-transition: .5s ease;
+}
+
+/* Titles */
+
+.ed-container .title-section {
+    display: grid;
+    grid-template-columns: 50px auto;
+    color: var(--ed-lbl-txt);
+}
+
+.ed-container .title-section :nth-child(2) {
+    padding-left: 10px;
+    margin-bottom: 1em;
+}
+
+.ed-container .title-section.bg-color :nth-child(2) {
+    color: var(--ed-blue-900);
+    background-color: #dfeffb;
+    border-radius: var(--ed-border-radius);
+}
+
+/* Subtitles */
+.ed-container .subtitle-section {
+    color: var(--ed-blue-900);
+    border-left: 5px solid var(--ed-sky-600);
+    padding-left: 10px;
+    margin-bottom: 1em;
+}
+
+/* Identación */
+
+.ed-container .indentation-3 {
+    margin-left: 3em;
+}
+
+/* Tables */
+
+.ed-container .table-design,
+.ed-container .table-general {
+    margin: auto;
+    border-collapse: separate !important;
+    border-spacing: 5px !important;
+}
+
+/* Design */
+
+.ed-container .table-design th,
+.ed-container .table-design td {
+    padding: 5px 1em !important;
+    border-radius: var(--ed-border-radius);
+}
+
+.ed-container .table-design th:nth-child(3n + 1) {
+    color: #fff;
+    background-color: #3690ef;
+}
+
+.ed-container .table-design th:nth-child(3n + 2) {
+    color: #212529;
+    background-color: #5ee7bd;
+}
+
+.ed-container .table-design th:nth-child(3n) {
+    color: #fff;
+    background-color: #768aff;
+}
+
+.ed-container .table-design td:nth-child(3n + 1) {
+    color: #212529;
+    background-color: #dfeffb;
+}
+
+.ed-container .table-design td:nth-child(3n + 2) {
+    color: #212529;
+    background-color: #c2fae8;
+}
+
+.ed-container .table-design td:nth-child(3n) {
+    color: #212529;
+    background-color: #dbe3ff;
+}
+
+/* General */
+.ed-container .table-general caption {
+    text-align: left;
+}
+
+.ed-container .table-general th {
+    padding: 5px 1em !important;
+    color: #fff;
+    background-color: #6bacf4;
+}
+
+.ed-container .table-general td {
+    border-bottom: 1px solid var(--ed-sky-600);
+}
+
+/* Focuser */
+
+.ed-container .focuser {
+    display: grid;
+    grid-template-columns: 150px auto;
+    max-width: 600px;
+    margin: 0 auto;
+    color: #fff;
+    background-color: #54a0f1;
+    align-items: center;
+    border: 1px solid #2486ec;
+    border-radius: var(--ed-border-radius);
+}
+
+/* =====================================================================
+   === INICIO: ENCABEZADO ===
+   ===================================================================== */
+
+.ed-container .course-header {
+    margin-bottom: 1em;
+}
+
+.ed-container .ed-header {
+    display: grid;
+    align-items: center;
+    align-content: center;
+    justify-content: start;
+    background-size: 100% 100%;
+    color: var(--ed-txt-white);
+    min-height: 240px;
+}
+
+/* PREVIEW = CANVAS: este archivo se carga DESPUES de style.css y antes
+   sobrescribia los banners con curso.gif / semana.gif, de modo que el
+   previsualizador mostraba imagenes distintas a las que se migran a Canvas.
+   Ahora usa las MISMAS imagenes y las MISMAS reglas responsive que style.css,
+   para que lo que se ve aqui sea lo que queda en el LMS. */
+.ed-container #header_course .ed-header {
+    background-image: url("https://www.ediloja.com/Virtualizacion/red3/header_inicio_metacurso_utpl_julio_2026.jpg");
+    width: 100%;
+    min-height: 0 !important;
+    height: auto !important;
+    /* PROPORCION REAL del banner (ver comentario en style.css): con contain la
+       imagen se ve completa y el logo UTPL conserva su margen derecho.
+       */
+    aspect-ratio: 2467 / 233;
+    background-size: contain !important;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: var(--ed-border-radius);
+    display: block;
+}
+
+.ed-container #week_course .ed-header {
+    background-image: url("https://www.ediloja.com/Virtualizacion/red3/semana.png");
+    width: 100%;
+    min-height: 0 !important;
+    height: auto !important;
+    /* Misma proporcion REAL que el banner de inicio (2467 x 233 px). */
+    aspect-ratio: 2467 / 233;
+    background-size: contain !important;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: var(--ed-border-radius);
+}
+
+.ed-container .ed-header h2 {
+    margin-left: 1em;
+    font-size: 36pt;
+    border-bottom: 1px solid var(--ed-txt-white);
+}
+
+/* =====================================================================
+   === INICIO: Botones de descarga (plan docente, guia didactica) ===
+   ===================================================================== */
+
+.ed-container .pdf-downloadable {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
+}
+
+.ed-container .pdf-downloadable a {
+    margin-top: 1em;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    color: #0d5caa;
+    background-color: #e7f1fb;
+    transition: background-color var(--ed-transition), color var(--ed-transition), border-color var(--ed-transition);
+    border: 1px solid #a5cef6;
+    border-radius: var(--ed-border-radius);
+    padding: 0.5em 2.5em 0.5em 0.5em;
+    position: relative;
+}
+
+.ed-container .pdf-downloadable a:hover {
+    /* PREVIEW = CANVAS: amarillo institucional */
+    color: var(--ed-blue-900);
+    background-color: var(--ed-amber-500);
+    border-color: var(--ed-amber-600);
+    border-color: var(--ed-border_ho);
+}
+
+.ed-container .pdf-downloadable a img {
+    position: absolute;
+    overflow: hidden;
+    right: 10px;
+    top: 10px;
+}
+
+.ed-container .pdf-downloadable a img:first-child {
+    z-index: 1;
+}
+
+.ed-container .pdf-downloadable a:hover>img:first-child {
+    opacity: 0;
+}
+
+/* =====================================================================
+   === INICIO: PRELIMINARES ===
+   ===================================================================== */
+
+/* Tabs */
+
+.ed-container .preliminary-tabs {
+    margin: 1em 0;
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav {
+    display: flex;
+    gap: 4px;
+    padding: 0;
+    border-bottom: 2px solid var(--ed-border_ho);
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 12px;
+    border-bottom: 0;
+    border-radius: 6px 6px 0 0;
+    height: 40px;
+    color: #1681e8;
+    background: #edf6ff;
+    border: 1px solid var(--ed-border);
+    text-decoration: none !important;
+    transition: background-color var(--ed-transition), color var(--ed-transition), transform var(--ed-transition);
+    position: relative;
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label:hover,
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label.is-active {
+    /* PREVIEW = CANVAS: amarillo institucional con texto azul marca */
+    color: var(--ed-blue-900);
+    background-color: var(--ed-amber-500);
+    border-color: var(--ed-amber-600);
+    font-weight: 700;
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label img {
+    position: absolute;
+    overflow: hidden;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label span {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label img:first-child {
+    z-index: 10;
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label:hover>img:first-child,
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label.is-active>img:first-child {
+    opacity: 0;
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__content {
+    display: none;
+    padding: 5px 1em;
+    border: 1px solid var(--ed-border);
+    border-top: 0;
+    border-radius: 0 0 var(--ed-border-radius) var(--ed-border-radius);
+}
+
+.ed-container .preliminary-tabs__content.is-active {
+    display: block;
+    animation: preliminaryTabsFade .3s ease;
+}
+
+@keyframes preliminaryTabsFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Metodologia */
+
+.ed-container #preliminary #planning #learning_methodology {
+    padding: 0 var(--ed-padding-large);
+    border: 1px solid var(--ed-border_ho);
+    border-radius: var(--ed-border-radius);
+    max-height: var(--ed-height-container);
+    overflow-y: auto;
+}
+
+/* =====================================================================
+   === INICIO: RUTA DE APRENDIZAJE ===
+   ===================================================================== */
+
+.ed-container #learning_path .title-path {
+    text-align: center;
+    color: var(--ed-lbl-txt);
+    background-color: var(--ed-lbl-bg);
+    border-radius: var(--ed-border-radius);
+    padding: var(--ed-padding-short);
+}
+
+/* Barra de progreso */
+
+.ed-container #learning_path.week-8 .container-progress {
+    margin: 0 auto;
+}
+
+.ed-container #learning_path .container-progress p {
+    margin: 5px 0;
+}
+
+.ed-container #learning_path .container-progress .route-marker,
+.ed-container #learning_path .container-progress .route-percentage {
+    margin-left: calc(50% - 15px);
+}
+
+.ed-container #learning_path .container-progress .route-percentage {
+    color: var(--ed-btn-bg_ho);
+}
+
+.ed-container #learning_path .container-progress .route-bar {
+    width: 100%;
+    height: 10px;
+    background: repeating-linear-gradient(45deg, #f86900 0 10px, #ffab46 10px 20px);
+    border-radius: 8px;
+    display: flex;
+    overflow: hidden
+}
+
+.ed-container #learning_path .container-progress .route-bar #progress_completed {
+    width: 50%;
+    height: 10px;
+    background-color: var(--ed-btn-bg_ho);
+}
+
+/* Weeks - State */
+
+.ed-container #learning_path.week-8 .weeks-block {
+    height: 310px;
+    margin: 0 auto;
+}
+
+.ed-container #learning_path .weeks-block {
+    display: grid;
+    align-items: start;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid #a5cef6;
+    border-radius: var(--ed-border-radius);
+    padding: 2em 0;
+    row-gap: 2em;
+    background-image: url("https://www.ediloja.com/Virtualizacion/red3/ruta.svg");
+    background-size: 100% 100%;
+}
+
+.ed-container #learning_path.week-8 .weeks-block>*:nth-child(5) {
+    order: 4;
+}
+
+.ed-container #learning_path.week-8 .weeks-block>*:nth-child(6) {
+    order: 3;
+}
+
+.ed-container #learning_path.week-8 .weeks-block>*:nth-child(7) {
+    order: 2;
+}
+
+.ed-container #learning_path.week-8 .weeks-block>*:nth-child(8) {
+    order: 1;
+}
+
+.ed-container #learning_path.week-8 .weeks-block .week {
+    display: grid;
+    justify-content: center;
+    text-align: center;
+    row-gap: 0.5em;
+}
+
+.ed-container #learning_path .weeks-block .week a {
+    font-size: 10pt;
+    text-decoration: none !important;
+}
+
+.ed-container #learning_path .weeks-block .week .state {
+    font-size: 10pt;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: var(--ed-blue-900);
+    background-color: #e7f1fb;
+    padding: 1px 10px;
+    border-radius: var(--ed-border-radius);
+}
+
+.ed-container #learning_path .weeks-block .week:has(.btn-week:hover) .state {
+    opacity: 1;
+}
+
+/* Weeks - Btn */
+
+.ed-container #learning_path .weeks-block .week .btn-week {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    width: 60px;
+    height: 60px;
+    color: var(--ed-btn-txt-dark);
+    background-color: #f1f3f5;
+    border-radius: var(--ed-border-radius);
+    font-size: 20pt;
+    transition: background-color var(--ed-transition), color var(--ed-transition), border-color var(--ed-transition);
+    border: 1px solid var(--ed-border-gray);
+}
+
+.ed-container #learning_path .weeks-block .week .btn-week:hover {
+    color: #fff;
+    background-color: #54a0f1;
+    border-color: var(--ed-sky-600);
+}
+
+.ed-container #learning_path .weeks-block .week .btn-week.completed {
+    color: #fff;
+    background-color: #00b985;
+    border-color: #00805a;
+}
+
+.ed-container #learning_path .weeks-block .week .btn-week.in-progress {
+    color: #fff;
+    background-color: #54a0f1;
+    border-color: var(--ed-sky-600);
+}
+
+/* Weeks - assessment */
+
+.ed-container #learning_path .weeks-block .week .assessment {
+    color: #212529;
+    background-color: #ffab46;
+    padding: 1px 10px;
+    border: 1px solid #f86900;
+    border-radius: var(--ed-border-radius);
+}
+
+/* =====================================================================
+   === INICIO: BOTONES INFERIORES ===
+   ===================================================================== */
+
+.ed-container #general_sections {
+    margin: 1em 0;
+}
+
+/* PREVIEW = CANVAS: los cuatro botones reparten el ancho completo por igual */
+.ed-container #general_sections .general-container {
+    display: flex;
+    gap: 4px;
+    padding: 0;
+}
+
+.ed-container #general_sections .general-container a.btn-general {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 12px;
+    border-bottom: 0;
+    border-radius: var(--ed-border-radius);
+    height: 40px;
+    color: #1681e8;
+    background: #edf6ff;
+    border: 1px solid var(--ed-border);
+    text-decoration: none !important;
+    transition: background-color var(--ed-transition), color var(--ed-transition), transform var(--ed-transition);
+    position: relative;
+}
+
+/* PREVIEW = CANVAS: hover en amarillo institucional con texto azul marca,
+   igual que las pestañas de arriba (antes aquí quedaba azul con texto blanco
+   porque este archivo se carga después de style.css). */
+.ed-container #general_sections .general-container a.btn-general:hover {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-amber-500);
+    border-color: var(--ed-amber-600);
+}
+
+.ed-container #general_sections .general-container a.btn-general img {
+    position: absolute;
+    overflow: hidden;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.ed-container #general_sections .general-container a.btn-general span {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.ed-container #general_sections .general-container a.btn-general img:first-child {
+    z-index: 10;
+}
+
+.ed-container #general_sections .general-container a.btn-general:hover>img:first-child,
+.ed-container #general_sections .general-container a.btn-general.is-active>img:first-child {
+    opacity: 0;
+}
+
+/* =====================================================================
+   === INICIO: HOMEPAGE BTN ===
+   ===================================================================== */
+
+.ed-container .container-homepage-bnt {
+    display: flex;
+    column-gap: 5px;
+    margin-bottom: 1em;
+}
+
+.ed-container .container-homepage-bnt .homepage-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #0d5caa;
+    padding: var(--ed-padding-short);
+    border-radius: var(--ed-border-radius);
+    background-color: #edf6ff;
+    border: 1px solid var(--ed-border);
+    text-decoration: none !important;
+    transition: background-color var(--ed-transition), transform var(--ed-transition);
+    position: relative;
+}
+
+.ed-container .container-homepage-bnt .homepage-btn:hover {
+    background-color: #0d5caa;
+}
+
+.ed-container .container-homepage-bnt .homepage-btn img {
+    position: absolute;
+    overflow: hidden;
+    top: 10px;
+    left: 10px;
+}
+
+.ed-container .container-homepage-bnt .homepage-btn img:first-child {
+    z-index: 10;
+}
+
+.ed-container .container-homepage-bnt .homepage-btn:hover>img:first-child {
+    opacity: 0;
+}
+
+.ed-container .container-homepage-bnt .block {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    column-gap: 5px;
+    border-radius: var(--ed-border-radius);
+    background-color: #f1f9ff;
+    flex: 1;
+    padding-right: 1em;
+}
+
+.ed-container .container-homepage-bnt .block span {
+    color: var(--ed-blue-900);
+}
+
+.ed-container .container-homepage-bnt .block a {
+    color: var(--ed-blue-900);
+    background-color: #dfeffb;
+    text-decoration: none !important;
+    display: flex;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--ed-border-radius);
+    transition: background-color var(--ed-transition), box-shadow var(--ed-transition);
+}
+
+.ed-container .container-homepage-bnt .block a:hover {
+    color: #0d5caa;
+    background-color: #f8f9fa;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+/* =====================================================================
+   === SEMANAS: RA ===
+   ===================================================================== */
+
+.ed-container .ed-header h3 {
+    margin-left: 1.5em;
+    font-size: 24pt;
+}
+
+.ed-container #container-learning-outcome {
+    border: 1px solid var(--ed-border);
+    border-radius: var(--ed-border-radius);
+    padding: var(--ed-padding-short) var(--ed-padding-large);
+    max-width: 800px;
+    margin: auto;
+    padding-bottom: 1em;
+}
+
+.ed-container #container-learning-outcome .title-learning-outcomes {
+    display: grid;
+    grid-template-columns: 200px auto;
+    align-items: center;
+}
+
+.ed-container #container-learning-outcome .title-learning-outcomes h3 {
+    font-size: 18px;
+    color: var(--ed-blue-900);
+}
+
+/* =====================================================================
+   === SEMANAS: COLLAPSE ===
+   ===================================================================== */
+
+.ed-container .collapse__link {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 1em;
+    width: 150px;
+    color: var(--ed-blue-900);
+    background-color: #e7f1fb;
+    text-decoration: none !important;
+    border: 1px solid #a5cef6;
+    border-radius: var(--ed-border-radius) var(--ed-border-radius) 0 0;
+    transition: all var(--ed-transition);
+}
+
+.ed-container .collapse__link:hover {
+    color: #fff;
+    background-color: #0d5caa;
+    border-color: #3690ef;
+}
+
+.ed-container .collapse.active .collapse__link {
+    color: #fff;
+    background-color: #0d5caa;
+    border-color: #3690ef;
+    border-bottom: none;
+}
+
+.ed-container .collapse__icon {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+.ed-container .collapse__content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.ed-container .collapse__inner {
+    padding: 5px 1em;
+}
+
+.ed-container .collapse.active .collapse__content {
+    max-height: 300px;
+    opacity: 1;
+    border: 1px solid #a5cef6;
+    border-radius: 0 0 var(--ed-border-radius) var(--ed-border-radius);
+}
+
+.ed-container .collapse.active .collapse__icon {
+    transform: rotate(45deg);
+}
+
+/* =====================================================================
+   === SEMANAS: TAB ===
+   ===================================================================== */
+
+/* Pestañas verticales para Canvas */
+.ed-container .content .ctab {
+    margin: 1.5rem auto;
+    display: grid;
+    grid-template-columns: 180px auto;
+    column-gap: 5px;
+    align-items: flex-start;
+}
+
+/* Barra lateral de pestañas */
+.ed-container .content .ctab__nav {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ed-container .content .ctab__tab {
+    cursor: pointer;
+    user-select: none;
+    padding: .7rem 1rem;
+    font-weight: 600;
+    color: #15539E;
+    background: #EAF2FB;
+    border: 1px solid #BBD4EE;
+    border-radius: 10px;
+    transition: background .25s, color .25s, box-shadow .25s, transform .15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ed-container .content .ctab__tab:hover {
+    background: #DCEAF6;
+    transform: translateX(2px);
+}
+
+.ed-container .content .ctab__tab.is-active {
+    color: #fff;
+    background: #15539E;
+    border-color: #15539E;
+    box-shadow: 0 4px 12px rgba(21, 83, 158, .30);
+}
+
+/* Panel de contenido */
+.ed-container .content .ctab__panel {
+    display: none;
+    flex: 1;
+    padding: 1.5rem 1.7rem;
+    background: #fff;
+    border: 1px solid #BBD4EE;
+    border-radius: 14px;
+    color: #243B53;
+    line-height: 1.75;
+    max-height: var(--ed-height-container);
+    overflow-y: auto;
+}
+
+.ed-container .content .ctab__panel.is-active {
+    display: block;
+    animation: ctabIn .35s ease;
+}
+
+.ed-container .content .ctab__panel h2 {
+    margin: 0 0 .6rem;
+    color: #15539E;
+}
+
+@keyframes ctabIn {
+    from {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* En móvil: pestañas arriba, contenido abajo */
+@media (max-width:600px) {
+    .ctab {
+        flex-direction: column;
+    }
+
+    .ctab__nav {
+        flex: 1 1 auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .ctab__tab {
+        flex: 1 1 calc(50% - .4rem);
+        text-align: center;
+    }
+}
+
+/* Figuras */
+
+.ed-container .container-figure {
+    max-width: 500px;
+    margin: auto;
+}
+
+/* =====================================================================
+   === PAGE: BIBLIOGRAFÍA ===
+   ===================================================================== */
+
+.ed-container #bibliography p {
+    margin-left: 2em;
+    text-indent: -2em;
+}
+
+/* =====================================================================
+   === MEDIA QUERY: Desktop-First ===
+   ===================================================================== */
+
+/* Desktop */
+@media (max-width: 1280px) {
+    .ed-container .ed-header {
+        min-height: 200px;
+    }
+}
+
+/* Laptop */
+@media (max-width: 1024px) {
+
+    /* .ed-container #learning_path.week-8 .container-progress {
+        width: 500px;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block {
+        width: 500px;
+        height: 500px;
+    }
+
+    .ed-container #learning_path .weeks-block {
+        grid-template-columns: repeat(3, 1fr);
+        background-image: url(https://www.ediloja.com/Virtualizacion/red3/ruta1.svg);
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(4) {
+        order: 6;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(5) {
+        order: 5;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(6) {
+        order: 4;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(7) {
+        order: 7;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(8) {
+        order: 8;
+    }
+
+    .ed-container #general_sections .general-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    } */
+}
+
+@media (max-width: 968px) {
+    /* PREVIEW = CANVAS: 2x2 repartiendo el ancho completo */
+    .ed-container #general_sections .general-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    /****************************** INICIO *******************************/
+    /*********************************************************************/
+
+    /* Header */
+    .ed-container .ed-header {
+        min-height: 150px;
+    }
+
+    .ed-container .ed-header h2 {
+        font-size: 1.4em;
+    }
+
+    .ed-container #learning_path.week-8 .container-progress {
+        width: 100%;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block {
+        width: 100%;
+        height: 100%;
+    }
+
+    .ed-container #learning_path .weeks-block {
+        grid-template-columns: repeat(2, 1fr);
+        background-image: url(https://www.ediloja.com/Virtualizacion/red3/ruta2.svg);
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(3) {
+        order: 4;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(4) {
+        order: 3;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(5) {
+        order: 5;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(6) {
+        order: 6;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(7) {
+        order: 8;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(8) {
+        order: 7;
+    }
+
+    /*********************** Encuentros en linea *************************/
+    /*********************************************************************/
+
+    .ed-container .table-design,
+    .ed-container .table-general {
+        border-spacing: 1px !important;
+    }
+
+    .ed-container .table-design th,
+    .ed-container .table-design td {
+        padding: 1px 5px !important;
+    }
+
+    /****************************** Semana *******************************/
+    /*********************************************************************/
+
+    /* Menu de navegacion */
+    .ed-container .container-homepage-bnt .block span {
+        display: none;
+    }
+
+    .ed-container .container-homepage-bnt {
+        overflow: auto;
+    }
+
+    /* Resultado de aprendizaje */
+
+    .ed-container #container-learning-outcome .title-learning-outcomes {
+        grid-template-columns: 1fr;
+    }
+
+    /* Temas */
+
+    .ed-container .content .ctab {
+        grid-template-columns: 1fr;
+    }
+
+    .ed-container .content .ctab__nav {
+        flex-direction: row;
+    }
+
+    .ed-container .content .ctab__tab {
+        padding: 0.5em 0;
+    }
+
+    /* Focalizadores */
+
+    .ed-container .focuser {
+        grid-template-columns: 1fr;
+    }
+
+    .ed-container .focuser p:first-child {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .ed-container .focuser .content-focuser {
+        padding: 0 0.5em 5px;
+    }
+}
+/* =====================================================================
+   === FOOTER INSTITUCIONAL (PREVIEW = CANVAS) ===
+   Mismas reglas que style.css. HTML:
+     <footer class="ed-footer"><span>UTPL</span></footer>
+   ===================================================================== */
+
+.ed-container .ed-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    min-height: 34px;
+    margin-top: 1.5em;
+    padding: 0 1.4em;
+    background-color: var(--ed-blue-900);
+    border-radius: var(--ed-border-radius);
+    box-sizing: border-box;
+}
+
+.ed-container .ed-footer span {
+    color: var(--ed-white);
+    font-weight: 700;
+    font-size: 11pt;
+    letter-spacing: .06em;
+}
+
+.ed-container .ed-footer img {
+    height: 18px;
+    width: auto;
+    display: block;
+}
+
+/* =====================================================================
+   === ACTIVIDADES EMBEBIDAS (iframes) · PREVIEW = CANVAS ===
+   Mismas reglas que style.css: el iframe se centra en su contenedor y no
+   se desborda en pantallas estrechas.
+   ===================================================================== */
+
+/* Se centra cualquier contenedor que envuelva un iframe, a cualquier
+   profundidad: cubre autoevaluaciones, actividades recomendadas, videos y
+   recursos sueltos. Los envoltorios de ancho completo no se ven afectados
+   (sus margenes automaticos valen 0). */
+.ed-container div:has(iframe),
+.ed-container p:has(iframe),
+.ed-container figure:has(iframe),
+.ed-container .contenedor-recursos {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.ed-container iframe {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    border: 0;
+}

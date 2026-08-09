@@ -752,7 +752,8 @@
             ],
             "focalizador": "avancemos"
           }
-        ]
+        ],
+        "unidad_id": "u1"
       },
       {
         "id": "p2",
@@ -1504,7 +1505,8 @@
             "origen": "agente",
             "texto": "En la próxima semana, abordaremos el proceso de planificación de la auditoría, donde aplicará los conocimientos sobre normas y ética adquiridos para diseñar estrategias de auditoría efectivas y eficientes. Le invitamos a continuar con entusiasmo este recorrido por los sistemas de auditoría."
           }
-        ]
+        ],
+        "unidad_id": "u1"
       },
       {
         "id": "p3",
@@ -2341,7 +2343,8 @@
             "texto": "Recuerde que la excelencia en la planificación se desarrolla con la práctica constante y la reflexión crítica sobre cada decisión tomada. Cada auditoría presenta desafíos únicos que enriquecerán su experiencia y perfeccionarán su juicio profesional.",
             "origen": "agente"
           }
-        ]
+        ],
+        "unidad_id": "u1"
       },
       {
         "id": "p4",
@@ -3683,7 +3686,8 @@
             ],
             "focalizador": "avancemos"
           }
-        ]
+        ],
+        "unidad_id": "u1"
       },
       {
         "id": "p5",
@@ -4593,7 +4597,8 @@
             ],
             "focalizador": "avancemos"
           }
-        ]
+        ],
+        "unidad_id": "u1"
       },
       {
         "id": "p6",
@@ -5633,7 +5638,8 @@
             ],
             "focalizador": "avancemos"
           }
-        ]
+        ],
+        "unidad_id": "u1"
       },
       {
         "id": "p7",
@@ -6564,7 +6570,8 @@
             ],
             "focalizador": "avancemos"
           }
-        ]
+        ],
+        "unidad_id": "u1"
       },
       {
         "id": "p8",
@@ -7682,16 +7689,26 @@
             ]
           }
         ],
-        "cierra_unidad": true
+        "cierra_unidad": true,
+        "unidad_id": "u1"
       }
     ],
     "unidades": [
       {
         "id": "u1",
         "numero": 1,
-        "titulo": "sgrdhfggj",
+        "titulo": "Fundamentos de los sistemas de auditoría",
         "semana_fin": 8,
-        "semana_inicio": 1
+        "semana_inicio": 1,
+        "resultado_aprendizaje_id": "ra1",
+        "contextualizacion": "Para alcanzar este resultado de aprendizaje, usted desarrollará una comprensión sólida de los fundamentos que sustentan los sistemas de auditoría en las organizaciones. A lo largo de esta unidad revisará el marco conceptual, los objetivos del aseguramiento y el papel del control interno como eje de la práctica profesional. Este recorrido le permitirá reconocer cómo se articulan la normativa, la metodología y el juicio profesional en situaciones reales, y le dará las herramientas para evaluar riesgos, diseñar procedimientos y sustentar conclusiones con evidencia suficiente y apropiada."
+      }
+    ],
+    "resultados_aprendizaje": [
+      {
+        "id": "ra1",
+        "numero": 1,
+        "texto": "Aplica los fundamentos de los sistemas de auditoria en contextos organizacionales reales."
       }
     ]
   },

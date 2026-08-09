@@ -200,6 +200,11 @@ def _esqueleto(datos_curso: dict[str, Any]) -> dict[str, Any]:
             "total_semanas": int(datos_curso.get("total_semanas", 0)),
         },
         "estructura": {
+            # El learningOutcome del formulario llega aqui como
+            # resultados_aprendizaje[]. Sin esta linea el dato que escribe el
+            # docente se pierde y la guia se publica sin resultado de
+            # aprendizaje, que es lo primero que revisa DI.
+            "resultados_aprendizaje": list(datos_curso.get("resultados_aprendizaje", [])),
             "unidades": list(datos_curso.get("unidades", [])),
             "paginas": [],
         },

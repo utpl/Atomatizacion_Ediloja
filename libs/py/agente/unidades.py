@@ -29,10 +29,17 @@ REGLAS:
 4. Si el docente ya indicó qué semanas cubre cada unidad, respétalo.
 5. Si no lo indicó, reparte de forma equilibrada.
 
+6. Para cada unidad, redacta una CONTEXTUALIZACIÓN de 120 a 180 palabras
+   que explique al estudiante por qué esa unidad contribuye al resultado de
+   aprendizaje y qué va a lograr con ella. Español, segunda persona formal
+   ("usted"), un solo párrafo, sin listas ni títulos. No inventes contenidos
+   que no estén en el temario ni cites bibliografía.
+
 Devuelve exclusivamente un objeto JSON, sin texto alrededor y sin vallas de
 código:
 
-{"unidades": [{"numero": 1, "titulo": "…", "semana_inicio": 1, "semana_fin": 4}]}
+{"unidades": [{"numero": 1, "titulo": "…", "semana_inicio": 1,
+               "semana_fin": 4, "contextualizacion": "…"}]}
 """.strip()
 
 
@@ -40,11 +47,14 @@ class ErrorDeUnidades(RuntimeError):
     pass
 
 
-def _entrada(contenidos: str, total_semanas: int) -> str:
-    return (
-        f"Número total de semanas: {total_semanas}\n\n"
-        f"UNIDADES Y CONTENIDOS PLANIFICADOS:\n{contenidos}"
-    )
+def _entrada(contenidos: str, total_semanas: int, resultado: str = "") -> str:
+    partes = [f"Número total de semanas: {total_semanas}"]
+    if resultado:
+        # La contextualizacion explica como la unidad contribuye al resultado
+        # de aprendizaje, asi que el modelo necesita verlo.
+        partes.append(f"RESULTADO DE APRENDIZAJE DE LA ASIGNATURA:\n{resultado}")
+    partes.append(f"UNIDADES Y CONTENIDOS PLANIFICADOS:\n{contenidos}")
+    return "\n\n".join(partes)
 
 
 def _limpiar(texto: str) -> dict[str, Any]:
@@ -72,10 +82,15 @@ def _validar(crudas: list[dict], total_semanas: int) -> list[dict[str, Any]]:
                 f"La unidad {i} ('{titulo}') abarca de la semana {inicio} a la {fin}, "
                 f"fuera del rango 1–{total_semanas}."
             )
-        unidades.append(
-            {"id": f"u{i}", "numero": i, "titulo": titulo,
-             "semana_inicio": inicio, "semana_fin": fin}
-        )
+        unidad = {"id": f"u{i}", "numero": i, "titulo": titulo,
+                  "semana_inicio": inicio, "semana_fin": fin}
+        ctx = str(u.get("contextualizacion", "")).strip()
+        if ctx:
+            # No va en curso.json: el esquema no la declara y la raiz tiene
+            # additionalProperties false. Viaja en requerimientos y de ahi al
+            # adaptador, que la emite como contextualizacion_final.
+            unidad["contextualizacion"] = ctx
+        unidades.append(unidad)
 
     # Cobertura completa y sin huecos: si falla, la autoevaluación acabaría
     # en la semana equivocada y nadie lo notaría hasta revisar la guía.
@@ -92,11 +107,12 @@ def extraer_unidades(
     total_semanas: int,
     llamador: Callable[[str, str], Any],
     intentos: int = 3,
+    resultado: str = "",
 ) -> list[dict[str, Any]]:
     errores: list[str] = []
     for _ in range(intentos):
         try:
-            respuesta = llamador(INSTRUCCIONES, _entrada(contenidos, total_semanas))
+            respuesta = llamador(INSTRUCCIONES, _entrada(contenidos, total_semanas, resultado))
             datos = _limpiar(respuesta.texto)
             return _validar(datos.get("unidades", []), total_semanas)
         except (json.JSONDecodeError, ErrorDeUnidades, KeyError, ValueError) as exc:
@@ -119,6 +135,11 @@ def plan_desde_unidades(unidades: list[dict[str, Any]]) -> list[dict[str, Any]]:
             plan.append({
                 "semana": semana,
                 "unidad": u["numero"],
+                # generar_guia lee paso["unidad_id"] y lo escribe en la pagina.
+                # Sin esto todas las paginas salen sin unidad_id, y entonces el
+                # render no sabe a que unidad pertenece cada semana ni que
+                # resultado de aprendizaje mostrar.
+                "unidad_id": u["id"],
                 "cierra_unidad": semana == u["semana_fin"],
             })
     return sorted(plan, key=lambda p: p["semana"])

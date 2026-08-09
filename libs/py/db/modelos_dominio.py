@@ -47,6 +47,12 @@ class Guia(Base):
     # borrador | en_revision | cambios_solicitados | aprobada | publicada
     estado: Mapped[str] = mapped_column(String(40), default="borrador", index=True)
 
+    # Curso de Canvas donde se publica. Lo elige el OPERADOR al publicar, no
+    # el docente: puede cambiar entre pruebas y producción, y una guía puede
+    # publicarse en varios cursos a lo largo del tiempo.
+    canvas_curso_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    canvas_url: Mapped[str | None] = mapped_column(String(200), nullable=True)
+
     creada_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     actualizada_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()

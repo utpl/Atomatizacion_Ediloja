@@ -23,7 +23,7 @@ from libs.py.agente.unidades import ErrorDeUnidades, extraer_unidades, plan_desd
 from libs.py.auth.alcance import guias_visibles
 from libs.py.auth.dependencias import NOMBRE_COOKIE, usuario_web_opcional
 from libs.py.auth.seguridad import crear_token, verificar_contrasena
-from libs.py.canon import oferta
+from libs.py.canon import oferta, temas
 from libs.py.db.modelos_auth import Usuario
 from libs.py.db.modelos_contenido import EdicionBloque
 from libs.py.db.modelos_dominio import Guia, SolicitudGeneracion
@@ -385,7 +385,8 @@ def lanzar_generacion(
     # repartir, tiene que enterarse ahora y no tras ocho llamadas al modelo.
     try:
         unidades = extraer_unidades(
-            reqs.get("contents", ""), guia.total_semanas, llamar_modelo
+            reqs.get("contents", ""), guia.total_semanas, llamar_modelo,
+            resultado=reqs.get("learningOutcome", ""),
         )
     except ErrorDeUnidades as exc:
         return plantillas.TemplateResponse(
@@ -394,6 +395,18 @@ def lanzar_generacion(
              "error": f"No se pudo repartir el temario por semanas: {exc}"},
             status_code=422,
         )
+
+    # El learningOutcome del formulario es UNO para toda la asignatura, y el
+    # esquema lo quiere en estructura.resultados_aprendizaje[] enlazado desde
+    # cada unidad. Sin esto el dato que escribe el docente se pierde y la guia
+    # se publica sin resultado de aprendizaje, que es lo primero que mira DI.
+    ra_texto = (reqs.get("learningOutcome") or "").strip()
+    if ra_texto:
+        reqs["resultados_aprendizaje"] = [
+            {"id": "ra1", "numero": 1, "texto": ra_texto}
+        ]
+        for u in unidades:
+            u["resultado_aprendizaje_id"] = "ra1"
 
     reqs["unidades"] = unidades
     reqs["plan"] = plan_desde_unidades(unidades)
@@ -520,7 +533,13 @@ def editor(
         "ctx": {
             "recursos": {r["ref"]: r for r in curso.get("recursos", [])},
             "refs": {r["id"]: r for r in curso.get("finales", {}).get("referencias", [])},
+            # En el editor los iconos salen del disco; al publicar, el macro
+            # deja @@PLANTILLA@@ y canvas_assets lo sustituye por la URL del
+            # archivo ya subido al curso. Un solo macro, dos destinos.
+            "base_plantilla": "/estatico/recursos",
         },
+        # Más adelante saldrá de la guía: cada una podrá llevar su tema.
+        "hojas_tema": temas.hojas_de(),
         # Congelada = en revisión: todo en modo lectura.
         "editable": not version.congelada,
     })

@@ -1,0 +1,1489 @@
+/* ===================================================================
+   PLANTILLA CANVAS "REDISEÑO 3" (UTPL)
+   Archivo de estilos único · Prefijo de proyecto: ed-
+   -------------------------------------------------------------------
+   Todo el CSS está delimitado por el contenedor raíz .ed-container para
+   evitar conflictos con los estilos propios de Canvas (LMS).
+   -------------------------------------------------------------------
+   ACTUALIZACIÓN DE PALETA · julio 2026
+   Colores alineados a "Paleta corporativa y guía de estilos para el
+   entorno Canvas de Metacursos UTPL" (Paulina Vélez Tandazo | Ediloja).
+
+   Cambio principal: el azul de acción pasa de #0f6ece / #54a0f1 al azul
+   corporativo #083e70, y el amarillo institucional #eaab00 / #c79200 se
+   reemplaza por la familia #eaa621 / #eeb741.
+
+   Todos los colores se declaran como variables al inicio: para ajustar
+   la paleta en el futuro basta con editar ese bloque, sin tocar el resto
+   de las reglas.
+   =================================================================== */
+
+
+/* =====================================================================
+   === GENERAL ===
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+/* Tipografia */
+
+.ed-container,
+.ed-container * {
+    font-family: "Roboto", sans-serif;
+}
+
+.ed-container .ed-header h2,
+.ed-container .ed-header h2 strong {
+    font-family: "Playfair Display", serif;
+    font-weight: 900;
+}
+
+/* Contenedor principal */
+
+.ed-container {
+
+    /* =================================================================
+       PALETA CORPORATIVA · Metacursos UTPL (julio 2026)
+       ================================================================= */
+
+    /* Azul marca — "todo marcador debe llevar este color: 083e70" */
+    --ed-blue-900: #083e70;
+    --ed-blue-800: #3a648b;
+    --ed-blue-700: #527799;
+    --ed-blue-600: #6b8aa7;
+    --ed-blue-500: #9bb1c4;
+    --ed-blue-050: #e5eaef;
+
+    /* Azules claros — fondos, bordes y superficies */
+    --ed-sky-600: #79add1;
+    --ed-sky-500: #85b5d5;
+    --ed-sky-400: #92bdd9;
+    --ed-sky-300: #adcde2;
+    --ed-sky-200: #bbd6e7;
+    --ed-sky-150: #c8ddeb;
+    --ed-sky-100: #d5e5f0;
+    --ed-sky-050: #e3edf5;
+    --ed-sky-025: #f0f5f9;
+
+    /* Amarillos — acento y estado activo */
+    --ed-amber-600: #eaa621;
+    --ed-amber-500: #eeb741;
+    --ed-amber-400: #f0bf56;
+    --ed-amber-300: #f4d184;
+    --ed-amber-100: #faebcc;
+    --ed-amber-050: #fcf5e5;
+
+    /* Estados de la ruta de aprendizaje */
+    --ed-green-500: #12b886;   /* terminado */
+    --ed-green-700: #087f5b;
+    --ed-green-100: #d8f5a2;
+    --ed-green-300: #94d82d;
+
+    --ed-info-400: #66acef;    /* en curso */
+    --ed-info-600: #0a72cc;
+    --ed-info-100: #bac8ff;
+    --ed-info-300: #91a7ff;
+
+    --ed-gray-100: #f1f3f5;    /* bloqueado */
+    --ed-gray-400: #adb5bd;
+
+    --ed-orange-300: #ffa94d;  /* zona de evaluacion */
+    --ed-orange-600: #f76707;
+
+    --ed-white: #fff;
+
+    /* -----------------------------------------------------------------
+       Alias semánticos: el resto del archivo usa SOLO estos nombres.
+       ----------------------------------------------------------------- */
+    --ed-btn-bg: var(--ed-sky-025);
+    --ed-btn-bg_ho: var(--ed-blue-900);
+    --ed-btn-txt: var(--ed-blue-900);
+    --ed-btn-txt-dark: var(--ed-blue-900);
+
+    --ed-lbl-txt: var(--ed-blue-900);
+    --ed-lbl-bg: var(--ed-sky-050);
+
+    --ed-border: var(--ed-sky-200);
+    --ed-border-gray: var(--ed-gray-400);
+    --ed-border_ho: var(--ed-blue-900);
+
+    --ed-txt-white: var(--ed-white);
+
+    /* Sizes */
+    --ed-border-radius: 6px;
+    --ed-padding-short: 5px;
+    --ed-padding-large: 1em;
+    --ed-height-container: 400px;
+
+    /* Transitions */
+    --ed-transition: .5s ease;
+}
+
+/* Titles */
+
+.ed-container .title-section {
+    display: grid;
+    grid-template-columns: 50px auto;
+    color: var(--ed-lbl-txt);
+}
+
+.ed-container .title-section :nth-child(2) {
+    padding-left: 10px;
+    margin-bottom: 1em;
+}
+
+.ed-container .title-section.bg-color :nth-child(2) {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-sky-050);
+    border-radius: var(--ed-border-radius);
+}
+
+/* Subtitles */
+.ed-container .subtitle-section {
+    color: var(--ed-blue-900);
+    border-left: 5px solid var(--ed-sky-600);
+    padding-left: 10px;
+    margin-bottom: 1em;
+}
+
+/* Identación */
+
+.ed-container .indentation-3 {
+    margin-left: 3em;
+}
+
+/* Tables */
+
+.ed-container .table-design {
+    margin: auto;
+    border-collapse: separate !important;
+    border-spacing: 5px !important;
+}
+
+/* Design */
+
+.ed-container .table-design th,
+.ed-container .table-design td {
+    padding: 5px 1em !important;
+    border-radius: var(--ed-border-radius);
+}
+
+.ed-container .table-design th:nth-child(3n + 1) {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-sky-500);
+}
+
+.ed-container .table-design th:nth-child(3n + 2) {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-amber-500);
+}
+
+.ed-container .table-design th:nth-child(3n) {
+    color: var(--ed-white);
+    background-color: var(--ed-blue-700);
+}
+
+.ed-container .table-design td:nth-child(3n + 1) {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-sky-025);
+}
+
+.ed-container .table-design td:nth-child(3n + 2) {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-amber-050);
+}
+
+.ed-container .table-design td:nth-child(3n) {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-blue-050);
+}
+
+/* General */
+
+.ed-container .table-general {
+    margin: auto;
+}
+
+.ed-container .table-general caption {
+    text-align: left;
+}
+
+.ed-container .table-general th {
+    padding: 5px 1em !important;
+    color: var(--ed-white);
+    background-color: var(--ed-blue-600);
+    border: 1px solid var(--ed-blue-500);
+}
+
+.ed-container .table-general td {
+    border: 1px solid var(--ed-blue-500);
+    padding: 2px 10px !important;
+}
+
+.ed-container .table-general tfoot td {
+    border: none;
+}
+
+/* Focalizadores */
+
+.ed-container .focuser {
+    display: grid;
+    grid-template-columns: 150px auto;
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--ed-white);
+    background-color: var(--ed-sky-600);
+    align-items: center;
+    border: 1px solid var(--ed-blue-600);
+    border-radius: var(--ed-border-radius);
+}
+
+/* El enlace dentro del focalizador: fondo claro y SIN subrayado, para
+   que se comporte como el resto de botones de la plantilla. */
+.ed-container .focuser a {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-white);
+    padding: 5px 0.5em;
+    border-radius: var(--ed-border-radius);
+    text-decoration: none !important;
+    transition: background-color var(--ed-transition), color var(--ed-transition);
+}
+
+.ed-container .focuser a:hover {
+    color: var(--ed-white);
+    background-color: var(--ed-blue-900);
+}
+
+
+/* =====================================================================
+   === INICIO: ENCABEZADO ===
+   ===================================================================== */
+
+.ed-container .course-header {
+    margin-bottom: 1em;
+}
+
+.ed-container .ed-header {
+    display: grid;
+    align-items: center;
+    align-content: center;
+    justify-content: start;
+    background-size: 100% 100%;
+    color: var(--ed-txt-white);
+    min-height: 240px;
+}
+
+/* El banner de SEMANA ya no lleva titulo encima: es solo la imagen.
+   El titulo de la unidad va DEBAJO, como texto normal de la pagina
+   (ver "SEMANAS: titulo de unidad" mas abajo). */
+/* >>> BANNER DE SEMANA <<<
+   Cambiar esta URL por la del banner nuevo cuando este alojado.
+   En Canvas debe ser una URL absoluta (servidor de Ediloja o archivo del
+   curso); /plantilla_recursos solo existe en el previsualizador local. */
+.ed-container #week_course .ed-header {
+    /* RESPONSIVE: ancho completo, altura calculada por aspect-ratio (antes
+       eran 150px fijos). La proporcion es la REAL del archivo, asi la imagen
+       se ve completa y sin recorte a cualquier ancho. */
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    /* Misma proporcion REAL que el banner de inicio (2467 x 233 px).
+       Con contain la imagen se ve COMPLETA y el logo UTPL conserva su
+       margen derecho; cover lo recortaba y quedaba pegado al borde. */
+    aspect-ratio: 2467 / 233;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: var(--ed-border-radius);
+}
+
+/* >>> BANNER DE INICIO <<<
+   El banner NO lleva texto encima: el nombre de la asignatura va DEBAJO,
+   sobre fondo blanco.
+
+   DÓNDE ALOJARLO: en el servidor de Ediloja, junto al resto de recursos de
+   la plantilla. NO conviene subirlo a cada curso porque entonces habría una
+   copia por curso, consumiendo la cuota de archivos de cada uno y obligando
+   a repetir cualquier cambio N veces. Desde el servidor se sirve una sola
+   vez para todos los cursos y el navegador lo cachea. */
+.ed-container #header_course .ed-header {
+    background-image: url("https://www.ediloja.com/Virtualizacion/red3/header_inicio_metacurso_utpl_julio_2026.jpg");
+    /* RESPONSIVE: el banner ocupa SIEMPRE el 100% del ancho y su altura se
+       calcula con aspect-ratio, en vez de quedar clavada en 105px. Con
+       background-size:cover la imagen llena el ancho completo (no se pierde
+       el logo UTPL de la derecha) y, si sobra alto, se recorta arriba/abajo.
+       La proporcion es la REAL del archivo, asi no se recorta nada. */
+    width: 100%;
+    min-height: 0 !important;
+    height: auto !important;
+    /* PROPORCION DEL BANNER: la caja debe seguir la proporcion REAL de la
+       imagen. Con una proporcion mas alargada que la real, cover recortaba
+       la imagen y el logo UTPL quedaba pegado al borde derecho, sin el
+       margen que si tiene el archivo original.
+       Con contain la imagen se ve COMPLETA (nunca se recorta) y conserva sus
+       margenes; si la proporcion no coincide exacto aparece una franja, no un
+       recorte.
+       Valores reales del archivo: 2467 x 233 px. */
+    aspect-ratio: 2467 / 233;
+    background-size: contain !important;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: var(--ed-border-radius);
+    display: block;
+}
+
+/* Nombre de la asignatura: DEBAJO del banner, en azul de marca sobre blanco */
+.ed-container #header_course .course-name,
+.ed-container #header_course + h2.course-name,
+.ed-container h2.course-name {
+    /* !important porque style_app.css se carga despues en el previsualizador */
+    margin: .7em 0 .5em !important;
+    padding: 0 0 .35em !important;
+    font-family: "Playfair Display", serif !important;
+    font-weight: 900 !important;
+    font-size: 26pt !important;
+    color: var(--ed-blue-900) !important;
+    border-bottom: 2px solid var(--ed-sky-300);
+    background: none !important;
+    text-align: left !important;
+}
+
+.ed-container #week_course .ed-header {
+    background-image: url("https://www.ediloja.com/Virtualizacion/red3/semana.png");
+}
+
+.ed-container .ed-header h2 {
+    margin-left: 1em;
+    font-size: 36pt;
+    border-bottom: 1px solid var(--ed-txt-white);
+}
+
+/* Los titulos de unidad (h2.unit) van FUERA del banner: no heredan el
+   margen ni el borde blanco del h2 del encabezado. */
+.ed-container .ed-header h2.unit {
+    margin-left: 0;
+    border-bottom: 0;
+}
+
+/* =====================================================================
+   === INICIO: Botones de descarga (plan docente, guia didactica) ===
+   ===================================================================== */
+
+.ed-container .pdf-downloadable {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
+}
+
+.ed-container .pdf-downloadable a {
+    margin-top: 1em;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    color: var(--ed-blue-900);
+    background-color: var(--ed-sky-050);
+    transition: background-color var(--ed-transition), color var(--ed-transition), border-color var(--ed-transition);
+    border: 1px solid var(--ed-sky-200);
+    border-radius: var(--ed-border-radius);
+    padding: 0.5em 1.2em;      /* sin icono: relleno simetrico */
+    position: relative;
+    font-weight: 600;
+}
+
+.ed-container .pdf-downloadable a:hover {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-amber-500);
+    border-color: var(--ed-amber-600);
+}
+
+/* Los botones «Plan docente» y «Guía didáctica» van SIN icono: se ocultan
+   las imágenes que trae la plantilla (par normal + mouseover) y se equilibra
+   el relleno, que reservaba espacio a la derecha para el icono. */
+.ed-container .pdf-downloadable a img {
+    display: none !important;
+}
+
+/* =====================================================================
+   === INICIO: PRELIMINARES ===
+   ===================================================================== */
+
+/* Tabs */
+
+.ed-container .preliminary-tabs {
+    margin: 1em 0;
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav {
+    display: flex;
+    gap: 4px;
+    padding: 0;
+    border-bottom: 2px solid var(--ed-border_ho);
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 12px;
+    border-bottom: 0;
+    border-radius: 6px 6px 0 0;
+    height: 40px;
+    color: var(--ed-blue-900);
+    background: var(--ed-sky-200);
+    border: 1px solid var(--ed-sky-300);
+    text-decoration: none !important;
+    transition: background-color var(--ed-transition), color var(--ed-transition), transform var(--ed-transition);
+    position: relative;
+}
+
+/* Tab activo/hover: amarillo institucional con texto azul marca
+   (contraste 5.9:1, cumple AA) */
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label:hover,
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label.is-active {
+    /* !important porque el previsualizador carga style_app.css DESPUES de esta
+       hoja y sus reglas ganaban por orden, dejando los tabs con el azul de la
+       paleta anterior. En Canvas no hay conflicto (solo existe el tema global). */
+    color: var(--ed-blue-900) !important;
+    background-color: var(--ed-amber-500) !important;
+    border-color: var(--ed-amber-600) !important;
+    font-weight: 700;
+}
+
+/* Icono y texto van absolutos porque son DOS imagenes superpuestas (normal
+   + mouseover). Al llevar solo top/bottom, su posicion horizontal quedaba
+   sin definir y no se centraban: se centran explicitamente aqui. */
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label img {
+    position: absolute;
+    overflow: hidden;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label span {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label img:first-child {
+    z-index: 10;
+}
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label:hover>img:first-child,
+.ed-container .preliminary-tabs .preliminary-tabs__nav a.preliminary-tabs__label.is-active>img:first-child {
+    opacity: 0;
+}
+
+/* Color para los tabs de zona de practica */
+
+.ed-container .preliminary-tabs .preliminary-tabs__nav.zone-area a.preliminary-tabs__label:hover,
+.ed-container .preliminary-tabs .preliminary-tabs__nav.zone-area a.preliminary-tabs__label.is-active {
+    border-color: var(--ed-amber-600);
+    color: var(--ed-blue-900);
+    background-color: var(--ed-amber-500);
+}
+
+/* Contenido del tab */
+
+.ed-container .preliminary-tabs .preliminary-tabs__content {
+    display: none;
+    padding: 5px 1em;
+    border: 1px solid var(--ed-border);
+    border-top: 0;
+    border-radius: 0 0 var(--ed-border-radius) var(--ed-border-radius);
+}
+
+.ed-container .preliminary-tabs__content.is-active {
+    display: block;
+    animation: preliminaryTabsFade .3s ease;
+}
+
+@keyframes preliminaryTabsFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Metodologia */
+
+.ed-container #preliminary #planning #learning_methodology {
+    padding: 0 var(--ed-padding-large);
+    border: 1px solid var(--ed-sky-300);
+    border-radius: var(--ed-border-radius);
+    max-height: var(--ed-height-container);
+    overflow-y: auto;
+}
+
+/* Mentor */
+
+.ed-container #preliminary #mentor .teacher {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    column-gap: 1em;
+    align-items: center;
+}
+
+.ed-container #preliminary #mentor .teacher .profile-picture #fotoPerfil {
+    border-radius: var(--ed-border-radius);
+}
+
+.ed-container #preliminary #mentor .teacher .profile-picture {
+    color: var(--ed-blue-900);
+}
+
+.ed-container #preliminary #mentor .resume h2 {
+    color: var(--ed-blue-900);
+}
+
+/* =====================================================================
+   === INICIO: RUTA DE APRENDIZAJE ===
+   ===================================================================== */
+
+.ed-container #learning_path .title-path {
+    text-align: center;
+    color: var(--ed-lbl-txt);
+    background-color: var(--ed-lbl-bg);
+    border-radius: var(--ed-border-radius);
+    padding: var(--ed-padding-short);
+}
+
+/* Barra de progreso */
+
+.ed-container #learning_path.week-8 .container-progress {
+    margin: 0 auto;
+}
+
+.ed-container #learning_path .container-progress p {
+    margin: 5px 0;
+}
+
+.ed-container #learning_path .container-progress .route-marker,
+.ed-container #learning_path .container-progress .route-percentage {
+    margin-left: calc(50% - 15px);
+}
+
+.ed-container #learning_path .container-progress .route-percentage {
+    color: var(--ed-blue-900);
+    font-weight: 700;
+}
+
+/* Tramo pendiente: rayado amarillo corporativo */
+.ed-container #learning_path .container-progress .route-bar {
+    width: 100%;
+    height: 10px;
+    background: repeating-linear-gradient(45deg,
+            var(--ed-amber-600) 0 10px,
+            var(--ed-amber-300) 10px 20px);
+    border-radius: 8px;
+    display: flex;
+    overflow: hidden
+}
+
+/* Tramo completado: azul marca */
+.ed-container #learning_path .container-progress .route-bar #progress_completed {
+    width: 50%;
+    height: 10px;
+    background-color: var(--ed-blue-900);
+}
+
+/* Weeks - State */
+
+.ed-container #learning_path.week-8 .weeks-block {
+    height: 310px;
+    margin: 0 auto;
+}
+
+.ed-container #learning_path .weeks-block {
+    display: grid;
+    align-items: start;
+    grid-template-columns: repeat(4, 1fr);
+
+    border: 1px solid var(--ed-sky-200);
+    border-radius: var(--ed-border-radius);
+    padding: 2em 0;
+
+    background-image: url("https://www.ediloja.com/Virtualizacion/red3/ruta.svg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% 100%;
+}
+
+/* ---- Ruta de 5 semanas: 3 arriba + 2 abajo -------------------------------
+   Con grid de 3 columnas, las semanas 1-3 ocupan la fila superior y las 4-5
+   la inferior. La 4 y la 5 se invierten (order) para que sigan el sentido de
+   la curva de retorno, igual que en la variante de 8. */
+.ed-container #learning_path.week-5 .weeks-block {
+    grid-template-columns: repeat(3, 1fr);
+    height: 310px;
+    margin: 0 auto;
+}
+
+/* Fila inferior: la 5 a la izquierda (columna 1) y la 4 en el centro
+   (columna 2), siguiendo el sentido de la curva de retorno (3 -> 4 -> 5).
+   grid-row: 2 es imprescindible en ambas: sin ella el autoposicionamiento
+   del grid solo avanza hacia adelante y la segunda de las dos caia a una
+   TERCERA fila, fuera del mapa. */
+.ed-container #learning_path.week-5 .weeks-block>*:nth-child(4) {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.ed-container #learning_path.week-5 .weeks-block>*:nth-child(5) {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.ed-container #learning_path.week-5 .weeks-block .week {
+    display: grid;
+    justify-content: center;
+    text-align: center;
+    row-gap: 0.5em;
+}
+
+.ed-container #learning_path.week-8 .weeks-block>*:nth-child(5) {
+    order: 4;
+}
+
+.ed-container #learning_path.week-8 .weeks-block>*:nth-child(6) {
+    order: 3;
+}
+
+.ed-container #learning_path.week-8 .weeks-block>*:nth-child(7) {
+    order: 2;
+}
+
+.ed-container #learning_path.week-8 .weeks-block>*:nth-child(8) {
+    order: 1;
+}
+
+.ed-container #learning_path.week-8 .weeks-block .week {
+    display: grid;
+    justify-content: center;
+    text-align: center;
+    row-gap: 0.5em;
+}
+
+.ed-container #learning_path .weeks-block .week a {
+    font-size: 10pt;
+    text-decoration: none !important;
+}
+
+/* Etiqueta de estado (por defecto solo visible en hover) */
+.ed-container #learning_path .weeks-block .week .state {
+    font-size: 10pt;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: var(--ed-blue-900);
+    background-color: var(--ed-sky-050);
+    padding: 1px 10px;
+    border-radius: var(--ed-border-radius);
+}
+
+.ed-container #learning_path .weeks-block .week:has(.btn-week:hover) .state {
+    opacity: 1;
+}
+
+/* La etiqueta toma el color de su estado */
+.ed-container #learning_path .weeks-block .week:has(.btn-week.completed) .state {
+    color: var(--ed-green-700);
+    background-color: var(--ed-green-100);
+}
+
+.ed-container #learning_path .weeks-block .week:has(.btn-week.in-progress) .state {
+    color: var(--ed-info-600);
+    background-color: var(--ed-info-100);
+}
+
+/* Weeks - Btn */
+
+.ed-container #learning_path .weeks-block .week .btn-week {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    width: 60px;
+    height: 60px;
+    color: var(--ed-blue-900);
+    background-color: var(--ed-gray-100);
+    border-radius: var(--ed-border-radius);
+    font-size: 20pt;
+    transition: background-color var(--ed-transition), color var(--ed-transition), border-color var(--ed-transition);
+    border: 1px solid var(--ed-gray-400);
+}
+
+.ed-container #learning_path .weeks-block .week .btn-week:hover {
+    color: var(--ed-white);
+    background-color: var(--ed-blue-900);
+    border-color: var(--ed-blue-900);
+}
+
+/* Terminado — verde de la paleta.
+   Texto en verde oscuro: sobre #12b886 el blanco da 2.6:1 (no accesible). */
+.ed-container #learning_path .weeks-block .week .btn-week.completed {
+    color: var(--ed-white);
+    background-color: var(--ed-green-500);
+    border-color: var(--ed-green-700);
+}
+
+/* En curso — azul vivo de la paleta */
+.ed-container #learning_path .weeks-block .week .btn-week.in-progress {
+    color: var(--ed-white);
+    background-color: var(--ed-info-400);
+    border-color: var(--ed-info-600);
+}
+
+/* Weeks - assessment */
+
+.ed-container #learning_path .weeks-block .week .assessment {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-orange-300);
+    padding: 1px 10px;
+    border: 1px solid var(--ed-orange-600);
+    border-radius: var(--ed-border-radius);
+    font-weight: 600;
+}
+
+/* =====================================================================
+   === INICIO: BOTONES INFERIORES ===
+   ===================================================================== */
+
+.ed-container #general_sections {
+    margin: 1em 0;
+}
+
+/* Botones inferiores: mismo ancho que el resto de filas de botones (las
+   pestañas de Visión General / Planificación / Tu docente). Con flex:1 los
+   cuatro se reparten el ancho completo del contenedor por igual. */
+.ed-container #general_sections .general-container {
+    display: flex;
+    gap: 4px;
+    padding: 0;
+}
+
+.ed-container #general_sections .general-container a.btn-general {
+    display: flex;
+    align-items: center;       /* icono/texto centrado verticalmente */
+    justify-content: center;   /* icono/texto centrado horizontalmente */
+    flex: 1;                   /* reparto por igual a todo el ancho */
+    padding: 12px;
+    border-bottom: 0;
+    border-radius: var(--ed-border-radius);
+    height: 40px;
+    color: var(--ed-blue-900);
+    background: var(--ed-sky-200);
+    border: 1px solid var(--ed-sky-300);
+    text-decoration: none !important;
+    transition: background-color var(--ed-transition), color var(--ed-transition), transform var(--ed-transition);
+    position: relative;
+}
+
+.ed-container #general_sections .general-container a.btn-general:hover {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-amber-500);
+    border-color: var(--ed-amber-600);
+}
+
+/* Igual que en las pestañas: los iconos son dos imagenes superpuestas y
+   necesitan centrado horizontal explicito. */
+.ed-container #general_sections .general-container a.btn-general img {
+    position: absolute;
+    overflow: hidden;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.ed-container #general_sections .general-container a.btn-general span {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.ed-container #general_sections .general-container a.btn-general img:first-child {
+    z-index: 10;
+}
+
+.ed-container #general_sections .general-container a.btn-general:hover>img:first-child,
+.ed-container #general_sections .general-container a.btn-general.is-active>img:first-child {
+    opacity: 0;
+}
+
+/* =====================================================================
+   === ACTIVIDADES EMBEBIDAS (iframes) ===
+   Los iframes migrados vienen con envoltorios distintos segun el origen.
+   El caso tipico es:
+       <div class="contenedor-recursos" style="max-width:800px">
+         <div style="position:relative;padding-bottom:56.25%;height:0">
+           <iframe style="position:absolute;top:0;left:0;width:100%;height:100%">
+   El iframe lleva estilos EN LINEA con position:absolute, asi que centrarlo
+   a el no sirve (los estilos en linea ganan y un elemento absoluto ignora
+   los margenes automaticos). Lo que hay que centrar es el ENVOLTORIO que
+   limita el ancho: trae max-width pero sin margen automatico.
+
+   Para cubrir TODOS los casos (autoevaluaciones, actividades recomendadas,
+   videos, recursos sueltos) se centra cualquier contenedor que envuelva un
+   iframe, a cualquier profundidad. Si el envoltorio ya ocupa el ancho
+   completo, los margenes automaticos valen 0 y no le afectan; solo hacen
+   efecto en los que tienen el ancho limitado, que son los descentrados.
+   ===================================================================== */
+
+.ed-container div:has(iframe),
+.ed-container p:has(iframe),
+.ed-container figure:has(iframe),
+.ed-container .contenedor-recursos {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* iframes sin envoltorio de proporcion: se centran ellos mismos */
+.ed-container iframe {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    border: 0;
+}
+
+/* =====================================================================
+   === FOOTER INSTITUCIONAL ===
+   Barra azul de marca al pie de la pagina, con el logo UTPL a la derecha.
+   HTML a insertar como ULTIMO elemento dentro de .ed-container:
+
+     <footer class="ed-footer"><span>UTPL</span></footer>
+
+   Si se prefiere usar el logo real en vez del texto, sustituir el <span>
+   por la imagen y ocultar el texto:
+     <footer class="ed-footer"><img src="URL_DEL_LOGO" alt="UTPL"></footer>
+   ===================================================================== */
+
+.ed-container .ed-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    min-height: 34px;
+    margin-top: 1.5em;
+    padding: 0 1.4em;
+    background-color: var(--ed-blue-900);
+    border-radius: var(--ed-border-radius);
+    box-sizing: border-box;
+}
+
+.ed-container .ed-footer span {
+    color: var(--ed-white);
+    font-weight: 700;
+    font-size: 11pt;
+    letter-spacing: .06em;
+}
+
+.ed-container .ed-footer img {
+    height: 18px;
+    width: auto;
+    display: block;
+}
+
+/* =====================================================================
+   === INICIO: HOMEPAGE BTN ===
+   ===================================================================== */
+
+.ed-container .container-homepage-bnt {
+    display: flex;
+    column-gap: 5px;
+    margin-bottom: 1em;
+}
+
+.ed-container .container-homepage-bnt .homepage-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: var(--ed-padding-short);
+    border-radius: var(--ed-border-radius);
+    background-color: var(--ed-sky-050);
+    border: 1px solid var(--ed-sky-200);
+    text-decoration: none !important;
+    transition: background-color var(--ed-transition), transform var(--ed-transition);
+    position: relative;
+}
+
+.ed-container .container-homepage-bnt .homepage-btn:hover {
+    background-color: var(--ed-blue-900);
+}
+
+.ed-container .container-homepage-bnt .homepage-btn img {
+    position: absolute;
+    overflow: hidden;
+    top: 10px;
+    left: 10px;
+}
+
+.ed-container .container-homepage-bnt .homepage-btn img:first-child {
+    z-index: 10;
+}
+
+.ed-container .container-homepage-bnt .homepage-btn:hover>img:first-child {
+    opacity: 0;
+}
+
+.ed-container .container-homepage-bnt .block {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    column-gap: 5px;
+    border-radius: var(--ed-border-radius);
+    background-color: var(--ed-sky-025);
+    flex: 1;
+    padding-right: 1em;
+}
+
+.ed-container .container-homepage-bnt .block span {
+    color: var(--ed-blue-900);
+    font-weight: 500;
+}
+
+.ed-container .container-homepage-bnt .block a {
+    color: var(--ed-blue-900);
+    background-color: var(--ed-sky-150);
+    text-decoration: none !important;
+    display: flex;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--ed-border-radius);
+    transition: background-color var(--ed-transition), color var(--ed-transition), box-shadow var(--ed-transition);
+}
+
+/* Semana ACTUAL del nav: azul marca con texto blanco, para distinguirla
+   con claridad del resto de semanas */
+.ed-container .container-homepage-bnt .block a:hover,
+.ed-container .container-homepage-bnt .block a.active {
+    color: var(--ed-white);
+    background-color: var(--ed-blue-900);
+    font-weight: 700;
+}
+
+/* =====================================================================
+   === SEMANAS: RA ===
+   ===================================================================== */
+
+/* Titulo de unidad de la semana: va DEBAJO del banner, no encima.
+   Barra azul a la izquierda, como el resto de titulos de la plantilla. */
+.ed-container h2.unit,
+.ed-container #week_course h3,
+.ed-container .week-title {
+    margin: .8em 0 1em;
+    padding-left: 12px;
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--ed-blue-900);
+    border-left: 5px solid var(--ed-sky-600);
+    border-bottom: 0;
+}
+
+/* Compatibilidad: si algun curso antiguo aun trae el h3 DENTRO del
+   banner, se mantiene legible sobre la imagen. */
+.ed-container .ed-header h3 {
+    margin-left: 1.5em;
+    font-size: 24pt;
+    color: var(--ed-txt-white);
+}
+
+/* Contenedor de la cabecera de la semana: agrupa Resultado de Aprendizaje
+   y Contextualizacion dentro de un mismo marco. */
+.ed-container #container-learning-outcome {
+    border: 1px solid var(--ed-border);
+    border-radius: var(--ed-border-radius);
+    padding: 1em 1.2em;
+    margin: 1em auto 1.5em;
+}
+
+/* Cabecera de cada bloque: icono a la izquierda + banda con el titulo
+   que ocupa todo el ancho restante. */
+/* !important: el previsualizador carga style_app.css DESPUES de esta hoja y
+   sus reglas de .title-learning-outcomes ganaban por orden de cascada,
+   dejando el icono y el titulo desalineados. */
+.ed-container #container-learning-outcome .title-learning-outcomes {
+    display: flex !important;
+    align-items: center !important;
+    column-gap: 10px !important;
+    grid-template-columns: none !important;
+    margin-bottom: .6em;
+}
+
+/* Un <br> entre la imagen y el titulo rompia la maquetacion: en grid
+   contaba como una celda mas y empujaba el <h3> a la segunda fila (el
+   titulo se veia en vertical, una letra por linea). Con flex se ignora. */
+.ed-container #container-learning-outcome .title-learning-outcomes br {
+    display: none;
+}
+
+/* Los SVG de marcador traen viewBox pero SIN width/height propios: hay que
+   fijar ambos, o el navegador les da una caja mayor y el titulo queda
+   separado del icono. */
+.ed-container #container-learning-outcome .title-learning-outcomes img {
+    width: 34px !important;
+    height: 34px !important;
+    flex: 0 0 34px !important;
+    object-fit: contain;
+    margin: 0 !important;
+}
+
+.ed-container #container-learning-outcome .title-learning-outcomes h3 {
+    flex: 1 !important;
+    margin: 0 !important;
+    text-align: left !important;
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--ed-blue-900);
+    background-color: var(--ed-amber-050);
+    border-radius: var(--ed-border-radius);
+    padding: 6px 14px;
+}
+
+/* Contenido de cada bloque: alineado con la banda, no con el icono. */
+.ed-container #container-learning-outcome .content-learning-outcomes {
+    margin: 0 0 1.2em;
+    padding-left: 52px;
+    color: var(--ed-blue-900);
+}
+
+.ed-container #container-learning-outcome .content-learning-outcomes:last-child {
+    margin-bottom: 0;
+}
+
+.ed-container #container-learning-outcome .content-learning-outcomes p {
+    margin: 0 0 .5em;
+}
+
+.ed-container #container-learning-outcome .content-learning-outcomes ul {
+    margin: .3em 0 0;
+    padding-left: 1.3em;
+}
+
+.ed-container #container-learning-outcome .content-learning-outcomes li {
+    margin-bottom: .25em;
+}
+
+/* =====================================================================
+   === SEMANAS: COLLAPSE ===
+   ===================================================================== */
+
+.ed-container .collapse__link {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 1em;
+    width: 150px;
+    color: var(--ed-blue-900);
+    background-color: var(--ed-sky-050);
+    text-decoration: none !important;
+    border: 1px solid var(--ed-sky-200);
+    border-radius: var(--ed-border-radius) var(--ed-border-radius) 0 0;
+    transition: all var(--ed-transition);
+}
+
+.ed-container .collapse__link:hover {
+    color: var(--ed-white);
+    background-color: var(--ed-blue-900);
+    border-color: var(--ed-blue-900);
+}
+
+.ed-container .collapse.active .collapse__link {
+    color: var(--ed-white);
+    background-color: var(--ed-blue-900);
+    border-color: var(--ed-blue-900);
+    border-bottom: none;
+}
+
+.ed-container .collapse__icon {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+.ed-container .collapse__content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.ed-container .collapse__inner {
+    padding: 5px 1em;
+}
+
+.ed-container .collapse.active .collapse__content {
+    max-height: fit-content;
+    opacity: 1;
+    border-radius: 0 0 var(--ed-border-radius) var(--ed-border-radius);
+}
+
+.ed-container .collapse.active .collapse__icon {
+    transform: rotate(45deg);
+}
+
+/* =====================================================================
+   === PREVISUALIZADOR: huecos pendientes de IA ===
+   Solo afecta al preview local. En Canvas estos bloques quedan vacios
+   (el contenido sin evaluar NO debe publicarse), pero en la revision el
+   revisor necesita ver QUE texto fuente va a evaluar el agente.
+   ===================================================================== */
+
+.ed-container [data-ia-pendiente] {
+    border: 1px dashed var(--ed-amber-600);
+    background: var(--ed-amber-050);
+    border-radius: var(--ed-border-radius);
+    padding: .6em .9em;
+    margin: .5em 0;
+}
+
+.ed-container [data-ia-pendiente]::before {
+    content: "Pendiente de generar: " attr(data-ia-nota);
+    display: block;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ed-blue-900);
+    font-weight: 600;
+    margin-bottom: .4em;
+}
+
+/* el texto fuente que evaluara el agente, visible solo en el preview */
+.ed-container [data-ia-pendiente] .ia-fuentes {
+    display: block !important;
+    font-size: 12px;
+    color: var(--ed-blue-800);
+    background: var(--ed-white);
+    border: 1px solid var(--ed-amber-300);
+    border-radius: 4px;
+    padding: .5em .7em;
+    white-space: pre-wrap;
+}
+
+.ed-container [data-ia-pendiente] .ia-fuente + .ia-fuente {
+    margin-top: .5em;
+    padding-top: .5em;
+    border-top: 1px solid var(--ed-amber-100);
+}
+
+/* =====================================================================
+   === SEMANAS: TAB ===
+   ===================================================================== */
+
+/* Contextualizacion */
+
+/* Contextualización: fondo blanco, sin recuadro ámbar ni borde punteado.
+   (El estado "pendiente de IA" sigue marcado aparte por [data-ia-pendiente].) */
+.ed-container #contextualization {
+    color: var(--ed-blue-900);
+    background-color: transparent;
+    max-height: 300px;
+    overflow-y: auto;
+    border: none;
+}
+
+/* Pestañas verticales para Canvas */
+.ed-container .content .ctab {
+    margin: 1.5rem auto;
+    display: grid;
+    grid-template-columns: 180px auto;
+    column-gap: 5px;
+    align-items: flex-start;
+}
+
+/* Barra lateral de pestañas */
+.ed-container .content .ctab__nav {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ed-container .content .ctab__tab {
+    cursor: pointer;
+    user-select: none;
+    padding: .7rem 1rem;
+    font-weight: 600;
+    color: var(--ed-blue-900);
+    background: var(--ed-sky-050);
+    border: 1px solid var(--ed-sky-200);
+    border-radius: 10px;
+    transition: background .25s, color .25s, box-shadow .25s, transform .15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ed-container .content .ctab__tab:hover {
+    background: var(--ed-sky-150);
+    transform: translateX(2px);
+}
+
+/* Tema activo: amarillo institucional con texto azul marca */
+.ed-container .content .ctab__tab.is-active {
+    color: var(--ed-blue-900);
+    background: var(--ed-amber-500);
+    border-color: var(--ed-amber-600);
+    box-shadow: 0 4px 12px rgba(8, 62, 112, .20);
+}
+
+/* Panel de contenido */
+.ed-container .content .ctab__panel {
+    display: none;
+    flex: 1;
+    padding: 1.5rem 1.7rem;
+    background: var(--ed-white);
+    border: 1px solid var(--ed-sky-200);
+    border-radius: 14px;
+    color: var(--ed-blue-900);
+    line-height: 1.75;
+    height: 80vh;
+    overflow-y: auto;
+}
+
+.ed-container .content .ctab__panel.is-active {
+    display: block;
+    animation: ctabIn .35s ease;
+}
+
+.ed-container .content .ctab__panel h2 {
+    margin: 0 0 .6rem;
+    color: var(--ed-blue-900);
+}
+
+@keyframes ctabIn {
+    from {
+        opacity: 0;
+        transform: translateX(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Figuras */
+
+.ed-container .container-figure {
+    max-width: 500px;
+    margin: auto;
+}
+
+/* =====================================================================
+   === PAGE: BIBLIOGRAFÍA ===
+   ===================================================================== */
+
+.ed-container #bibliography p {
+    margin-left: 2em;
+    text-indent: -2em;
+}
+
+/* =====================================================================
+   === MEDIA QUERY: Desktop-First ===
+   ===================================================================== */
+
+
+@media (min-width: 1920px) {
+    .ed-container {
+        max-width: 1920px;
+        margin: auto;
+    }
+
+    .ed-container .ed-header {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 1500px) {
+    .ed-container .ed-header {
+        min-height: 200px;
+    }
+
+    .ed-container .ed-header h2 {
+        font-size: 26pt;
+    }
+}
+
+/* Desktop */
+@media (max-width: 1280px) {
+    .ed-container .ed-header {
+        min-height: 150px;
+    }
+
+    .ed-container .ed-header h2 {
+        font-size: 20pt;
+    }
+
+    /* En pantallas medianas los cuatro botones pasan a 2x2, repartiendo el
+       ancho completo por igual (comportamiento original de la plantilla). */
+    .ed-container #general_sections .general-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* Temas */
+
+    .ed-container .content .ctab {
+        grid-template-columns: 1fr;
+    }
+
+    .ed-container .content .ctab__nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .ed-container .content .ctab__tab {
+        padding: 10px;
+    }
+}
+
+/* Laptop */
+@media (max-width: 1024px) {
+
+    /* Encabezado */
+
+    .ed-container .ed-header {
+        min-height: 100px;
+    }
+
+    .ed-container .ed-header h2 {
+        font-size: 16pt;
+    }
+
+    /* el banner de semana no contiene texto: se mantiene height:auto
+       (responsive por aspect-ratio); no se fija min-height para no volver a
+       recortar la imagen. */
+    .ed-container #week_course .ed-header {
+        min-height: 0;
+    }
+
+    .ed-container #week_course h3,
+    .ed-container .week-title {
+        font-size: 15pt;
+    }
+}
+
+@media (max-width: 968px) {}
+
+@media (max-width: 768px) {
+
+    /****************************** INICIO *******************************/
+    /*********************************************************************/
+
+    .ed-container #learning_path.week-8 .container-progress {
+        width: 500px;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block {
+        width: 500px;
+        height: 500px;
+    }
+
+    .ed-container #learning_path .weeks-block {
+        grid-template-columns: repeat(3, 1fr);
+        background-image: url(https://www.ediloja.com/Virtualizacion/red3/ruta1.svg);
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(4) {
+        order: 6;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(5) {
+        order: 5;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(6) {
+        order: 4;
+    }
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(7) {
+        order: 7;
+    }
+
+
+    .ed-container #learning_path.week-8 .weeks-block>*:nth-child(8) {
+        order: 8;
+    }
+
+    /*********************** Encuentros en linea *************************/
+    /*********************************************************************/
+
+    .ed-container .table-design,
+    .ed-container .table-general {
+        border-spacing: 1px !important;
+    }
+
+    .ed-container .table-design th,
+    .ed-container .table-design td {
+        padding: 1px 5px !important;
+    }
+
+    /****************************** Semana *******************************/
+    /*********************************************************************/
+
+    /* Menu de navegacion */
+    .ed-container .container-homepage-bnt .block span {
+        display: none;
+    }
+
+    .ed-container .container-homepage-bnt {
+        overflow: auto;
+    }
+
+    /* Resultado de aprendizaje: se mantiene icono + banda en una fila,
+       solo se reduce el espacio (apilarlos rompia la lectura). */
+    .ed-container #container-learning-outcome {
+        padding: .8em;
+    }
+
+    .ed-container #container-learning-outcome .title-learning-outcomes {
+        column-gap: 7px;
+    }
+
+    .ed-container #container-learning-outcome .title-learning-outcomes img {
+        width: 26px;
+        flex-basis: 26px;
+    }
+
+    .ed-container #container-learning-outcome .title-learning-outcomes h3 {
+        font-size: 11pt;
+        padding: 5px 10px;
+    }
+
+    .ed-container #container-learning-outcome .content-learning-outcomes {
+        padding-left: 0;
+    }
+
+    /* Focalizadores */
+
+    .ed-container .focuser {
+        grid-template-columns: 1fr;
+    }
+
+    .ed-container .focuser p:first-child {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .ed-container .focuser .content-focuser {
+        padding: 0 0.5em 5px;
+    }
+}
