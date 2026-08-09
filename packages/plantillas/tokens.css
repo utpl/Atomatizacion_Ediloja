@@ -272,3 +272,15 @@ body {
   background: var(--ed-azul-600);
   transition: width 400ms ease;
 }
+
+/* --- panel -------------------------------------------------- */
+.ed-conteo { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.ed-conteo__caja {
+  display: flex; flex-direction: column; gap: 6px; align-items: flex-start;
+  background: var(--ed-papel); border: 1px solid var(--ed-linea);
+  border-radius: 6px; padding: 14px 18px; min-width: 8rem;
+}
+.ed-conteo__n { font-size: 1.75rem; font-weight: 700; color: var(--ed-azul-900); line-height: 1; }
+.ed-acciones { white-space: nowrap; }
+.ed-acciones a { margin-right: 12px; font-size: 0.875rem; }
+.ed-acciones a:last-child { margin-right: 0; }

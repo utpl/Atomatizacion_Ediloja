@@ -105,7 +105,7 @@ def procesar_login(
 
     # 303 y no 302: obliga al navegador a convertir el POST en GET. Sin esto,
     # recargar la página de destino reenvía el formulario.
-    respuesta = RedirectResponse(url="/guias-vista", status_code=303)
+    respuesta = RedirectResponse(url="/panel", status_code=303)
     respuesta.set_cookie(
         NOMBRE_COOKIE, token,
         httponly=True,      # JavaScript no puede leerla
@@ -143,6 +143,7 @@ def lista_guias(
         "usuario": usuario,
         "guias": guias,
         "puede_crear": usuario.tiene_rol("docente", "admin"),
+        "puede_publicar": usuario.tiene_rol("operador", "coordinador", "admin"),
     })
 
 
@@ -661,4 +662,138 @@ def ui_ver_bloque(
         "request": request, "guia": guia, "pagina": pagina,
         "b": _buscar(pagina, bloque_id), "ctx": {},
         "editable": not version.congelada,
+    })
+
+
+@router.get("/guias-vista/{guia_id}/publicar")
+def formulario_publicar(
+    guia_id: int, request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not usuario.tiene_rol("operador", "coordinador", "admin"):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    guia = sesion.get(Guia, guia_id)
+    if guia is None:
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    version = next((v for v in guia.versiones if v.es_actual), None)
+    return plantillas.TemplateResponse("publicar.html", {
+        "request": request, "guia": guia, "version": version,
+        # Publicar un borrador se salta la revisión, que es justo lo que el
+        # ciclo de vida existe para impedir.
+        "puede": guia.estado in ("aprobada", "publicada"),
+        "error": None,
+    })
+
+
+@router.post("/guias-vista/{guia_id}/publicar")
+def lanzar_publicacion(
+    guia_id: int, request: Request,
+    canvas_curso_id: int = Form(...),
+    canvas_url: str = Form("https://utpl.test.instructure.com"),
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not usuario.tiene_rol("operador", "coordinador", "admin"):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    guia = sesion.get(Guia, guia_id)
+    if guia is None:
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    version = next((v for v in guia.versiones if v.es_actual), None)
+    contexto = {"request": request, "guia": guia, "version": version, "puede": True}
+
+    if guia.estado not in ("aprobada", "publicada"):
+        contexto["error"] = (
+            f"La guía está en estado «{guia.estado}». Solo se publica lo aprobado.")
+        return plantillas.TemplateResponse("publicar.html", contexto, status_code=409)
+
+    en_curso = (
+        sesion.query(SolicitudGeneracion)
+        .filter(SolicitudGeneracion.guia_id == guia.id,
+                SolicitudGeneracion.estado.in_(("pendiente", "ejecutando")))
+        .first()
+    )
+    if en_curso is not None:
+        return RedirectResponse(
+            url=f"/guias-vista/{guia.id}/progreso/{en_curso.id}", status_code=303)
+
+    solicitud = SolicitudGeneracion(
+        guia_id=guia.id, solicitada_por=usuario.id,
+        requerimientos={"canvas_curso_id": canvas_curso_id, "canvas_url": canvas_url},
+        alcance="publicacion", estado="pendiente",
+    )
+    sesion.add(solicitud)
+    sesion.commit()
+    sesion.refresh(solicitud)
+
+    cola().enqueue(tareas.publicar_guia, solicitud.id)
+    return RedirectResponse(
+        url=f"/guias-vista/{guia.id}/progreso/{solicitud.id}", status_code=303)
+
+
+# Qué acciones admite cada estado. Se declara aquí y no en la plantilla porque
+# es una regla de negocio: si la guía está congelada no se edita, si no está
+# aprobada no se publica. Que la plantilla decida eso acaba en dos verdades.
+ACCIONES_POR_ESTADO = {
+    "borrador":             {"editar", "generar"},
+    "en_edicion":           {"editar", "generar"},
+    "en_revision":          {"ver"},
+    "cambios_solicitados":  {"editar", "generar"},
+    "aprobada":             {"ver", "publicar"},
+    "publicada":            {"ver", "publicar"},
+}
+
+
+@router.get("/panel")
+def panel(
+    request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+
+    guias = list(sesion.scalars(guias_visibles(usuario)).all())
+    roles = usuario.codigos_de_rol()
+
+    filas = []
+    for g in guias:
+        version = next((v for v in g.versiones if v.es_actual), None)
+        permitidas = ACCIONES_POR_ESTADO.get(g.estado, {"ver"})
+        filas.append({
+            "guia": g,
+            "version": version,
+            "semaforo": version.semaforo if version else None,
+            "tiene_contenido": version is not None,
+            "puede_editar": "editar" in permitidas
+                            and roles & {"docente", "admin", "coordinador"}
+                            and (g.autor_id == usuario.id or roles & {"admin", "coordinador"}),
+            "puede_generar": "generar" in permitidas and version is None
+                             and roles & {"docente", "admin", "coordinador"},
+            "puede_publicar": "publicar" in permitidas
+                              and roles & {"operador", "coordinador", "admin"},
+        })
+
+    # Un conteo por estado da el pulso del trabajo de un vistazo: cuántas
+    # esperan revisión, cuántas listas para publicar.
+    conteo = {}
+    for g in guias:
+        conteo[g.estado] = conteo.get(g.estado, 0) + 1
+
+    return plantillas.TemplateResponse("panel.html", {
+        "request": request,
+        "usuario": usuario,
+        "roles": sorted(roles),
+        "filas": filas,
+        "conteo": conteo,
+        "puede_crear": bool(roles & {"docente", "admin"}),
+        "es_revisor": bool(roles & {"revisor_di", "qa", "coordinador", "admin"}),
     })

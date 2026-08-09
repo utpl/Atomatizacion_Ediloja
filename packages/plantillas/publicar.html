@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block titulo %}Publicar en Canvas — App-EdiLoja{% endblock %}
+
+{% block contenido %}
+<div class="ed-formulario">
+  <h1>Publicar en Canvas</h1>
+  <p class="ed-meta">
+    {{ guia.nombre_asignatura }} · {{ guia.codigo_banner }} ·
+    {{ guia.total_semanas }} semanas · estado: {{ guia.estado }}
+  </p>
+
+  {% if error %}<p class="ed-error" role="alert">{{ error }}</p>{% endif %}
+
+  {% if not puede %}
+    <p class="ed-aviso">
+      Esta guía está en estado «{{ guia.estado }}». Solo se publica lo que ha
+      pasado por revisión y está aprobado.
+    </p>
+  {% else %}
+    <form method="post" action="/guias-vista/{{ guia.id }}/publicar">
+      <label for="canvas_curso_id">Id del curso de Canvas <span class="ed-req">*</span></label>
+      <input id="canvas_curso_id" name="canvas_curso_id" type="number" required
+             value="{{ guia.canvas_curso_id or '' }}" placeholder="90019">
+      <p class="ed-ayuda">
+        Sale de la URL del curso: <code>/courses/<strong>90019</strong></code>.
+        Debe estar vacío: Canvas no reutiliza los identificadores de páginas
+        borradas, y si ya hubo una «Semana 1» las nuevas salen con sufijo y la
+        navegación entre semanas queda rota.
+      </p>
+
+      <label for="canvas_url">Instancia</label>
+      <input id="canvas_url" name="canvas_url"
+             value="{{ guia.canvas_url and guia.canvas_url.split('/courses')[0]
+                       or 'https://utpl.test.instructure.com' }}">
+
+      <button type="submit">Publicar</button>
+      <a class="ed-cancelar" href="/guias-vista">Cancelar</a>
+    </form>
+    <p class="ed-ayuda" style="margin-top:16px">
+      Sube los 61 recursos de la plantilla, crea los módulos y las páginas, y
+      escribe las {{ guia.total_semanas }} semanas. Tarda unos minutos. Las
+      páginas quedan <strong>sin publicar</strong> en Canvas para que las revise
+      antes de darles visibilidad.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

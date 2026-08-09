@@ -204,3 +204,63 @@ def regenerar_una_pagina(solicitud_id: int, *, llamador=None) -> dict:
         }
     finally:
         sesion.close()
+
+
+def publicar_guia(solicitud_id: int) -> dict:
+    """Publica la versión actual de una guía en Canvas.
+
+    Va a la cola y no a la petición HTTP porque son minutos: 61 assets, los
+    módulos, 8 páginas y 8 llamadas de contenido. Reutiliza la misma
+    SolicitudGeneracion y el mismo sondeo que la generación, con
+    alcance='publicacion'.
+    """
+    from libs.py.publicacion.canvas import ErrorDePublicacion, publicar
+
+    sesion = SesionLocal()
+    try:
+        solicitud = sesion.get(SolicitudGeneracion, solicitud_id)
+        if solicitud is None:
+            raise ValueError(f"No existe la solicitud {solicitud_id}")
+
+        solicitud.estado = "ejecutando"
+        solicitud.iniciada_en = _ahora()
+        solicitud.intentos += 1
+        sesion.commit()
+
+        guia = solicitud.guia
+        version = next((v for v in guia.versiones if v.es_actual), None)
+        if version is None:
+            raise ValueError("La guía no tiene versión actual que publicar")
+
+        def avisar(pct: int, mensaje: str) -> None:
+            solicitud.progreso = pct
+            solicitud.mensaje_error = None
+            sesion.commit()
+
+        try:
+            resultado = publicar(
+                version.contenido,
+                canvas_curso_id=int(solicitud.requerimientos["canvas_curso_id"]),
+                canvas_url=solicitud.requerimientos.get(
+                    "canvas_url", "https://utpl.test.instructure.com"),
+                avisar=avisar,
+            )
+        except ErrorDePublicacion as exc:
+            solicitud.estado = "fallida"
+            solicitud.mensaje_error = str(exc)
+            solicitud.terminada_en = _ahora()
+            sesion.commit()
+            raise
+
+        # Solo aquí, con todo subido, la guía pasa a publicada.
+        guia.estado = "publicada"
+        guia.canvas_curso_id = resultado["curso_canvas"]
+        guia.canvas_url = resultado["url"]
+
+        solicitud.estado = "completada"
+        solicitud.progreso = 100
+        solicitud.terminada_en = _ahora()
+        sesion.commit()
+        return resultado
+    finally:
+        sesion.close()
