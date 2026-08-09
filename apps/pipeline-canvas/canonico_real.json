@@ -529,7 +529,7 @@
             },
             {
               "tipo": "subtitulo",
-              "nivel": 2,
+              "nivel": 3,
               "texto": "Resultado de aprendizaje"
             },
             {
@@ -538,7 +538,7 @@
             },
             {
               "tipo": "subtitulo",
-              "nivel": 2,
+              "nivel": 3,
               "texto": "Contextualización"
             },
             {
@@ -555,7 +555,7 @@
             },
             {
               "tipo": "subtitulo",
-              "nivel": 2,
+              "nivel": 3,
               "texto": "Desarrollo de contenidos"
             },
             {
@@ -892,7 +892,7 @@
             },
             {
               "tipo": "subtitulo",
-              "nivel": 2,
+              "nivel": 3,
               "texto": "Estrategias de aprendizaje"
             },
             {
@@ -4748,7 +4748,7 @@
             },
             {
               "tipo": "subtitulo",
-              "nivel": 2,
+              "nivel": 3,
               "texto": "Actividad integradora: Diseño de un plan de auditoría"
             },
             {
@@ -4775,7 +4775,7 @@
             },
             {
               "tipo": "subtitulo",
-              "nivel": 2,
+              "nivel": 3,
               "texto": "Actividad de reflexión: Mapa conceptual integrador"
             },
             {
@@ -4792,7 +4792,7 @@
             },
             {
               "tipo": "subtitulo",
-              "nivel": 2,
+              "nivel": 3,
               "texto": "Actividad de análisis: Caso de decisión profesional"
             },
             {
@@ -4828,7 +4828,7 @@
             },
             {
               "tipo": "subtitulo",
-              "nivel": 2,
+              "nivel": 3,
               "texto": "Actividad de investigación: Tendencias emergentes"
             },
             {

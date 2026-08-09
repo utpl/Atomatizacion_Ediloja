@@ -1,11 +1,20 @@
 """Configuración del proyecto, leída del .env con validación de tipos."""
 
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Anclado al ARCHIVO, no al directorio de trabajo. Con env_file=".env" a secas,
+# cualquier proceso que arranque desde otra carpeta -- el worker desde
+# apps/pipeline-canvas, un comando suelto -- no encuentra el .env y lee los
+# valores por defecto. El sintoma es un 401 de Canvas o una URL vacia, que no
+# se parecen en nada a un problema de rutas.
+RAIZ = Path(__file__).resolve().parents[3]
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=RAIZ / ".env",
         env_file_encoding="utf-8",
         extra="ignore",
     )

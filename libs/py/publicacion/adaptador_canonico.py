@@ -263,8 +263,21 @@ def _reestructurar_apartados(bloques: list[dict[str, Any]]) -> list[dict[str, An
             # antepone la suya y sale "1.2. 1.1. Concepto". Se quita la del
             # modelo: la buena es la del render, que cuenta los subtemas de
             # toda la unidad y no los de esta semana.
-            texto = re.sub(r"^\s*\d+(\.\d+)*[.)]?\s*", "", texto)
-            destino.append({**b, "nivel": 2, "texto": texto})
+            # La jerarquia esta en la NUMERACION, no en el nivel: el modelo
+            # emite "1.2. Objetivos" y "Objetivos de aseguramiento" como
+            # hermanos, cuando el segundo es hijo del primero. Lo numerado con
+            # un punto es tema (pestaña); lo demas, subapartado dentro.
+            #
+            # OJO: la misma regla esta en html_a_bloques.py, para lo que se
+            # importa de Canvas. Duplicada = se desincroniza. Extraer a una
+            # funcion comun.
+            m = re.match(r"^\s*(\d+(?:\.\d+)*)[.)]?\s+", texto)
+            if m:
+                nivel_real = 2 if m.group(1).count(".") <= 1 else 3
+                texto = texto[m.end():]
+            else:
+                nivel_real = 3
+            destino.append({**b, "nivel": nivel_real, "texto": texto})
             continue
 
         destino.append(b)
