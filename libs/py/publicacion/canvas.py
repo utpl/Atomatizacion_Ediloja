@@ -50,7 +50,10 @@ def _ejecutar(argumentos: list[str], paso: str, tiempo_maximo: int = 600) -> str
     """
     try:
         proceso = subprocess.run(
-            [sys.executable, *argumentos],
+            # Via ejecutar.py: carga el .env antes de correr el script.
+            # Los scripts heredados leen con os.getenv y el worker no
+            # siempre tiene las variables exportadas.
+            [sys.executable, "ejecutar.py", *argumentos],
             cwd=str(PIPELINE),
             capture_output=True,
             text=True,
