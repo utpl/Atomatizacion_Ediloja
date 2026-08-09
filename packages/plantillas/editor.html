@@ -22,6 +22,11 @@
     {% if puede_publicar and guia.estado in ("aprobada", "publicada") %}
       <a class="ed-boton" href="/guias-vista/{{ guia.id }}/publicar">Publicar en Canvas</a>
     {% endif %}
+    {#- La alternativa a publicar: si el contenido migrado no vale la pena,
+        el agente lo reescribe partiendo del mismo temario. -#}
+    {% if editable %}
+      <a class="ed-cancelar" href="/guias-vista/{{ guia.id }}/generar">Regenerar con el agente</a>
+    {% endif %}
     {% if guia.canvas_url %}
       <a class="ed-cancelar" href="{{ guia.canvas_url }}" target="_blank" rel="noopener">Ver en Canvas ↗</a>
     {% endif %}

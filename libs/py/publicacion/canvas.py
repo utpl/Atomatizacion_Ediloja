@@ -136,6 +136,20 @@ def publicar(
             publicadas.append(n)
             paso(30 + int(65 * n / semanas), f"Semana {n} de {semanas} publicada")
 
+        # La pagina de Inicio es lo primero que ve el estudiante, y ademas
+        # se marca como portada para que el curso NO abra en modulos.
+        paso(96, "Creando la página de inicio")
+        try:
+            _ejecutar(["render_inicio_ed.py", ruta_json.name,
+                       "--curso", str(canvas_curso_id),
+                       "--mapa-plantilla", "mapa_plantilla.json",
+                       "--subir", "--publicar"],
+                      "Página de inicio", tiempo_maximo=300)
+        except ErrorDePublicacion as exc:
+            # No tumba la publicación: las semanas ya están subidas y eso es
+            # lo que cuesta. La portada se puede rehacer sola.
+            paso(96, f"Aviso: la página de inicio falló ({exc})")
+
         paso(100, "Publicación terminada")
         return {
             "curso_canvas": canvas_curso_id,

@@ -74,8 +74,10 @@ def _bloque(b: dict[str, Any], contador: dict[str, int]) -> list[dict[str, Any]]
         # El pipeline llama "subtitulo" a lo que curso.json llama "encabezado",
         # y de su nivel deduce la jerarquía de subtemas (nivel 2 = subtema 1.x,
         # nivel 3 = sub-subtema). Por eso el nivel se respeta tal cual.
+        # En los titulos NO se convierte a Markdown: acaban como etiqueta de
+        # pestaña, donde md_inline no llega, y salen los ** en crudo.
         return [{"tipo": "subtitulo", "nivel": int(b.get("nivel", 2)),
-                 "texto": _a_markdown(b.get("texto", ""))}]
+                 "texto": _texto_plano(b.get("texto", ""))}]
 
     if tipo == "lista":
         return [{

@@ -199,7 +199,28 @@ def _bloques_de(nodo: Tag, recursos: list[dict[str, Any]],
         if etiqueta in ("h1", "h2", "h3", "h4", "h5", "h6"):
             texto = _inline(hijo)
             if texto:
-                nivel = min(max(int(etiqueta[1]), 2), 4)
+                # Los temas del curso viejo son h4 dentro de su panel de
+                # pestaña. Aqui ya no hay panel, asi que bajan a nivel 2 para
+                # que estructurar_semana los vuelva a tomar como subtemas: solo
+                # mira nivel 2. Un h5 (sub-subtema) baja a 3.
+                # Se conserva la JERARQUIA, no se aplana: en el curso
+                # viejo los temas son h4 y los sub-subtemas h5, dentro de su
+                # panel de pestaña. Bajar todo a 2 convierte cada uno en una
+                # pestaña propia -- 17 en una semana.
+                # Un titulo YA es un titulo: el <strong> de dentro solo
+                # sirve para que acabe como ** en la etiqueta de la pestaña.
+                texto = re.sub(r"</?(?:strong|b|em|i)>", "", texto).strip()
+
+                # La jerarquia real esta en la NUMERACION, no en el nivel: en
+                # el curso viejo "1.2." y "1.2.1." son los dos <h4>, y por
+                # nivel no se distinguen. Se cuenta la profundidad del numero.
+                m = re.match(r"^(\d+(?:\.\d+)*)\.?\s", texto)
+                if m:
+                    nivel = 2 if m.group(1).count(".") + 1 <= 2 else 3
+                else:
+                    # Sin numeracion es un subapartad dentro del tema
+                    # ("Objetivos de aseguramiento"), nunca una pestaña.
+                    nivel = 3
                 salida.append({"tipo": "encabezado", "nivel": nivel, "texto": texto})
             continue
 
@@ -283,6 +304,7 @@ def curso_desde_extraido(extraido: dict[str, Any]) -> dict[str, Any]:
     paginas: list[dict[str, Any]] = []
     ra_texto = ""
     ctx_texto = ""
+    titulo_unidad = ""
 
     vistas: set[int] = set()
     for mod in extraido.get("modulos", []):
@@ -302,12 +324,21 @@ def curso_desde_extraido(extraido: dict[str, Any]) -> dict[str, Any]:
                 ra_texto = _texto_de(sopa, "learning_outcomes")
                 ctx_texto = _texto_de(sopa, "contextualization")
 
-            paginas.append(pagina_desde_html(html, semana, "u1", recursos))
+            pagina = pagina_desde_html(html, semana, "u1", recursos)
+            paginas.append(pagina)
+            # El titulo de unidad viene en subtitle-section: "Unidad 1. El
+            # espiritu innovador". Se guarda el primero que aparezca; el valor
+            # por defecto ("Unidad 1") hace que el render escriba
+            # "Unidad 1. Unidad 1".
+            if not titulo_unidad and pagina.get("titulo", "").lower().startswith("unidad"):
+                titulo_unidad = pagina["titulo"]
 
     paginas.sort(key=lambda p: p["semana"])
 
+    # Se quita el "Unidad N." del principio: el render lo antepone solo.
+    limpio = re.sub(r"^\s*unidad\s+\d+[.:]?\s*", "", titulo_unidad, flags=re.I).strip()
     unidad: dict[str, Any] = {"id": "u1", "numero": 1,
-                              "titulo": "Unidad 1",
+                              "titulo": limpio or "Contenidos",
                               "semana_inicio": 1,
                               "semana_fin": max((p["semana"] for p in paginas), default=1)}
     if len(ctx_texto) >= 50:
