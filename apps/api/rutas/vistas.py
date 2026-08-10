@@ -798,6 +798,7 @@ def panel(
         "conteo": conteo,
         "puede_crear": bool(roles & {"docente", "admin"}),
         "es_revisor": bool(roles & {"revisor_di", "qa", "coordinador", "admin"}),
+        "es_admin": bool(roles & {"admin", "coordinador"}),
     })
 
 
@@ -960,3 +961,244 @@ def aprobar_guia(
         version.congelada = False
     sesion.commit()
     return RedirectResponse(url=f"/guias-vista/{guia.id}/publicar", status_code=303)
+
+
+# Roles que se asignan desde la interfaz. `docente` no está: esos vienen de la
+# hoja de virtualización con su asignatura, y crearlos a mano sin guía deja
+# usuarios que no pueden hacer nada.
+ROLES_INTERNOS = [
+    ("revisor_di", "Revisor de Diseño Instruccional"),
+    ("qa", "Control de calidad"),
+    ("operador", "Operativo de publicación"),
+    ("coordinador", "Coordinación"),
+    ("admin", "Administración"),
+    ("docente", "Docente"),
+]
+
+
+def _es_admin(usuario) -> bool:
+    return usuario is not None and usuario.tiene_rol("admin", "coordinador")
+
+
+@router.get("/usuarios")
+def lista_usuarios(
+    request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not _es_admin(usuario):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    from libs.py.db.modelos_auth import Usuario
+
+    usuarios = sesion.query(Usuario).order_by(Usuario.correo).all()
+    return plantillas.TemplateResponse("usuarios.html", {
+        "request": request, "usuarios": usuarios, "yo": usuario,
+        "roles": ROLES_INTERNOS, "error": None, "clave_nueva": None,
+    })
+
+
+@router.post("/usuarios/crear")
+def crear_usuario_interno(
+    request: Request,
+    correo: str = Form(...),
+    nombre_completo: str = Form(...),
+    roles: list[str] = Form(default=[]),
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not _es_admin(usuario):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    import secrets
+
+    from libs.py.auth.seguridad import cifrar_contrasena
+    from libs.py.db.modelos_auth import Rol, Usuario, UsuarioRol
+
+    correo = correo.strip().lower()
+    if sesion.query(Usuario).filter_by(correo=correo).first() is not None:
+        return _pantalla_usuarios(request, sesion, usuario,
+                                  error=f"Ya existe una cuenta con {correo}.")
+
+    # Contraseña temporal aleatoria. Se muestra UNA vez: en la base solo queda
+    # su hash, así que si no se copia ahora hay que regenerarla.
+    clave = secrets.token_urlsafe(9)
+    nuevo = Usuario(correo=correo, nombre_completo=nombre_completo.strip(),
+                    hash_contrasena=cifrar_contrasena(clave), activo=True)
+    sesion.add(nuevo)
+    sesion.flush()
+
+    for codigo in roles:
+        rol = sesion.query(Rol).filter_by(codigo=codigo).first()
+        if rol is None:
+            rol = Rol(codigo=codigo, nombre=codigo.capitalize())
+            sesion.add(rol)
+            sesion.flush()
+        sesion.add(UsuarioRol(usuario_id=nuevo.id, rol_id=rol.id,
+                              ambito_tipo="global"))
+    sesion.commit()
+
+    return _pantalla_usuarios(request, sesion, usuario,
+                              clave_nueva=(correo, clave))
+
+
+@router.post("/usuarios/{usuario_id}/roles")
+def actualizar_roles(
+    usuario_id: int,
+    request: Request,
+    roles: list[str] = Form(default=[]),
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not _es_admin(usuario):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    from libs.py.db.modelos_auth import Rol, Usuario, UsuarioRol
+
+    destino = sesion.get(Usuario, usuario_id)
+    if destino is None:
+        return _pantalla_usuarios(request, sesion, usuario, error="No existe ese usuario.")
+
+    # Nadie se quita a sí mismo el admin: un descuido y te quedas fuera de tu
+    # propio sistema sin forma de volver a entrar.
+    if destino.id == usuario.id and "admin" not in roles and usuario.tiene_rol("admin"):
+        return _pantalla_usuarios(
+            request, sesion, usuario,
+            error="No puede quitarse a sí mismo el rol de administración.")
+
+    sesion.query(UsuarioRol).filter_by(usuario_id=destino.id).delete()
+    for codigo in roles:
+        rol = sesion.query(Rol).filter_by(codigo=codigo).first()
+        if rol is None:
+            rol = Rol(codigo=codigo, nombre=codigo.capitalize())
+            sesion.add(rol)
+            sesion.flush()
+        sesion.add(UsuarioRol(usuario_id=destino.id, rol_id=rol.id,
+                              ambito_tipo="global"))
+    sesion.commit()
+    return _pantalla_usuarios(request, sesion, usuario)
+
+
+@router.post("/usuarios/{usuario_id}/activar")
+def activar_usuario(
+    usuario_id: int,
+    request: Request,
+    activo: str = Form("false"),
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    """Desactivar, no borrar.
+
+    El modelo lo dice: los usuarios no se borran para no romper el historial
+    de quién hizo qué. Un usuario borrado dejaría ediciones y publicaciones
+    huérfanas.
+    """
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not _es_admin(usuario):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    from libs.py.db.modelos_auth import Usuario
+
+    destino = sesion.get(Usuario, usuario_id)
+    if destino is None:
+        return _pantalla_usuarios(request, sesion, usuario, error="No existe ese usuario.")
+    if destino.id == usuario.id:
+        return _pantalla_usuarios(request, sesion, usuario,
+                                  error="No puede desactivar su propia cuenta.")
+
+    destino.activo = activo == "true"
+    sesion.commit()
+    return _pantalla_usuarios(request, sesion, usuario)
+
+
+@router.post("/usuarios/{usuario_id}/clave")
+def regenerar_clave(
+    usuario_id: int,
+    request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not _es_admin(usuario):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    import secrets
+
+    from libs.py.auth.seguridad import cifrar_contrasena
+    from libs.py.db.modelos_auth import Usuario
+
+    destino = sesion.get(Usuario, usuario_id)
+    if destino is None:
+        return _pantalla_usuarios(request, sesion, usuario, error="No existe ese usuario.")
+
+    clave = secrets.token_urlsafe(9)
+    destino.hash_contrasena = cifrar_contrasena(clave)
+    sesion.commit()
+    return _pantalla_usuarios(request, sesion, usuario,
+                              clave_nueva=(destino.correo, clave))
+
+
+def _pantalla_usuarios(request, sesion, yo, error=None, clave_nueva=None):
+    from libs.py.db.modelos_auth import Usuario
+
+    return plantillas.TemplateResponse("usuarios.html", {
+        "request": request,
+        "usuarios": sesion.query(Usuario).order_by(Usuario.correo).all(),
+        "yo": yo, "roles": ROLES_INTERNOS,
+        "error": error, "clave_nueva": clave_nueva,
+    }, status_code=409 if error else 200)
+
+
+@router.post("/usuarios/{usuario_id}/eliminar")
+def eliminar_usuario(
+    usuario_id: int,
+    request: Request,
+    usuario=Depends(usuario_web_opcional),
+    sesion: Session = Depends(obtener_sesion),
+):
+    """Borra la cuenta, SOLO si no ha hecho nada en el sistema.
+
+    Un usuario con guías, ediciones o publicaciones a su nombre no se borra:
+    dejaría el historial huérfano y nadie podría saber quién hizo qué. Para
+    esos, desactivar. El borrado existe únicamente para corregir un alta
+    equivocada.
+    """
+    if usuario is None:
+        return RedirectResponse(url="/entrar", status_code=303)
+    if not _es_admin(usuario):
+        return plantillas.TemplateResponse("no_encontrado.html", {"request": request}, 404)
+
+    from libs.py.db.modelos_auth import Usuario
+    from libs.py.db.modelos_contenido import EdicionBloque
+    from libs.py.db.modelos_dominio import Guia, SolicitudGeneracion
+
+    destino = sesion.get(Usuario, usuario_id)
+    if destino is None:
+        return _pantalla_usuarios(request, sesion, usuario, error="No existe ese usuario.")
+    if destino.id == usuario.id:
+        return _pantalla_usuarios(request, sesion, usuario,
+                                  error="No puede eliminar su propia cuenta.")
+
+    rastro = (
+        sesion.query(Guia).filter_by(autor_id=destino.id).count()
+        + sesion.query(SolicitudGeneracion).filter_by(solicitada_por=destino.id).count()
+        + sesion.query(EdicionBloque).filter_by(realizada_por=destino.id).count()
+    )
+    if rastro:
+        return _pantalla_usuarios(
+            request, sesion, usuario,
+            error=(f"{destino.correo} tiene {rastro} registro(s) a su nombre. "
+                   "Desactívelo en vez de eliminarlo: borrarlo dejaría el "
+                   "historial sin autor."))
+
+    sesion.delete(destino)
+    sesion.commit()
+    return _pantalla_usuarios(request, sesion, usuario)

@@ -21,7 +21,17 @@ FIXTURES = sorted((RAIZ / "datos_ejemplo" / "fixtures").glob("*.json"))
 
 # Fixtures que dan rojo A PROPÓSITO: son parciales o traen errores de muestra.
 # Se listan aquí para que el rojo esperado no se confunda con una regresión.
-ROJO_ESPERADO = {"01_minimo.json", "05_catalogo_bloques.json", "03_sin_autoevaluaciones.json", "04_con_alertas.json"}
+ROJO_ESPERADO = {
+    "01_minimo.json",
+    "03_sin_autoevaluaciones.json",
+    "04_con_alertas.json",
+    "05_catalogo_bloques.json",
+    # Curso viejo migrado de Canvas: trae 5 semanas y el esquema solo admite
+    # 8 o 16, asi que 'semanas_incompletas' salta a proposito. Es el aviso de
+    # que la migracion deja la guia a medias y hay que completarla antes de
+    # publicar; ponerla en verde ocultaria justo lo que hay que ver.
+    "07_migrado.json",
+}
 
 
 def test_hay_fixtures():

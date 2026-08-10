@@ -33,3 +33,6 @@ _archivo/
 # ─── Binarios pesados ───
 *.zip
 !packages/plantillas/**/*.zip
+
+# Hojas de la oferta académica: llevan correos y cédulas reales
+datos_ejemplo/*.csv

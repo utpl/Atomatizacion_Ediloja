@@ -8,6 +8,7 @@
       <h1>Panel</h1>
       <p class="ed-meta">{{ usuario.nombre_completo }} · {{ roles | join(", ") }}</p>
     </div>
+    {% if es_admin %}<a class="ed-cancelar" href="/usuarios">Usuarios</a>{% endif %}
     <a class="ed-salir" href="/salir">Cerrar sesión</a>
   </div>
 

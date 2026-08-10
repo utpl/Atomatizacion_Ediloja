@@ -356,6 +356,11 @@ def curso_desde_extraido(extraido: dict[str, Any]) -> dict[str, Any]:
             "codigo_banner": "SIN-CODIGO",
             "asignatura": extraido.get("nombre", ""),
             "periodo": "",
+            # El esquema solo admite 8 o 16, y el validador exige que
+            # coincida con el numero de paginas. Un curso viejo de 5 semanas
+            # no encaja en ninguno de los dos: se deja el mas cercano y la
+            # alerta 'semanas_incompletas' avisa al docente de que hay que
+            # completarlo antes de publicar.
             "total_semanas": 8 if len(paginas) <= 8 else 16,
         },
         "estructura": estructura,

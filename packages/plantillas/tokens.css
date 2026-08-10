@@ -310,3 +310,45 @@ body {
 }
 .ed-en-linea { display: inline; margin: 0; }
 .ed-en-linea button { margin: 0; }
+
+/* --- administración de usuarios ----------------------------- */
+.ed-plegable { margin-top: 24px; }
+.ed-plegable > summary {
+  cursor: pointer; font-weight: 600; padding: 10px 0;
+  color: var(--ed-azul-600);
+}
+.ed-roles { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.ed-rol {
+  display: flex; gap: 8px; align-items: flex-start;
+  border: 1px solid var(--ed-linea); border-radius: 6px;
+  padding: 10px 12px; font-size: 0.8125rem; font-weight: 400; cursor: pointer;
+}
+.ed-rol:has(input:checked) { border-color: var(--ed-azul-600); background: var(--ed-papel-2); }
+.ed-rol input { width: auto; margin-top: 2px; }
+.ed-rol code { font-size: 0.6875rem; color: var(--ed-tinta-tenue); }
+
+.ed-roles-fila { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0; }
+.ed-rol-chico { font-size: 0.6875rem; display: inline-flex; gap: 3px; align-items: center; }
+.ed-rol-chico input { width: auto; margin: 0; }
+
+.ed-boton-chico {
+  font: inherit; font-size: 0.75rem; padding: 4px 10px; margin: 0;
+  border: 1px solid var(--ed-linea); border-radius: 4px;
+  background: var(--ed-papel); cursor: pointer;
+}
+.ed-boton-chico:hover { border-color: var(--ed-azul-600); }
+
+.ed-inactivo { opacity: 0.55; }
+
+.ed-clave {
+  margin-top: 20px; padding: 16px 20px;
+  background: var(--ed-ambar-fondo); border-left: 4px solid var(--ed-ambar);
+  border-radius: var(--ed-radio);
+}
+.ed-clave__valor {
+  font-family: var(--ed-fuente-datos); font-size: 1.125rem;
+  letter-spacing: 0.03em; margin: 8px 0;
+  user-select: all;
+}
+.ed-peligro { color: var(--ed-rojo); border-color: var(--ed-rojo-fondo); }
+.ed-peligro:hover { background: var(--ed-rojo-fondo); border-color: var(--ed-rojo); }
