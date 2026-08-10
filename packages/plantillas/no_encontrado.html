@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block titulo %}No encontrado — App-EdiLoja{% endblock %}
 {% block contenido %}
-  <h1>No encontrado</h1>
-  <p class="ed-meta">Esa guía no existe o no está disponible.</p>
-  <p style="margin-top:24px"><a class="ed-boton" href="/guias-vista">Volver a mis guías</a></p>
+  <div class="ed-vacio" style="margin-top: var(--ed-e7); padding: var(--ed-e8) var(--ed-e6);">
+    <h1 style="margin-bottom: var(--ed-e3);">No encontrado</h1>
+    <p class="ed-meta" style="margin-bottom: var(--ed-e5);">Esa guía no existe o no está disponible.</p>
+    <a class="ed-boton" href="/guias-vista">Volver a mis guías</a>
+  </div>
 {% endblock %}

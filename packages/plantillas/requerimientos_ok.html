@@ -2,19 +2,25 @@
 {% block titulo %}Requerimientos guardados — App-EdiLoja{% endblock %}
 
 {% block contenido %}
-  <h1>Requerimientos guardados</h1>
-  <p class="ed-meta">{{ guia.nombre_asignatura }} · {{ guia.codigo_banner }} · {{ guia.total_semanas }} semanas</p>
+  <div class="ed-fila-titulo">
+    <div>
+      <h1>Requerimientos guardados</h1>
+      <p class="ed-meta">{{ guia.nombre_asignatura }} · {{ guia.codigo_banner }} · {{ guia.total_semanas }} semanas</p>
+    </div>
+  </div>
 
-  <div class="ed-hoja" style="margin-top:24px">
-    <h2 class="ed-seccion">Lo que recibirá el agente</h2>
+  <div class="ed-hoja">
+    <h2 class="ed-seccion" style="margin-top:0">Lo que recibirá el agente</h2>
     <pre class="ed-json">{{ requerimientos_json }}</pre>
   </div>
 
-  <form method="post" action="/guias-vista/{{ guia.id }}/generar" style="margin-top:24px">
-    <button class="ed-boton" type="submit">Generar la guía</button>
+  <div style="margin-top: var(--ed-e5); display: flex; align-items: center; gap: var(--ed-e3); flex-wrap: wrap;">
+    <form method="post" action="/guias-vista/{{ guia.id }}/generar">
+      <button class="ed-boton" type="submit">Generar la guía</button>
+    </form>
     <a class="ed-cancelar" href="/guias-vista/{{ guia.id }}/generar">Corregir los datos</a>
-  </form>
-  <p class="ed-ayuda" style="max-width:46rem">
+  </div>
+  <p class="ed-ayuda" style="max-width: 46rem; margin-top: var(--ed-e4)">
     Son {{ guia.total_semanas }} llamadas al modelo, una por semana. Tarda unos
     minutos y no hace falta esperar en esta pantalla.
   </p>

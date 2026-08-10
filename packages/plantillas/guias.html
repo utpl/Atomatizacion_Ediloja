@@ -15,26 +15,35 @@
   </div>
 
   {% if guias %}
-    <table class="ed-tabla-guias">
-      <thead>
-        <tr>
-          <th>Código</th><th>Asignatura</th><th>Periodo</th>
-          <th>Semanas</th><th>Estado</th><th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for g in guias %}
-        <tr>
-          <td class="ed-mono">{{ g.codigo_banner }}</td>
-          <td>{{ g.nombre_asignatura }}</td>
-          <td>{{ g.periodo }}</td>
-          <td>{{ g.total_semanas }}</td>
-          <td><span class="ed-estado ed-estado--{{ g.estado }}">{{ g.estado }}</span></td>
-          <td><a href="/guias-vista/{{ g.id }}/editor">Abrir</a>{% if puede_publicar %} · <a href="/guias-vista/{{ g.id }}/publicar">Publicar</a>{% endif %}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="ed-tabla-contenedor">
+      <div class="ed-tabla-scroll">
+        <table class="ed-tabla-guias">
+          <thead>
+            <tr>
+              <th>Código</th><th>Asignatura</th><th>Periodo</th>
+              <th>Semanas</th><th>Estado</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for g in guias %}
+            <tr>
+              <td class="ed-mono">{{ g.codigo_banner }}</td>
+              <td><strong>{{ g.nombre_asignatura }}</strong></td>
+              <td>{{ g.periodo }}</td>
+              <td>{{ g.total_semanas }}</td>
+              <td><span class="ed-estado ed-estado--{{ g.estado }}">{{ g.estado }}</span></td>
+              <td class="ed-acciones">
+                <a href="/guias-vista/{{ g.id }}/editor">Abrir</a>
+                {% if puede_publicar %}
+                  <a href="/guias-vista/{{ g.id }}/publicar">Publicar</a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   {% else %}
     {# Una pantalla vacía es una invitación a actuar, no un mensaje de error. #}
     <div class="ed-vacio">
@@ -44,7 +53,9 @@
   {% endif %}
 
   {% if puede_crear %}
-    <p style="margin-top:24px"><a class="ed-boton" href="/guias-vista/nueva">Nueva guía</a></p>
+    <div style="margin-top: var(--ed-e5)">
+      <a class="ed-boton" href="/guias-vista/nueva">Nueva guía</a>
+    </div>
   {% endif %}
 
 {% endblock %}

@@ -33,10 +33,12 @@
              value="{{ guia.canvas_url and guia.canvas_url.split('/courses')[0]
                        or 'https://utpl.test.instructure.com' }}">
 
-      <button type="submit">Publicar</button>
-      <a class="ed-cancelar" href="/guias-vista">Cancelar</a>
+      <div style="margin-top: var(--ed-e6); display: flex; align-items: center; gap: var(--ed-e3); flex-wrap: wrap;">
+        <button type="submit">Publicar</button>
+        <a class="ed-cancelar" href="/guias-vista">Cancelar</a>
+      </div>
     </form>
-    <p class="ed-ayuda" style="margin-top:16px">
+    <p class="ed-ayuda" style="margin-top: var(--ed-e4)">
       Sube los 61 recursos de la plantilla, crea los módulos y las páginas, y
       escribe las {{ guia.total_semanas }} semanas. Tarda unos minutos. Las
       páginas quedan <strong>sin publicar</strong> en Canvas para que las revise

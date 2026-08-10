@@ -8,8 +8,10 @@
       <h1>Panel</h1>
       <p class="ed-meta">{{ usuario.nombre_completo }} · {{ roles | join(", ") }}</p>
     </div>
-    {% if es_admin %}<a class="ed-cancelar" href="/usuarios">Usuarios</a>{% endif %}
-    <a class="ed-salir" href="/salir">Cerrar sesión</a>
+    <div class="ed-acciones-cabecera">
+      {% if es_admin %}<a class="ed-cancelar" href="/usuarios">Usuarios</a>{% endif %}
+      <a class="ed-salir" href="/salir">Cerrar sesión</a>
+    </div>
   </div>
 
   {% if conteo %}
@@ -24,50 +26,54 @@
   {% endif %}
 
   {% if puede_crear %}
-    <p style="margin: 24px 0">
+    <div style="margin: var(--ed-e5) 0; display: flex; gap: var(--ed-e3); flex-wrap: wrap; align-items: center;">
       <a class="ed-boton" href="/guias-vista/nueva">Nueva guía</a>
       <a class="ed-cancelar" href="/guias-vista/importar">Importar de Canvas</a>
-    </p>
+    </div>
   {% endif %}
 
   {% if filas %}
-    <table class="ed-tabla-guias">
-      <thead>
-        <tr><th>Asignatura</th><th>Código</th><th>Periodo</th>
-            <th>Estado</th><th>Semáforo</th><th>Acciones</th></tr>
-      </thead>
-      <tbody>
-        {% for f in filas %}
-        <tr>
-          <td>{{ f.guia.nombre_asignatura }}</td>
-          <td class="ed-mono">{{ f.guia.codigo_banner }}</td>
-          <td>{{ f.guia.periodo }}</td>
-          <td><span class="ed-estado ed-estado--{{ f.guia.estado }}">{{ f.guia.estado | replace('_', ' ') }}</span></td>
-          <td>
-            {% if f.semaforo %}
-              <span class="ed-semaforo ed-semaforo--{{ f.semaforo }}">{{ f.semaforo }}</span>
-            {% else %}<span class="ed-meta">sin generar</span>{% endif %}
-          </td>
-          <td class="ed-acciones">
-            {# Los botones dependen del estado, no solo del rol: una versión
-               congelada no se edita aunque seas su autor. #}
-            {% if f.tiene_contenido %}
-              <a href="/guias-vista/{{ f.guia.id }}/editor">{{ f.puede_editar and "Editar" or "Ver" }}</a>
-            {% endif %}
-            {% if f.puede_generar %}
-              <a href="/guias-vista/{{ f.guia.id }}/generar">Generar</a>
-            {% endif %}
-            {% if f.puede_publicar %}
-              <a href="/guias-vista/{{ f.guia.id }}/publicar">Publicar</a>
-            {% endif %}
-            {% if f.guia.canvas_url %}
-              <a href="{{ f.guia.canvas_url }}" target="_blank" rel="noopener">Canvas ↗</a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="ed-tabla-contenedor">
+      <div class="ed-tabla-scroll">
+        <table class="ed-tabla-guias">
+          <thead>
+            <tr><th>Asignatura</th><th>Código</th><th>Periodo</th>
+                <th>Estado</th><th>Semáforo</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            {% for f in filas %}
+            <tr>
+              <td><strong>{{ f.guia.nombre_asignatura }}</strong></td>
+              <td class="ed-mono">{{ f.guia.codigo_banner }}</td>
+              <td>{{ f.guia.periodo }}</td>
+              <td><span class="ed-estado ed-estado--{{ f.guia.estado }}">{{ f.guia.estado | replace('_', ' ') }}</span></td>
+              <td>
+                {% if f.semaforo %}
+                  <span class="ed-semaforo ed-semaforo--{{ f.semaforo }}">{{ f.semaforo }}</span>
+                {% else %}<span class="ed-meta">sin generar</span>{% endif %}
+              </td>
+              <td class="ed-acciones">
+                {# Los botones dependen del estado, no solo del rol: una versión
+                   congelada no se edita aunque seas su autor. #}
+                {% if f.tiene_contenido %}
+                  <a href="/guias-vista/{{ f.guia.id }}/editor">{{ f.puede_editar and "Editar" or "Ver" }}</a>
+                {% endif %}
+                {% if f.puede_generar %}
+                  <a href="/guias-vista/{{ f.guia.id }}/generar">Generar</a>
+                {% endif %}
+                {% if f.puede_publicar %}
+                  <a href="/guias-vista/{{ f.guia.id }}/publicar">Publicar</a>
+                {% endif %}
+                {% if f.guia.canvas_url %}
+                  <a href="{{ f.guia.canvas_url }}" target="_blank" rel="noopener">Canvas ↗</a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   {% else %}
     <div class="ed-vacio">
       <p>No hay guías visibles para su rol.</p>

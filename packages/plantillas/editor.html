@@ -2,12 +2,16 @@
 {% block titulo %}{{ guia.nombre_asignatura }} — Editor{% endblock %}
 
 {% block contenido %}
-  <h1>{{ guia.nombre_asignatura }}</h1>
-  <p class="ed-meta">
-    {{ guia.codigo_banner }} · versión {{ version.numero }} ·
-    <span class="ed-semaforo ed-semaforo--{{ version.semaforo }}">{{ version.semaforo }}</span>
-    {% if not editable %}· <strong>en revisión (solo lectura)</strong>{% endif %}
-  </p>
+  <div class="ed-fila-titulo">
+    <div>
+      <h1>{{ guia.nombre_asignatura }}</h1>
+      <p class="ed-meta">
+        {{ guia.codigo_banner }} · versión {{ version.numero }} ·
+        <span class="ed-semaforo ed-semaforo--{{ version.semaforo }}">{{ version.semaforo }}</span>
+        {% if not editable %}· <strong>en revisión (solo lectura)</strong>{% endif %}
+      </p>
+    </div>
+  </div>
 
   {#- El botón de publicar solo aparece cuando la guía está aprobada: el ciclo
       de vida existe para que nadie publique sin revisión. Si el usuario puede

@@ -26,11 +26,13 @@
 
     <input type="hidden" name="modo" value="rescatar">
 
-    <button type="submit">Importar</button>
-    <a class="ed-cancelar" href="/panel">Cancelar</a>
+    <div style="margin-top: var(--ed-e6); display: flex; align-items: center; gap: var(--ed-e3); flex-wrap: wrap;">
+      <button type="submit">Importar</button>
+      <a class="ed-cancelar" href="/panel">Cancelar</a>
+    </div>
   </form>
 
-  <p class="ed-ayuda" style="margin-top:20px">
+  <p class="ed-ayuda" style="margin-top: var(--ed-e5)">
     El curso de origen no se modifica: solo se lee. Las autoevaluaciones no
     se importan porque son un recurso externo incrustado; si decide
     regenerar, el agente las escribe con sus diez preguntas.

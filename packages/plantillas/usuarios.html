@@ -53,64 +53,61 @@
         {% endfor %}
       </div>
 
-      <button type="submit">Crear</button>
+      <div style="margin-top: var(--ed-e5);">
+        <button type="submit">Crear</button>
+      </div>
     </form>
   </details>
 
-  <table class="ed-tabla-guias" style="margin-top:24px">
-    <thead>
-      <tr><th>Correo</th><th>Nombre</th><th>Roles</th><th>Estado</th><th></th></tr>
-    </thead>
-    <tbody>
-      {% for u in usuarios %}
-      <tr class="{% if not u.activo %}ed-inactivo{% endif %}">
-        <td class="ed-mono">{{ u.correo }}{% if u.id == yo.id %} <em>(usted)</em>{% endif %}</td>
-        <td>{{ u.nombre_completo }}</td>
-        <td>
-          <form method="post" action="/usuarios/{{ u.id }}/roles" class="ed-roles-fila">
-            {% for codigo, nombre in roles %}
-              <label class="ed-rol-chico" title="{{ nombre }}">
-                <input type="checkbox" name="roles" value="{{ codigo }}"
-                       {% if codigo in u.codigos_de_rol() %}checked{% endif %}>
-                <span>{{ codigo }}</span>
-              </label>
-            {% endfor %}
-            <button type="submit" class="ed-boton-chico">Guardar</button>
-          </form>
-        </td>
-        <td>
-          <span class="ed-estado ed-estado--{{ 'aprobada' if u.activo else 'cambios_solicitados' }}">
-            {{ "activo" if u.activo else "inactivo" }}
-          </span>
-        </td>
-        <td class="ed-acciones">
-          {% if u.id != yo.id %}
-            <form method="post" action="/usuarios/{{ u.id }}/activar" class="ed-en-linea">
-              <input type="hidden" name="activo" value="{{ 'false' if u.activo else 'true' }}">
-              <button type="submit" class="ed-boton-chico">
-                {{ "Desactivar" if u.activo else "Reactivar" }}
-              </button>
-            </form>
-          {% endif %}
-          <form method="post" action="/usuarios/{{ u.id }}/clave" class="ed-en-linea">
-            <button type="submit" class="ed-boton-chico">Nueva contraseña</button>
-          </form>
-          {% if u.id != yo.id %}
-            {# Solo se borra si no ha hecho nada: el backend lo comprueba y
-               responde con un aviso si tiene rastro. #}
-            <form method="post" action="/usuarios/{{ u.id }}/eliminar"
-                  class="ed-en-linea"
-                  onsubmit="return confirm('¿Eliminar la cuenta de {{ u.correo }}? Solo se puede si no ha hecho nada en el sistema.')">
-              <button type="submit" class="ed-boton-chico ed-peligro">Eliminar</button>
-            </form>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="ed-tabla-contenedor" style="margin-top: var(--ed-e5)">
+    <div class="ed-tabla-scroll">
+      <table class="ed-tabla-guias">
+        <thead>
+          <tr><th>Correo</th><th>Nombre</th><th>Roles</th><th>Estado</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for u in usuarios %}
+          <tr class="{% if not u.activo %}ed-inactivo{% endif %}">
+            <td class="ed-mono">{{ u.correo }}{% if u.id == yo.id %} <em>(usted)</em>{% endif %}</td>
+            <td>{{ u.nombre_completo }}</td>
+            <td>
+              <form method="post" action="/usuarios/{{ u.id }}/roles" class="ed-roles-fila">
+                {% for codigo, nombre in roles %}
+                  <label class="ed-rol-chico" title="{{ nombre }}">
+                    <input type="checkbox" name="roles" value="{{ codigo }}"
+                           {% if codigo in u.codigos_de_rol() %}checked{% endif %}>
+                    <span>{{ codigo }}</span>
+                  </label>
+                {% endfor %}
+                <button type="submit" class="ed-boton-chico">Guardar</button>
+              </form>
+            </td>
+            <td>
+              <span class="ed-estado ed-estado--{{ 'aprobada' if u.activo else 'cambios_solicitados' }}">
+                {{ "activo" if u.activo else "inactivo" }}
+              </span>
+            </td>
+            <td class="ed-acciones">
+              {% if u.id != yo.id %}
+                <form method="post" action="/usuarios/{{ u.id }}/activar" class="ed-en-linea">
+                  <input type="hidden" name="activo" value="{{ 'false' if u.activo else 'true' }}">
+                  <button type="submit" class="ed-boton-chico">
+                    {{ "Desactivar" if u.activo else "Reactivar" }}
+                  </button>
+                </form>
+              {% endif %}
+              <form method="post" action="/usuarios/{{ u.id }}/clave" class="ed-en-linea">
+                <button type="submit" class="ed-boton-chico">Nueva contraseña</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <p class="ed-ayuda" style="margin-top:20px">
+  <p class="ed-ayuda" style="margin-top: var(--ed-e4)">
     Las cuentas no se borran, se desactivan: un usuario borrado dejaría
     huérfano el historial de quién editó y quién publicó cada guía.
   </p>

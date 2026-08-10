@@ -5,13 +5,17 @@
   {#- La pantalla es la misma para generar y para publicar: lo que cambia es
       el alcance del trabajo. Decir "Generando" mientras publica hace pensar
       que se está llamando al modelo otra vez. -#}
-  <h1>{% if trabajo.alcance == "publicacion" %}Publicando en Canvas
-      {% else %}Generando la guía{% endif %}</h1>
-  <p class="ed-meta">{{ guia.nombre_asignatura }} · {{ guia.codigo_banner }} · {{ guia.total_semanas }} semanas</p>
+  <div class="ed-fila-titulo">
+    <div>
+      <h1>{% if trabajo.alcance == "publicacion" %}Publicando en Canvas
+          {% else %}Generando la guía{% endif %}</h1>
+      <p class="ed-meta">{{ guia.nombre_asignatura }} · {{ guia.codigo_banner }} · {{ guia.total_semanas }} semanas</p>
+    </div>
+  </div>
 
   {# El sondeo se detiene solo: cuando el trabajo termina, el fragmento
      deja de incluir el atributo hx-trigger. Nada que apagar a mano. #}
-  <div class="ed-hoja" style="margin-top:24px"
+  <div class="ed-hoja"
        hx-get="/ui/trabajo/{{ trabajo.id }}"
        hx-trigger="load, every 2s"
        hx-swap="innerHTML">
