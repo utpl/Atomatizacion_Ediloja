@@ -19,7 +19,7 @@
   --ed-azul-300: #8cbce9;
   --ed-azul-200: #bdd7f2;
   --ed-azul-100: #e4eef7;
-  --ed-azul-50:  #f0f6fc;
+  --ed-azul-50: #f0f6fc;
 
   /* Grises funcionales — neutros con matiz azulado para coherencia */
   --ed-gris-950: #0f1720;
@@ -32,60 +32,68 @@
   --ed-gris-300: #b0c0d0;
   --ed-gris-200: #d0dbe6;
   --ed-gris-100: #e8eef4;
-  --ed-gris-50:  #f4f7fa;
+  --ed-gris-50: #f4f7fa;
 
   /* Semáforos y estados */
   --ed-verde-900: #14522e;
   --ed-verde-700: #1f7a4d;
   --ed-verde-500: #2d9d66;
   --ed-verde-100: #e6f3ec;
-  --ed-verde-50:  #f0f9f4;
+  --ed-verde-50: #f0f9f4;
 
   --ed-ambar-900: #7a4a00;
   --ed-ambar-700: #a86400;
   --ed-ambar-500: #d4890e;
   --ed-ambar-100: #fdf1de;
-  --ed-ambar-50:  #fef8ed;
+  --ed-ambar-50: #fef8ed;
 
   --ed-rojo-900: #8a1c1c;
   --ed-rojo-700: #b3261e;
   --ed-rojo-500: #dc4446;
   --ed-rojo-100: #fbeae9;
-  --ed-rojo-50:  #fdf2f2;
+  --ed-rojo-50: #fdf2f2;
 
   /* Alias semánticos — usados en componentes */
-  --ed-tinta:       var(--ed-gris-950);
+  --ed-tinta: var(--ed-gris-950);
   --ed-tinta-suave: var(--ed-gris-700);
   --ed-tinta-tenue: var(--ed-gris-500);
 
-  --ed-papel:       #ffffff;
-  --ed-papel-2:     var(--ed-gris-50);
-  --ed-papel-3:     var(--ed-gris-100);
+  --ed-papel: #ffffff;
+  --ed-papel-2: var(--ed-gris-50);
+  --ed-papel-3: var(--ed-gris-100);
 
-  --ed-linea:       var(--ed-gris-200);
+  --ed-linea: var(--ed-gris-200);
   --ed-linea-suave: var(--ed-gris-100);
 
   /* ------------------------------------------------------------
      2. TIPOGRAFÍA
      ------------------------------------------------------------ */
-  --ed-fuente-ui:    system-ui, -apple-system, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --ed-fuente-ui: system-ui, -apple-system, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
   --ed-fuente-datos: ui-monospace, "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
 
   /* Escala tipográfica — ratio Major Third (1.25) */
-  --ed-t0: 2.027rem;  /* 32.4px — h1 principal, pantallas */
-  --ed-t1: 1.602rem;  /* 25.6px — h1 de sección */
-  --ed-t2: 1.266rem;  /* 20.3px — h2, título de tarjeta */
-  --ed-t3: 1.125rem;  /* 18.0px — h3, lead, botón principal */
-  --ed-t4: 1rem;      /* 16.0px — cuerpo */
-  --ed-t5: 0.875rem;  /* 14.0px — secundario, etiquetas */
-  --ed-t6: 0.8125rem; /* 13.0px — pequeño, metadatos */
-  --ed-t7: 0.75rem;   /* 12.0px — micro, pills */
+  --ed-t0: 2.027rem;
+  /* 32.4px — h1 principal, pantallas */
+  --ed-t1: 1.602rem;
+  /* 25.6px — h1 de sección */
+  --ed-t2: 1.266rem;
+  /* 20.3px — h2, título de tarjeta */
+  --ed-t3: 1.125rem;
+  /* 18.0px — h3, lead, botón principal */
+  --ed-t4: 1rem;
+  /* 16.0px — cuerpo */
+  --ed-t5: 0.875rem;
+  /* 14.0px — secundario, etiquetas */
+  --ed-t6: 0.8125rem;
+  /* 13.0px — pequeño, metadatos */
+  --ed-t7: 0.75rem;
+  /* 12.0px — micro, pills */
 
   /* Pesos tipográficos */
-  --ed-peso-regular:  400;
-  --ed-peso-medio:    500;
+  --ed-peso-regular: 400;
+  --ed-peso-medio: 500;
   --ed-peso-semibold: 600;
-  --ed-peso-bold:     700;
+  --ed-peso-bold: 700;
 
   /* Altura de línea */
   --ed-linea-cuerpo: 1.6;
@@ -95,41 +103,51 @@
   /* ------------------------------------------------------------
      3. ESPACIADO
      ------------------------------------------------------------ */
-  --ed-e1: 0.25rem;   /* 4px   */
-  --ed-e2: 0.5rem;    /* 8px   */
-  --ed-e3: 0.75rem;   /* 12px  */
-  --ed-e4: 1rem;      /* 16px  */
-  --ed-e5: 1.5rem;    /* 24px  */
-  --ed-e6: 2rem;      /* 32px  */
-  --ed-e7: 3rem;      /* 48px  */
-  --ed-e8: 4rem;      /* 64px  */
+  --ed-e1: 0.25rem;
+  /* 4px   */
+  --ed-e2: 0.5rem;
+  /* 8px   */
+  --ed-e3: 0.75rem;
+  /* 12px  */
+  --ed-e4: 1rem;
+  /* 16px  */
+  --ed-e5: 1.5rem;
+  /* 24px  */
+  --ed-e6: 2rem;
+  /* 32px  */
+  --ed-e7: 3rem;
+  /* 48px  */
+  --ed-e8: 4rem;
+  /* 64px  */
 
   /* ------------------------------------------------------------
      4. BORDES Y SOMBRAS
      ------------------------------------------------------------ */
-  --ed-radio-sm:  4px;
-  --ed-radio:     6px;
-  --ed-radio-md:  8px;
-  --ed-radio-lg:  12px;
-  --ed-radio-xl:  16px;
+  --ed-radio-sm: 4px;
+  --ed-radio: 6px;
+  --ed-radio-md: 8px;
+  --ed-radio-lg: 12px;
+  --ed-radio-xl: 16px;
   --ed-radio-pill: 999px;
 
   --ed-sombra-sm: 0 1px 2px rgba(15, 23, 32, 0.05);
-  --ed-sombra:    0 1px 3px rgba(15, 23, 32, 0.08), 0 1px 2px rgba(15, 23, 32, 0.04);
+  --ed-sombra: 0 1px 3px rgba(15, 23, 32, 0.08), 0 1px 2px rgba(15, 23, 32, 0.04);
   --ed-sombra-md: 0 4px 6px -1px rgba(15, 23, 32, 0.08), 0 2px 4px -2px rgba(15, 23, 32, 0.04);
   --ed-sombra-lg: 0 10px 15px -3px rgba(15, 23, 32, 0.08), 0 4px 6px -4px rgba(15, 23, 32, 0.04);
 
   /* ------------------------------------------------------------
      5. TRANSICIONES Y ANIMACIONES
      ------------------------------------------------------------ */
-  --ed-transicion:       150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ed-transicion: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --ed-transicion-lenta: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ------------------------------------------------------------
    6. RESET Y BASE
    ------------------------------------------------------------ */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -157,8 +175,15 @@ a {
   text-underline-offset: 0.15em;
   transition: color var(--ed-transicion);
 }
-a:hover { color: var(--ed-azul-800); }
-a:active { color: var(--ed-azul-900); }
+
+a:hover {
+  color: var(--ed-azul-800);
+}
+
+a:active {
+  color: var(--ed-azul-900);
+}
+
 a:focus-visible {
   outline: 2px solid var(--ed-azul-600);
   outline-offset: 2px;
@@ -172,14 +197,30 @@ a:focus-visible {
 }
 
 /* Scrollbar sutil */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--ed-gris-300); border-radius: var(--ed-radio-pill); }
-::-webkit-scrollbar-thumb:hover { background: var(--ed-gris-400); }
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ed-gris-300);
+  border-radius: var(--ed-radio-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ed-gris-400);
+}
 
 /* prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -209,22 +250,37 @@ a:focus-visible {
 }
 
 @media (max-width: 640px) {
-  .ed-lienzo { padding: var(--ed-e5) var(--ed-e4); }
+  .ed-lienzo {
+    padding: var(--ed-e5) var(--ed-e4);
+  }
 }
 
 /* ------------------------------------------------------------
    8. TIPOGRAFÍA DE CONTENIDO
    ------------------------------------------------------------ */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   margin: 0;
   line-height: var(--ed-linea-encabezado);
   font-weight: var(--ed-peso-bold);
   color: var(--ed-azul-900);
 }
 
-h1 { font-size: var(--ed-t0); letter-spacing: -0.02em; }
-h2 { font-size: var(--ed-t2); }
-h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
+h1 {
+  font-size: var(--ed-t0);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: var(--ed-t2);
+}
+
+h3 {
+  font-size: var(--ed-t3);
+  font-weight: var(--ed-peso-semibold);
+}
 
 .ed-meta {
   color: var(--ed-tinta-suave);
@@ -312,7 +368,9 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
 }
 
 @media (max-width: 640px) {
-  .ed-hoja { padding: var(--ed-e5) var(--ed-e4); }
+  .ed-hoja {
+    padding: var(--ed-e5) var(--ed-e4);
+  }
 }
 
 /* ------------------------------------------------------------
@@ -484,6 +542,7 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
     flex-direction: column;
     gap: var(--ed-e3);
   }
+
   .ed-fila-titulo .ed-acciones-cabecera {
     width: 100%;
     justify-content: flex-end;
@@ -551,8 +610,13 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   white-space: nowrap;
 }
 
-.ed-tabla-guias th:first-child { border-radius: var(--ed-radio-lg) 0 0 0; }
-.ed-tabla-guias th:last-child  { border-radius: 0 var(--ed-radio-lg) 0 0; }
+.ed-tabla-guias th:first-child {
+  border-radius: var(--ed-radio-lg) 0 0 0;
+}
+
+.ed-tabla-guias th:last-child {
+  border-radius: 0 var(--ed-radio-lg) 0 0;
+}
 
 .ed-tabla-guias td {
   padding: var(--ed-e3) var(--ed-e4);
@@ -568,8 +632,13 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   background: var(--ed-azul-50);
 }
 
-.ed-tabla-guias tbody tr:last-child td:first-child { border-radius: 0 0 0 var(--ed-radio-lg); }
-.ed-tabla-guias tbody tr:last-child td:last-child  { border-radius: 0 0 var(--ed-radio-lg) 0; }
+.ed-tabla-guias tbody tr:last-child td:first-child {
+  border-radius: 0 0 0 var(--ed-radio-lg);
+}
+
+.ed-tabla-guias tbody tr:last-child td:last-child {
+  border-radius: 0 0 var(--ed-radio-lg) 0;
+}
 
 .ed-mono {
   font-family: var(--ed-fuente-datos);
@@ -595,11 +664,30 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   text-transform: uppercase;
 }
 
-.ed-estado--borrador            { background: var(--ed-gris-100); color: var(--ed-gris-700); }
-.ed-estado--en_revision         { background: var(--ed-ambar-100); color: var(--ed-ambar-900); }
-.ed-estado--aprobada            { background: var(--ed-verde-100); color: var(--ed-verde-900); }
-.ed-estado--publicada           { background: var(--ed-azul-100); color: var(--ed-azul-900); }
-.ed-estado--cambios_solicitados { background: var(--ed-rojo-100); color: var(--ed-rojo-900); }
+.ed-estado--borrador {
+  background: var(--ed-gris-100);
+  color: var(--ed-gris-700);
+}
+
+.ed-estado--en_revision {
+  background: var(--ed-ambar-100);
+  color: var(--ed-ambar-900);
+}
+
+.ed-estado--aprobada {
+  background: var(--ed-verde-100);
+  color: var(--ed-verde-900);
+}
+
+.ed-estado--publicada {
+  background: var(--ed-azul-100);
+  color: var(--ed-azul-900);
+}
+
+.ed-estado--cambios_solicitados {
+  background: var(--ed-rojo-100);
+  color: var(--ed-rojo-900);
+}
 
 /* Semáforo */
 .ed-semaforo {
@@ -614,9 +702,20 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   line-height: 1.4;
 }
 
-.ed-semaforo--verde  { background: var(--ed-verde-100); color: var(--ed-verde-900); }
-.ed-semaforo--ambar  { background: var(--ed-ambar-100); color: var(--ed-ambar-900); }
-.ed-semaforo--rojo   { background: var(--ed-rojo-100); color: var(--ed-rojo-900); }
+.ed-semaforo--verde {
+  background: var(--ed-verde-100);
+  color: var(--ed-verde-900);
+}
+
+.ed-semaforo--ambar {
+  background: var(--ed-ambar-100);
+  color: var(--ed-ambar-900);
+}
+
+.ed-semaforo--rojo {
+  background: var(--ed-rojo-100);
+  color: var(--ed-rojo-900);
+}
 
 /* ------------------------------------------------------------
    17. VACÍO (estado sin datos)
@@ -636,7 +735,7 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   font-size: var(--ed-t5);
 }
 
-.ed-vacio p + p {
+.ed-vacio p+p {
   margin-top: var(--ed-e2);
   color: var(--ed-tinta-suave);
 }
@@ -667,6 +766,7 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   background: var(--ed-azul-800);
   box-shadow: var(--ed-sombra-md);
   transform: translateY(-1px);
+  color: #ffffff !important;
 }
 
 .ed-boton:active {
@@ -981,12 +1081,15 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   gap: var(--ed-e5);
 }
 
-.ed-rejilla > div {
+.ed-rejilla>div {
   min-width: 0;
 }
 
 @media (max-width: 40rem) {
-  .ed-rejilla { grid-template-columns: 1fr; gap: 0; }
+  .ed-rejilla {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }
 
 /* ------------------------------------------------------------
@@ -1256,7 +1359,7 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   box-shadow: var(--ed-sombra-sm);
 }
 
-.ed-plegable > summary {
+.ed-plegable>summary {
   cursor: pointer;
   font-weight: var(--ed-peso-semibold);
   padding: var(--ed-e4) var(--ed-e5);
@@ -1270,11 +1373,11 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   user-select: none;
 }
 
-.ed-plegable > summary:hover {
+.ed-plegable>summary:hover {
   background: var(--ed-azul-50);
 }
 
-.ed-plegable > summary::before {
+.ed-plegable>summary::before {
   content: "▸";
   font-size: var(--ed-t3);
   color: var(--ed-azul-600);
@@ -1282,11 +1385,11 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
   display: inline-block;
 }
 
-.ed-plegable[open] > summary::before {
+.ed-plegable[open]>summary::before {
   transform: rotate(90deg);
 }
 
-.ed-plegable > summary::-webkit-details-marker {
+.ed-plegable>summary::-webkit-details-marker {
   display: none;
 }
 
@@ -1465,7 +1568,9 @@ h3 { font-size: var(--ed-t3); font-weight: var(--ed-peso-semibold); }
 }
 
 @keyframes ed-girar {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Estados de htmx en tablas */
